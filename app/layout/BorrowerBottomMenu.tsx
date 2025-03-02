@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../constants/StyleSheet';
-import { SIZES, FONTS, COLORS } from '../constants/theme';
+import { SIZES, COLORS } from '../constants/theme';
 import { IMAGES } from '../constants/Images';
 import {
     widthPercentageToDP as wp,
@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     navText: {
-        ...FONTS.fontRegular,
         fontSize: 13
     }
 });

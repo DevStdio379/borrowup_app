@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, FONTS } from '../constants/theme';
+import { COLORS } from '../constants/theme';
 import { GlobalStyleSheet } from '../constants/StyleSheet';
 
 
@@ -72,9 +72,9 @@ const Header = ({title, leftIcon, leftAction,transparent,productId,titleLeft,tit
                     <View style={{ flex: 1 }}>
                         {productId
                             ?
-                            <Text style={{ ...FONTS.fontMedium, fontSize: 24, color: colors.title, textAlign: titleLeft ? 'left' : 'center',paddingLeft:titleLeft2 ? 10 :10,paddingRight:titleRight ? 20 : 0}}><Text style={{color:COLORS.primary}}>e</Text>Bike</Text>
+                            <Text style={{ fontSize: 24, color: colors.title, textAlign: titleLeft ? 'left' : 'center',paddingLeft:titleLeft2 ? 10 :10,paddingRight:titleRight ? 20 : 0}}><Text style={{color:COLORS.primary}}>e</Text>Bike</Text>
                             :
-                            <Text style={{ ...FONTS.fontMedium, fontSize: 18, fontWeight: 'bold', color: colors.title, textAlign: titleLeft ? 'left' : 'center'}}>{title}</Text>
+                            <Text style={{ fontSize: 18, fontWeight: 'bold', color: colors.title, textAlign: titleLeft ? 'left' : 'center'}}>{title}</Text>
                         }
                     </View>
                     {rightIcon1 == "search" &&
@@ -146,7 +146,6 @@ const styles = StyleSheet.create({
     },
     title : {
         fontSize:20,
-        ...FONTS.fontMedium,
     },
     actionBtn : {
         height: 45,

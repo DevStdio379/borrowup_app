@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COLORS, FONTS, SIZES } from './theme';
+import { COLORS, SIZES } from './theme';
 
 export const GlobalStyleSheet = StyleSheet.create({
     container: {
@@ -31,7 +31,6 @@ export const GlobalStyleSheet = StyleSheet.create({
         borderColor: COLORS.primary,
     },
     label: {
-        ...FONTS.font,
         color: COLORS.label,
         marginBottom: 8,
     },
@@ -141,7 +140,6 @@ export const GlobalStyleSheet = StyleSheet.create({
         justifyContent: 'center',
     },
     text: {
-        ...FONTS.font,
         color: 'red',
         marginLeft: 10,
     },
