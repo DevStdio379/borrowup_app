@@ -15,7 +15,7 @@ const StackNavigator = () => {
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
 			<StackComponent.Navigator
-				initialRouteName='OnBoarding'
+				initialRouteName='SignIn'
 				screenOptions={{
 					headerShown: false,
 					cardStyle: { backgroundColor: "transparent" },
