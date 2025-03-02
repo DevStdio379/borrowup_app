@@ -16,6 +16,7 @@ export type RootStackParamList = {
     // Lender Profile
     MyCalendar: undefined;
     Listings: undefined;
+    AddListing: { listingId: string };
     LenderDashboard: undefined;
     Messages: undefined;
 

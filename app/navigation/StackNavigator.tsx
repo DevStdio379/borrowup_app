@@ -10,6 +10,7 @@ import DrawerNavigation from './DrawerNavigation';
 import MyCalendar from '../screens/LenderPanel/MyCalendar';
 import LenderDashboard from '../screens/LenderPanel/LenderDashboard';
 import Listings from '../screens/LenderPanel/Listings';
+import AddListing from '../screens/LenderPanel/AddListing';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -33,6 +34,7 @@ const StackNavigator = () => {
 
 				<StackComponent.Screen name="LenderDashboard" component={LenderDashboard} />
 				<StackComponent.Screen name="Listings" component={Listings} />
+				<StackComponent.Screen name="AddListing" component={AddListing} />
 				<StackComponent.Screen name="MyCalendar" component={MyCalendar} />
 			</StackComponent.Navigator>
 		</View>
