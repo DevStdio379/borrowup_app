@@ -23,9 +23,9 @@ const DATA = [
     },
 ]
 
-type OnboardingScreenProps = StackScreenProps<RootStackParamList, 'Onboarding'>;
+type OnBoardingScreenProps = StackScreenProps<RootStackParamList, 'OnBoarding'>;
 
-const Onboarding = ({ navigation }: OnboardingScreenProps) => {
+const OnBoarding = ({ navigation }: OnBoardingScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
@@ -140,7 +140,7 @@ const Onboarding = ({ navigation }: OnboardingScreenProps) => {
                     </View>
                 </View>
                 <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingBottom: 30 }]}>
-                    <TouchableOpacity onPress={() => {}} style={{
+                    <TouchableOpacity onPress={() => navigation.navigate('SignUp')} style={{
                         backgroundColor: COLORS.primary,
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -184,4 +184,4 @@ function Indicator({ i, scrollValue }: any) {
     );
 }
 
-export default Onboarding
+export default OnBoarding
