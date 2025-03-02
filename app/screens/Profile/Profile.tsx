@@ -107,7 +107,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     </TouchableOpacity>
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => navigation.navigate('Profile')}>
+                        onPress={() => navigation.navigate('PaymentInformation')}>
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'center' }]} >
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }} >
                                 <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
@@ -146,7 +146,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     </View>
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => openDrawer()}
+                        onPress={() => navigation.openDrawer()}
                     >
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
                             <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
