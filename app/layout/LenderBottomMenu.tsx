@@ -115,7 +115,7 @@ const LenderBottomMenu = ({ state, navigation, descriptors }: Props) => {
                                         name={
                                             label === 'LenderDashboard'
                                                 ? 'home-outline'
-                                                : label === 'Calendar'
+                                                : label === 'MyCalendar'
                                                     ? 'calendar-outline'
                                                     : label === 'Listings'
                                                         ? 'reader-outline'
