@@ -67,30 +67,8 @@ export const SIZES = {
 	container: 800,
 };
 
-export const FONTS = {
-	fontLg: { fontSize: SIZES.fontLg, color: COLORS.text, lineHeight: 20, fontFamily: 'PoppinsRegular'},
-	font: { fontSize: SIZES.font, color: COLORS.text, lineHeight: 20, fontFamily: 'PoppinsRegular'},
-	fontSm: { fontSize: SIZES.fontSm, color: COLORS.text, lineHeight: 18, fontFamily: 'PoppinsRegular'},
-	fontXs: { fontSize: SIZES.fontXs, color: COLORS.text, lineHeight: 14, fontFamily: 'PoppinsRegular'},
-	h1: { fontSize: SIZES.h1, color: COLORS.title, fontFamily: 'PoppinsSemiBold'},
-	h2: { fontSize: SIZES.h2, color: COLORS.title, fontFamily: 'PoppinsSemiBold'},
-	h3: { fontSize: SIZES.h3, color: COLORS.title, fontFamily: 'PoppinsSemiBold'},
-	h4: { fontSize: SIZES.h4, color: COLORS.title, fontFamily: 'PoppinsSemiBold'},
-	h5: { fontSize: SIZES.h5, color: COLORS.title, fontFamily: 'PoppinsSemiBold'},
-	h6: { fontSize: SIZES.h6, color: COLORS.title, fontFamily: 'PoppinsSemiBold'},
-	fontRegular: { fontFamily: 'PoppinsRegular'},
-	fontMedium: { fontFamily: 'PoppinsMedium'},
-	fontTitle: { fontFamily: 'PoppinsMedium'},
-	fontBold: { fontFamily: 'PoppinsBold'},
-	fontSemiBold: { fontFamily: 'PoppinsSemiBold'},
-	fontLight: { fontFamily: 'PoppinsLight'},
-	fontExtraLight: { fontFamily: 'PoppinsExtraLight'},
-	fontExtraBold: { fontFamily: 'PoppinsExtraBold'},
-	fontBlack: { fontFamily: 'PoppinsBlack'},
-
-}
 
 
-const appTheme = {COLORS, SIZES, FONTS}
+const appTheme = {COLORS, SIZES }
 
 export default appTheme;
