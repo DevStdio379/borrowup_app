@@ -13,6 +13,11 @@ import Listings from '../screens/LenderPanel/Listings';
 import AddListing from '../screens/LenderPanel/AddListing';
 import EditAttributes from '../screens/Profile/EditAttributes';
 import PersonalDetails from '../screens/Profile/PersonalDetails';
+import AddressBook from '../screens/Profile/AddressBook';
+import Profile from '../screens/Profile/Profile';
+import SearchAddress from '../screens/Profile/SearchAddress';
+import AddAddress from '../screens/Profile/AddAddress';
+import EditLocationPinPoint from '../screens/Profile/EditLocationPinPoint';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -33,8 +38,13 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="SignIn" component={SignIn} />
 
 				<StackComponent.Screen name="DrawerNavigation" component={DrawerNavigation} />
+				<StackComponent.Screen name="Profile" component={Profile} />
 				<StackComponent.Screen name="PersonalDetails" component={PersonalDetails} />
 				<StackComponent.Screen name="EditAttributes" component={EditAttributes} />
+				<StackComponent.Screen name="AddressBook" component={AddressBook} />
+				<StackComponent.Screen name="SearchAddress" component={SearchAddress} />
+				<StackComponent.Screen name="AddAddress" component={AddAddress} />
+				<StackComponent.Screen name="EditLocationPinPoint" component={EditLocationPinPoint} />
 
 				<StackComponent.Screen name="LenderDashboard" component={LenderDashboard} />
 				<StackComponent.Screen name="Listings" component={Listings} />

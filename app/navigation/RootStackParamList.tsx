@@ -14,6 +14,10 @@ export type RootStackParamList = {
     Profile: undefined;
     PersonalDetails: undefined;
     EditAttributes: { profileAttribute: { attributeName: string } };
+    AddressBook: undefined;
+    SearchAddress: undefined;
+    AddAddress: { address: { latitude: any, longitude: any, addressName: string, address: string } }
+    EditLocationPinPoint: { location: { latitude: any, longitude: any, addressName: string, address: string } }
 
     // Lender Profile
     MyCalendar: undefined;
