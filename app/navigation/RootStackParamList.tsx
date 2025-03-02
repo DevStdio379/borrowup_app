@@ -12,6 +12,8 @@ export type RootStackParamList = {
     MyBorrowings: undefined;
     Chat: undefined;
     Profile: undefined;
+    PersonalDetails: undefined;
+    EditAttributes: { profileAttribute: { attributeName: string } };
 
     // Lender Profile
     MyCalendar: undefined;
