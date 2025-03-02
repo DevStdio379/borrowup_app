@@ -1,21 +1,172 @@
-import React from 'react'
-import { View, Text, TouchableOpacity  } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native'
+import { GlobalStyleSheet } from '../../constants/StyleSheet';
+import { IMAGES } from '../../constants/Images';
 import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
+import Header from '../../layout/Header';
+import { Ionicons } from '@expo/vector-icons';
+import { useUser } from '../../context/UserContext';
+import { fetchUserProductListings } from '../../services/ProductServices';
 
 type ListingsScreenProps = StackScreenProps<RootStackParamList, 'Listings'>;
 
 const Listings = ({ navigation }: ListingsScreenProps) => {
+    const { user } = useUser();
+    const [activeListings, setActiveListings] = useState<any[]>([]);
+    const [inactiveListings, setinActiveListings] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
+    const fetchData = async () => {
+        if (user?.uid) {
+            const myListingsData = await fetchUserProductListings(user.uid);
+            const activeListings = myListingsData.filter(listing => listing.isActive);
+            const inactiveListings = myListingsData.filter(listing => !listing.isActive);
+            setActiveListings(activeListings);
+            setinActiveListings(inactiveListings);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [user?.uid]);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchData().then(() => setRefreshing(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+            </View>
+        );
+    }
 
     return (
         <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-            <TouchableOpacity
-            onPress={ () => navigation.navigate('AddListing', { listingId: 'newListing' }) }
+            <Header title='My Listings' />
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 70, alignItems: 'flex-start' }}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
             >
-                <Text> LISTINGS SCREEN</Text>
-            </TouchableOpacity>
+                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: '100%', paddingBottom: 10 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                            <TouchableOpacity
+                                style={{
+                                    flexDirection: 'row-reverse',
+                                    backgroundColor: COLORS.primary,
+                                    borderRadius: 50,
+                                    padding: 10,
+                                    marginRight: 10,
+                                }}
+                                onPress={() => { }}
+                            >
+                                <Ionicons name="search-outline" size={20} color={COLORS.white} />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    flexDirection: 'row-reverse',
+                                    backgroundColor: COLORS.primary,
+                                    borderRadius: 50,
+                                    padding: 10,
+                                }}
+                                onPress={() => navigation.navigate('AddListing', { listingId: 'newListing' })}
+                            >
+                                <Ionicons name="add-outline" size={20} color={COLORS.white} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingBottom: 10 }}> Active Listing </Text>
+                    <View>
+                        {
+                            activeListings.map((data: any, index) => (
+                                <View style={{ marginVertical: 5, height: 100 }} key={index}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => navigation.navigate('AddListing', { listingId: data.id })}
+                                        style={{
+                                            borderRadius: 10,
+                                            borderWidth: 1,
+                                            borderColor: COLORS.blackLight,
+                                            backgroundColor: COLORS.card,
+                                        }}>
+                                        <View style={[GlobalStyleSheet.flexcenter, { justifyContent: 'flex-start' }]}>
+                                            {data.imageUrls && data.imageUrls.length > 0 ? (
+                                                <View style={{ width: '30%' }}>
+                                                    <Image
+                                                        style={{ height: '100%', width: '100%', resizeMode: 'cover', borderTopLeftRadius: 10, borderBottomLeftRadius: 10 }}
+                                                        source={{ uri: data.imageUrls[0] }}
+                                                    />
+                                                </View>
+                                            ) : (
+                                                <View style={{ width: '30%', height: '100%', backgroundColor: COLORS.background,  borderTopLeftRadius: 10, borderBottomLeftRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Ionicons name={'image-outline'} size={30} color={COLORS.black} style={{ opacity: .5 }} />
+                                                </View>
+                                            )}
+                                            <View style={{ width: '70%', padding: 10 }}>
+                                                <Text numberOfLines={1} style={{ fontSize: 16, color: COLORS.black }}>{data.title ? data.title : 'Unlisted title'}</Text>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>{data.lendingRate ? data.lendingRate : 'Undefined rate'}</Text>
+                                                </View>
+                                                <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>{data.isActive === true ? 'active' : 'inactive'}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            ))
+                        }
+                    </View>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingBottom: 10, paddingTop: 40 }}> Inactive Listing </Text>
+                    <View>
+                        {
+                            inactiveListings.map((data: any, index) => (
+                                <View style={{ marginVertical: 5, height: 100 }} key={index}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        onPress={() => navigation.navigate('AddListing', { listingId: data.id })}
+                                        style={{
+                                            borderRadius: 10,
+                                            borderWidth: 1,
+                                            borderColor: COLORS.blackLight,
+                                            backgroundColor: COLORS.card,
+                                        }}>
+                                        <View style={[GlobalStyleSheet.flexcenter, { justifyContent: 'flex-start' }]}>
+                                        {data.imageUrls && data.imageUrls.length > 0 ? (
+                                                <View style={{ width: '30%' }}>
+                                                    <Image
+                                                        style={{ height: '100%', width: '100%', resizeMode: 'cover', borderTopLeftRadius: 10, borderBottomLeftRadius: 10 }}
+                                                        source={{ uri: data.imageUrls[0] }}
+                                                    />
+                                                </View>
+                                            ) : (
+                                                <View style={{ width: '30%', height: '100%', backgroundColor: COLORS.background,  borderTopLeftRadius: 10, borderBottomLeftRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Ionicons name={'image-outline'} size={30} color={COLORS.black} style={{ opacity: .5 }} />
+                                                </View>
+                                            )}
+                                            <View style={{ width: '70%', padding: 10 }}>
+                                                <Text numberOfLines={1} style={{ fontSize: 16, color: COLORS.black }}>{data.title ? data.title : 'Unlisted title'}</Text>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>{data.lendingRate ? data.lendingRate : 'Undefined rate'}</Text>
+                                                </View>
+                                                <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>{data.isActive === true ? 'active' : 'inactive'}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            ))
+                        }
+                    </View>
+                </View>
+            </ScrollView>
         </View>
     )
 }
