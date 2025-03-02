@@ -18,6 +18,7 @@ import Profile from '../screens/Profile/Profile';
 import SearchAddress from '../screens/Profile/SearchAddress';
 import AddAddress from '../screens/Profile/AddAddress';
 import EditLocationPinPoint from '../screens/Profile/EditLocationPinPoint';
+import PaymentInformation from '../screens/Profile/PaymentInformation';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -45,6 +46,7 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="SearchAddress" component={SearchAddress} />
 				<StackComponent.Screen name="AddAddress" component={AddAddress} />
 				<StackComponent.Screen name="EditLocationPinPoint" component={EditLocationPinPoint} />
+				<StackComponent.Screen name="PaymentInformation" component={PaymentInformation} />
 
 				<StackComponent.Screen name="LenderDashboard" component={LenderDashboard} />
 				<StackComponent.Screen name="Listings" component={Listings} />
