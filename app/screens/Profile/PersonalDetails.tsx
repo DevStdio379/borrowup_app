@@ -8,15 +8,16 @@ import { useUser } from '../../context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { set } from 'date-fns';
+import { RootStackParamList } from '../../navigation/RootStackParamList';
+import { StackScreenProps } from '@react-navigation/stack';
 
-const PersonalDetails = () => {
+type PersonalDetailsScreenProps = StackScreenProps<RootStackParamList, 'PersonalDetails'>;
+
+const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
     const { user, updateUserData } = useUser();
-
-    const navigation = useNavigation<any>();
-
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     useEffect(() => {
