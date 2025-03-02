@@ -132,7 +132,6 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                         >
                             <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Register</Text>
                         </TouchableOpacity>
-
                         <View style={{ marginTop: 10 }}>
                             <Text style={{ fontSize: 14, color: theme.dark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', textAlign: 'center' }}>By tapping “Sign Up” you accept our <Text style={{ marginBottom: 5, fontSize: 14, color: COLORS.primary }}>terms</Text> and <Text style={{ marginBottom: 5, fontSize: 14, color: COLORS.primary }}>condition</Text></Text>
                         </View>
@@ -185,7 +184,6 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                                     style={{ width: 32, height: 32, resizeMode: 'contain' }}
                                 />
                             </TouchableOpacity>
-
                             <TouchableOpacity style={{
                                 borderRadius: 12,
                                 padding: 15,
@@ -211,7 +209,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                 </View>
                 <View style={{ marginBottom: 15, marginTop: 20, flexDirection: 'row', justifyContent: 'center' }}>
                     <Text style={{ color: colors.title, fontSize: 16, textAlign: 'center' }}>Already have an account?</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignUp')} activeOpacity={0.5}>
+                    <TouchableOpacity onPress={() => navigation.navigate('SignIn')} activeOpacity={0.5}>
                         <Text style={{ fontSize: 16, color: COLORS.primary, fontWeight: 'bold' }}> Login Now</Text>
                     </TouchableOpacity>
                 </View>
