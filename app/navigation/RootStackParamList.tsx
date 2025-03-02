@@ -5,11 +5,12 @@ export type RootStackParamList = {
     DrawerNavigation: NavigatorScreenParams<BorrowerBottomTabParamList>;
     OnBoarding: undefined;
     SignUp: undefined;
+    SignIn: undefined;
 
     Home: undefined;
     Map: undefined;
     MyBorrowings: undefined;
     Chat: undefined;
     Profile: undefined;
-    
+
 };
