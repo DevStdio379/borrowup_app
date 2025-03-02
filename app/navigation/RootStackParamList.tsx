@@ -13,4 +13,10 @@ export type RootStackParamList = {
     Chat: undefined;
     Profile: undefined;
 
+    // Lender Profile
+    MyCalendar: undefined;
+    Listings: undefined;
+    LenderDashboard: undefined;
+    Messages: undefined;
+
 };

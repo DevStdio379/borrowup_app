@@ -6,6 +6,7 @@ import { useTheme } from '@react-navigation/native';
 import DrawerMenu from '../layout/DrawerMenu';
 import BorrowerBottomNavigation from './BorrowerBottomNavigation';
 import { useUser } from '../context/UserContext';
+import LenderBottomNavigation from './LenderBottomNavigation';
 
 const Drawer = createDrawerNavigator();
 const DrawerNavigation = () => {
@@ -18,7 +19,7 @@ const DrawerNavigation = () => {
             {/* <BottomNavigation/> */}
             <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
                 <Drawer.Navigator
-                    initialRouteName= {  user?.accountType === 'borrower' ? 'BorrowerBottomNavigation' : 'BorrowerBottomNavigation' }
+                    initialRouteName= {  user?.accountType === 'borrower' ? 'BorrowerBottomNavigation' : 'LenderBottomNavigation' }
                     screenOptions={{
                         headerShown: false,
                         drawerType:'slide',
@@ -28,7 +29,7 @@ const DrawerNavigation = () => {
                         return <DrawerMenu navigation={props.navigation} />
                     }}
                     >
-                    <Drawer.Screen name={  user?.accountType === 'borrower' ? 'BorrowerBottomNavigation' : 'BorrowerBottomNavigation' } component={user?.accountType === 'borrower' ? BorrowerBottomNavigation: BorrowerBottomNavigation} />
+                    <Drawer.Screen name={  user?.accountType === 'borrower' ? 'BorrowerBottomNavigation' : 'LenderBottomNavigation' } component={user?.accountType === 'borrower' ? BorrowerBottomNavigation: LenderBottomNavigation} />
                 </Drawer.Navigator>
             </SafeAreaView>
         </>

@@ -7,6 +7,9 @@ import OnBoarding from '../screens/Auth/Onboarding';
 import SignUp from '../screens/Auth/SignUp';
 import SignIn from '../screens/Auth/SignIn';
 import DrawerNavigation from './DrawerNavigation';
+import MyCalendar from '../screens/LenderPanel/MyCalendar';
+import LenderDashboard from '../screens/LenderPanel/LenderDashboard';
+import Listings from '../screens/LenderPanel/Listings';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -27,6 +30,10 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="SignIn" component={SignIn} />
 
 				<StackComponent.Screen name="DrawerNavigation" component={DrawerNavigation} />
+
+				<StackComponent.Screen name="LenderDashboard" component={LenderDashboard} />
+				<StackComponent.Screen name="Listings" component={Listings} />
+				<StackComponent.Screen name="MyCalendar" component={MyCalendar} />
 			</StackComponent.Navigator>
 		</View>
 	)
