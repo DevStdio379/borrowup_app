@@ -35,7 +35,7 @@ const PaymentInformation = ({ navigation }: PaymentInformationScreenProps) => {
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
             <Header
-                title='Payment Methods'
+                title='Payment Information'
                 leftIcon='back'
             />
             <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 15, marginBottom: 50 }}>
