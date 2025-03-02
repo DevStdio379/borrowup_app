@@ -1,3 +1,15 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
+import { BorrowerBottomTabParamList } from "./BorrowerBottomTabParamList";
+
 export type RootStackParamList = {
-    Onboarding: undefined;
+    DrawerNavigation: NavigatorScreenParams<BorrowerBottomTabParamList>;
+    OnBoarding: undefined;
+    SignUp: undefined;
+
+    Home: undefined;
+    Map: undefined;
+    MyBorrowings: undefined;
+    Chat: undefined;
+    Profile: undefined;
+    
 };
