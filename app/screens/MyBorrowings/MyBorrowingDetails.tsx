@@ -12,6 +12,7 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { fetchSelectedBorrowing, Borrowing, updateBorrowing } from '../../services/BorrowingServices';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
+import { getReviewByBorrowingId, Review } from '../../services/ReviewServices';
 
 type MyBorrowingDetailsScreenProps = StackScreenProps<RootStackParamList, 'MyBorrowingDetails'>;
 
@@ -35,6 +36,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
     const [returnCode, setCollectionCode] = useState<string[]>(Array(CODE_LENGTH).fill(""));
     const [validationMessage, setValidationMessage] = useState<string | null>(null);
     const inputs = useRef<Array<TextInput | null>>(Array(CODE_LENGTH).fill(null));
+    const [review, setReview] = useState<Review>();
 
     const handleChange = (text: string, index: number) => {
         if (/^\d?$/.test(text)) {
@@ -83,10 +85,15 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                 if (selectedBorrowing) {
                     setBorrowing(selectedBorrowing);
                     setStatus(selectedBorrowing.status);
-                    
+
                     const fetchedOwner = await fetchSelectedUser(selectedBorrowing.productOwnerId);
                     if (fetchedOwner) {
                         setOwner(fetchedOwner);
+                    }
+
+                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.productId, borrowingId);
+                    if (fetchedReview && fetchedReview.id) {
+                        setReview(fetchedReview);
                     }
                 }
             } catch (error) {
@@ -98,7 +105,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
 
     useEffect(() => {
         fetchSelectedBorrowingData();
-    }, [status]);
+    }, [status, borrowingId]);
 
     useEffect(() => {
         if (borrowing) {
@@ -313,19 +320,41 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                 </View>
                             ) : (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <TouchableOpacity
-                                        style={{
-                                            backgroundColor: COLORS.primary,
-                                            padding: 10,
-                                            borderRadius: 10,
-                                            marginVertical: 10,
-                                            width: '80%',
-                                            alignItems: 'center',
-                                        }}
-                                        onPress={async () => { navigation.navigate('AddReview', { borrowing: borrowing }) }}
-                                    >
-                                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>
-                                    </TouchableOpacity>
+
+                                    {review && review.id ? (
+                                        review.status === 1 ? (
+                                            // Add your JSX for review status 1 here
+                                            <Text>Reviewed</Text>
+                                        ) : (
+                                            <TouchableOpacity
+                                                style={{
+                                                    backgroundColor: COLORS.primary,
+                                                    padding: 10,
+                                                    borderRadius: 10,
+                                                    marginVertical: 10,
+                                                    width: '80%',
+                                                    alignItems: 'center',
+                                                }}
+                                                onPress={async () => { navigation.navigate('AddReview', { reviewId: review.id || 'newReview', borrowing: borrowing }) }}
+                                            >
+                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Update Review</Text>
+                                            </TouchableOpacity>
+                                        )
+                                    ) : (
+                                        <TouchableOpacity
+                                            style={{
+                                                backgroundColor: COLORS.primary,
+                                                padding: 10,
+                                                borderRadius: 10,
+                                                marginVertical: 10,
+                                                width: '80%',
+                                                alignItems: 'center',
+                                            }}
+                                            onPress={async () => { navigation.navigate('AddReview', { reviewId: 'newReview', borrowing: borrowing }) }}
+                                        >
+                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>
+                                        </TouchableOpacity>
+                                    )}
                                 </View>
                             )
                             }
