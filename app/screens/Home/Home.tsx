@@ -139,7 +139,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const scrollViewHome = useRef<any>();
 
 
-    const buttons = ['All', 'Households', 'Home Tools', 'Gadgets', 'Decorations'];
+    const buttons = ['All', 'Electronic Gadgets', 'DIY & Hand Tools', 'Sport Equipments', 'Gadgets', 'Party & Celebrations', 'Cooking', 'Outdoors', 'Others'];
 
     const scrollX = useRef(new Animated.Value(0)).current;
     const onCLick = (i: any) => scrollViewHome.current.scrollTo({ x: i * SIZES.width });
@@ -239,18 +239,31 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 </ScrollView>
                             );
                         }
-                        return (
-                            <ScrollView
-                                showsVerticalScrollIndicator={false}
-                                style={[styles.tabBody]}
-                                key={index}
-                                refreshControl={
-                                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                                }
-                            >
-                                
-                            </ScrollView>
-                        )
+                        else {
+                            return (
+                                <ScrollView
+                                    showsVerticalScrollIndicator={false}
+                                    style={[styles.tabBody]}
+                                    key={index}
+                                    refreshControl={
+                                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                    }
+                                >
+                                    <View style={[GlobalStyleSheet.container, { paddingBottom: 20 }]}>
+                                        <FlatList
+                                            data={products.filter(product => product.category === button)}
+                                            scrollEnabled={false}
+                                            renderItem={renderItem} // Assign renderItem function
+                                            keyExtractor={(item) => item.id?.toString() ?? ''} // Unique key for each item
+                                            numColumns={2} // Set number of columns to 2
+                                            columnWrapperStyle={{ justifyContent: 'space-between' }} // Space between columns
+                                            showsVerticalScrollIndicator={false} // Hide the scroll indicator
+                                            contentContainerStyle={{ paddingBottom: 150 }} // Ensure space at the bottom
+                                        />
+                                    </View>
+                                </ScrollView>
+                            )
+                        }
                     })}
 
                 </ScrollView>
