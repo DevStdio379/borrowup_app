@@ -33,6 +33,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const { user } = useUser();
 
     const handleProductClick = (productId: string) => {
+        console.log('Product ID: ', productId);
         navigation.navigate('ProductDetails', { productId });
     };
 
