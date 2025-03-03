@@ -18,5 +18,6 @@ export const IMAGES = {
     cookingEquipments: require('../assets/images/item/cookingEquipments.png'),
     outdoorEquipments: require('../assets/images/item/outdoorEquipments.png'),
     otherItem: require('../assets/images/item/otherItem.png'),
+    pickupLocation: require('../assets/images/pickup-location.png'),
     
 }
