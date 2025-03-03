@@ -9,7 +9,7 @@ import { COLORS } from '../../constants/theme';
 import { Feather } from '@expo/vector-icons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Cardstyle2 from '../../components/Card/Cardstyle2';
-import { fetchProducts, ProductModel } from '../../services/ProductServices';
+import { fetchProducts, Product } from '../../services/ProductServices';
 import * as Location from "expo-location";
 
 const CardSwiperData = [
@@ -37,7 +37,7 @@ const Map = ({ navigation }: any) => {
   const [range, setRange] = useState([50, 200]);
   const [selected, setSelected] = useState<boolean>(false);
   const [backgroundColor, setBackgroundColor] = useState('transparent'); // Default background color
-  const [products, setProducts] = useState<ProductModel[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number; address: string; addressName?: string } | null>(null);
@@ -226,10 +226,9 @@ const Map = ({ navigation }: any) => {
                     >
                       <Feather color={COLORS.primary} size={24} name='heart' />
                     </View>
-                    <Text style={{ ...FONTS.h5, color: colors.title, marginBottom: 8 }}>Your Wishlist is Empty!</Text>
+                    <Text style={{ color: colors.title, marginBottom: 8 }}>Your Wishlist is Empty!</Text>
                     <Text
                       style={{
-                        ...FONTS.fontSm,
                         color: colors.text,
                         textAlign: 'center',
                         paddingHorizontal: 40,
@@ -487,7 +486,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background
   },
   searchTextinput: {
-    ...FONTS.fontRegular,
     height: 48,
     width: '100%',
     borderRadius: 30,
@@ -526,17 +524,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   activeCardTitle: {
-    ...FONTS.fontMedium,
     fontSize: 20,
     color: COLORS.card,
   },
   activeCardPrice: {
-    ...FONTS.fontRegular,
     fontSize: 16,
     color: COLORS.primary,
   },
   activeCardDiscount: {
-    ...FONTS.fontRegular,
     fontSize: 16,
     color: COLORS.secondary,
   },
