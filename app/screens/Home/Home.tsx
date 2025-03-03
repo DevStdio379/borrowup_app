@@ -138,6 +138,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
     const scrollViewHome = useRef<any>();
 
+    // Local machine to repo migration
+
 
     const buttons = ['All', 'Electronic Gadgets', 'DIY & Hand Tools', 'Sport Equipments', 'Gadgets', 'Party & Celebrations', 'Cooking', 'Outdoors', 'Others'];
 
