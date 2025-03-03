@@ -22,6 +22,7 @@ import PaymentInformation from '../screens/Profile/PaymentInformation';
 import Products from '../screens/Products/Products';
 import ProductDetails from '../screens/Products/ProductDetails';
 import MyBorrowingDetails from '../screens/MyBorrowings/MyBorrowingDetails';
+import LendingDetails from '../screens/LenderPanel/LendingDetails';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -58,6 +59,7 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="Listings" component={Listings} />
 				<StackComponent.Screen name="AddListing" component={AddListing} />
 				<StackComponent.Screen name="MyCalendar" component={MyCalendar} />
+				<StackComponent.Screen name="LendingDetails" component={LendingDetails} />
 			</StackComponent.Navigator>
 		</View>
 	)
