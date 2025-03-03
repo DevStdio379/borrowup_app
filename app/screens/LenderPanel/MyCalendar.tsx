@@ -1,15 +1,165 @@
-import { View, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image, RefreshControl, ActivityIndicator } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from "../../constants/theme";
+import { GlobalStyleSheet } from "../../constants/StyleSheet";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
+import { useCallback, useEffect, useState } from "react";
+import { fetchSelectedUser, User, useUser } from "../../context/UserContext";
+import { fetchLendingsByUser } from "../../services/BorrowingServices";
+import { IMAGES } from "../../constants/Images";
 
 type MyCalendarScreenProps = StackScreenProps<RootStackParamList, 'MyCalendar'>;
 
 const MyCalendar = ({ navigation, route }: MyCalendarScreenProps) => {
 
+  const { user } = useUser();
+  const [activeLendings, setActiveLendings] = useState<any[]>([]);
+  const [inactiveLendings, setInactiveLendings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchData = async () => {
+    if (user?.uid) {
+      const myListingsData = await fetchLendingsByUser(user.uid);
+      const activeLendings = myListingsData.filter(listing => listing.status <= 5);
+      const inactiveLendings = myListingsData.filter(listing => listing.status > 5);
+      setActiveLendings(activeLendings);
+      setInactiveLendings(inactiveLendings);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [user?.uid]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchData().then(() => setRefreshing(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
+  }
+
+
   return (
     <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-      <Text> MY CALENDAR SCREEN</Text>
+      <View style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+        <View
+          style={[GlobalStyleSheet.container, {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: 8,
+            paddingHorizontal: 10,
+          }]}>
+          <View style={{ flex: 1, alignItems: 'flex-start' }}>
+            {/* left header element */}
+          </View>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>My Lendings</Text>
+          </View>
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            {/* right header element */}
+          </View>
+        </View>
+      </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 70, alignItems: 'flex-start' }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingTop: 40 }]}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingBottom: 10 }}> Active Lendings </Text>
+          <View>
+            {
+              activeLendings.map((data: any, index) => (
+                <View style={{ marginVertical: 5, height: 100 }} key={index}>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => navigation.navigate('LendingDetails', { lendingId: data.id })}
+                    style={{
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: COLORS.blackLight,
+                      backgroundColor: COLORS.card,
+                    }}>
+                    <View style={[GlobalStyleSheet.flexcenter, { justifyContent: 'flex-start' }]}>
+                      {data.productImageUrls && data.productImageUrls.length > 0 ? (
+                        <View style={{ width: '30%' }}>
+                          <Image
+                            style={{ height: '100%', width: '100%', resizeMode: 'cover', borderTopLeftRadius: 10, borderBottomLeftRadius: 10 }}
+                            source={{ uri: data.productImageUrls[0] }}
+                          />
+                        </View>
+                      ) : (
+                        <View style={{ width: '30%', height: '100%', backgroundColor: COLORS.background, borderTopLeftRadius: 10, borderBottomLeftRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
+                          <Ionicons name={'image-outline'} size={30} color={COLORS.black} style={{ opacity: .5 }} />
+                        </View>
+                      )}
+                      <View style={{ width: '70%', padding: 10 }}>
+                        <Text numberOfLines={1} style={{ fontSize: 16, color: COLORS.black, fontWeight: 'bold' }}>{data.productTitle}</Text>
+                        <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>{data.firstName} {data.lastName}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Text style={{ fontSize: 14 }}>{new Date(data.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.startDate).toLocaleDateString('en-GB', { weekday: 'short' })} to {new Date(data.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.endDate).toLocaleDateString('en-GB', { weekday: 'short' })}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))
+            }
+          </View>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingBottom: 10, paddingTop: 40 }}> Inactive Lendings </Text>
+          <View>
+            {
+              inactiveLendings.map((data: any, index) => (
+                <View style={{ marginVertical: 5, height: 100 }} key={index}>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => navigation.navigate('LendingDetails', { lendingId: data.id })}
+                    style={{
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      borderColor: COLORS.blackLight,
+                      backgroundColor: COLORS.card,
+                    }}>
+                    <View style={[GlobalStyleSheet.flexcenter, { justifyContent: 'flex-start' }]}>
+                      {data.productImageUrls && data.productImageUrls.length > 0 ? (
+                        <View style={{ width: '30%' }}>
+                          <Image
+                            style={{ height: '100%', width: '100%', resizeMode: 'cover', borderTopLeftRadius: 10, borderBottomLeftRadius: 10 }}
+                            source={{ uri: data.productImageUrls[0] }}
+                          />
+                        </View>
+                      ) : (
+                        <View style={{ width: '30%', height: '100%', backgroundColor: COLORS.background, borderTopLeftRadius: 10, borderBottomLeftRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
+                          <Ionicons name={'image-outline'} size={30} color={COLORS.black} style={{ opacity: .5 }} />
+                        </View>
+                      )}
+                      <View style={{ width: '70%', padding: 10 }}>
+                        <Text numberOfLines={1} style={{ fontSize: 16, color: COLORS.black, fontWeight: 'bold' }}>{data.productTitle}</Text>
+                        <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>{data.firstName} {data.lastName}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Text style={{ fontSize: 14 }}>{new Date(data.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.startDate).toLocaleDateString('en-GB', { weekday: 'short' })} to {new Date(data.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.endDate).toLocaleDateString('en-GB', { weekday: 'short' })}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))
+            }
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
