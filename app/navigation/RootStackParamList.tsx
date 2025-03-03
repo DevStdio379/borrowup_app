@@ -9,6 +9,8 @@ export type RootStackParamList = {
 
     Home: undefined;
     Products: undefined;
+    ProductDetails: { productId: string };
+    PaymentSuccess: { borrowingId: string, collectionCode: string, latitude: number, longitude: number, addressName: string, address: string, postcode: string };
     Map: undefined;
     MyBorrowings: undefined;
     Chat: undefined;
