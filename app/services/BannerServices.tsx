@@ -1,8 +1,8 @@
 import { db } from './firebaseConfig';  // Import Firestore instance
 import { collection, getDocs } from 'firebase/firestore';  // Firestore functions
 
-// Define the BannerModel interface
-export interface BannerModel {
+// Define the Banner interface
+export interface Banner {
   id: string;
   buttonText: string;
   createAt: any;  // Use the Firebase Timestamp object for createAt
@@ -12,13 +12,13 @@ export interface BannerModel {
 }
 
 // Function to fetch banners from Firestore
-export const fetchBanners = async (): Promise<BannerModel[]> => {
+export const fetchBanners = async (): Promise<Banner[]> => {
   try {
-    const bannerList: BannerModel[] = [];
+    const bannerList: Banner[] = [];
     const snapshot = await getDocs(collection(db, 'banners'));  // Fetch banners from 'banners' collection
     snapshot.forEach(doc => {
       const bannerData = doc.data();
-      const banner: BannerModel = {
+      const banner: Banner = {
         id: doc.id,
         buttonText: bannerData.buttonText,
         createAt: bannerData.createAt,  // Firestore timestamp

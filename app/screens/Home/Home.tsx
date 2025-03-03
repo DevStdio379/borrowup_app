@@ -11,7 +11,7 @@ import { addTowishList } from '../../redux/reducer/wishListReducer';
 import Cardstyle4 from '../../components/Card/Cardstyle4';
 import { useUser } from '../../context/UserContext';
 import { fetchProducts, Product } from '../../services/ProductServices';
-import { BannerModel, fetchBanners } from '../../services/BannerModel';
+import { Banner, fetchBanners } from '../../services/BannerServices';
 import TabButtonStyleHome from '../../components/Tabs/TabButtonStyleHome';
 import Carousel from '../../components/Carousel';
 
@@ -21,7 +21,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
     // const wishList = useSelector((state:any) => state.wishList.wishList);
     const [products, setProducts] = useState<Product[]>([]);
-    const [banners, setBanners] = useState<BannerModel[]>([]);
+    const [banners, setBanners] = useState<Banner[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [refreshing, setRefreshing] = useState(false);
     const scrollY = useRef(0); // Track scroll position
