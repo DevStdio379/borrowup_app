@@ -23,6 +23,7 @@ import Products from '../screens/Products/Products';
 import ProductDetails from '../screens/Products/ProductDetails';
 import MyBorrowingDetails from '../screens/MyBorrowings/MyBorrowingDetails';
 import LendingDetails from '../screens/LenderPanel/LendingDetails';
+import AddReview from '../screens/Products/AddReview';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -46,6 +47,7 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="Products" component={Products} />
 				<StackComponent.Screen name="ProductDetails" component={ProductDetails} />
 				<StackComponent.Screen name="MyBorrowingDetails" component={MyBorrowingDetails} />
+				<StackComponent.Screen name="AddReview" component={AddReview} />
 				<StackComponent.Screen name="Profile" component={Profile} />
 				<StackComponent.Screen name="PersonalDetails" component={PersonalDetails} />
 				<StackComponent.Screen name="EditAttributes" component={EditAttributes} />

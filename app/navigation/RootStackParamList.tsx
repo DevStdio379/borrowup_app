@@ -1,5 +1,6 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { BorrowerBottomTabParamList } from "./BorrowerBottomTabParamList";
+import { Borrowing } from "../services/BorrowingServices";
 
 export type RootStackParamList = {
     DrawerNavigation: NavigatorScreenParams<BorrowerBottomTabParamList>;
@@ -14,6 +15,7 @@ export type RootStackParamList = {
     Map: undefined;
     MyBorrowings: undefined;
     MyBorrowingDetails: { borrowingId: string };
+    AddReview: { borrowing: Borrowing };
     Chat: undefined;
     Profile: undefined;
     PersonalDetails: undefined;
