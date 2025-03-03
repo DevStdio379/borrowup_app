@@ -322,8 +322,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                             width: '80%',
                                             alignItems: 'center',
                                         }}
-                                        onPress={async () => {
-                                        }}
+                                        onPress={async () => { navigation.navigate('AddReview', { borrowing: borrowing }) }}
                                     >
                                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>
                                     </TouchableOpacity>
