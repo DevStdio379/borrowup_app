@@ -8,6 +8,7 @@ export type RootStackParamList = {
     SignIn: undefined;
 
     Home: undefined;
+    Products: undefined;
     Map: undefined;
     MyBorrowings: undefined;
     Chat: undefined;
