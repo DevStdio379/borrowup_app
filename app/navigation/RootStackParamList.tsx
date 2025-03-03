@@ -15,7 +15,7 @@ export type RootStackParamList = {
     Map: undefined;
     MyBorrowings: undefined;
     MyBorrowingDetails: { borrowingId: string };
-    AddReview: { borrowing: Borrowing };
+    AddReview: { reviewId: string, borrowing: Borrowing };
     Chat: undefined;
     Profile: undefined;
     PersonalDetails: undefined;
