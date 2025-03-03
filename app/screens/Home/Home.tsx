@@ -33,7 +33,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const { user } = useUser();
 
     const handleProductClick = (productId: string) => {
-        // navigation.navigate('ProductDetails', { productId });
+        navigation.navigate('ProductDetails', { productId });
     };
 
     const renderItem = ({ item }: { item: any }) => {
@@ -152,7 +152,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TouchableOpacity
-                            onPress={() => {}}
+                            onPress={() => { }}
                             activeOpacity={0.5}
                             style={[GlobalStyleSheet.background3, {}]}
                         >
@@ -196,7 +196,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                         <View style={[GlobalStyleSheet.flex, { paddingHorizontal: 15 }]}>
                                             <Text style={[styles.brandsubtitle3, { fontSize: 24, fontWeight: 'bold', color: colors.title }]}>What's new</Text>
                                             <TouchableOpacity
-                                                // onPress={() => navigation.navigate('Products')}
+                                            // onPress={() => navigation.navigate('Products')}
                                             >
                                                 <Text style={[styles.brandsubtitle3, { fontSize: 16, color: COLORS.blackLight }]}>More</Text>
                                             </TouchableOpacity>
@@ -207,7 +207,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                         <View style={[GlobalStyleSheet.flex, { paddingHorizontal: 15 }]}>
                                             <Text style={[styles.brandsubtitle3, { fontSize: 18, color: colors.title, fontWeight: 'bold' }]}>Neighborhood Offers</Text>
                                             <TouchableOpacity
-                                                // onPress={() => navigation.navigate('Products')}
+                                                onPress={() => navigation.navigate('Products')}
                                             >
                                                 <Text style={[styles.brandsubtitle3, { fontSize: 16, color: COLORS.blackLight }]}>More</Text>
                                             </TouchableOpacity>
@@ -247,48 +247,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                                 }
                             >
-                                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 0, paddingTop: 30, paddingBottom: 0 }]}>
-                                    <View style={[GlobalStyleSheet.flex, { paddingHorizontal: 15 }]}>
-                                        <Text style={[styles.brandsubtitle3, { fontSize: 18, color: colors.title }]}>Featured {button}</Text>
-                                        <TouchableOpacity
-                                            // onPress={() => navigation.navigate('Products')}
-                                        >
-                                            <Text style={[styles.brandsubtitle3, { fontSize: 16, color: COLORS.blackLight }]}>More</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                                <View style={[GlobalStyleSheet.container]}>
-                                    <FlatList
-                                        data={products}
-                                        renderItem={renderItemHorizontal}
-                                        keyExtractor={(item) => item.id?.toString() ?? ''}
-                                        horizontal
-                                        showsHorizontalScrollIndicator={false}
-                                        contentContainerStyle={[{ paddingVertical: 16 }]}
-                                    />
-                                </View>
-                                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 0, paddingTop: 0, paddingBottom: 0 }]}>
-                                    <View style={[GlobalStyleSheet.flex, { paddingHorizontal: 15 }]}>
-                                        <Text style={[styles.brandsubtitle3, { fontSize: 18, color: colors.text }]}>Browse</Text>
-                                        <TouchableOpacity
-                                            onPress={() => { }}
-                                        >
-                                            <Text style={[styles.brandsubtitle3, { fontSize: 16, color: COLORS.primary }]}>More</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                                <View style={[GlobalStyleSheet.container, { paddingBottom: 20 }]}>
-                                    <FlatList
-                                        data={products}
-                                        scrollEnabled={false}
-                                        renderItem={renderItem} // Assign renderItem function
-                                        keyExtractor={(item) => item.id?.toString() ?? ''} // Unique key for each item
-                                        numColumns={2} // Set number of columns to 2
-                                        columnWrapperStyle={{ justifyContent: 'space-between' }} // Space between columns
-                                        showsVerticalScrollIndicator={false} // Hide the scroll indicator
-                                        contentContainerStyle={{ paddingBottom: 150 }} // Ensure space at the bottom
-                                    />
-                                </View>
+                                
                             </ScrollView>
                         )
                     })}
@@ -317,7 +276,7 @@ const styles = StyleSheet.create({
         width: SIZES.width,
     },
     TextInput: {
-       
+
         fontSize: 16,
         color: COLORS.title,
         height: 60,
