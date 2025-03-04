@@ -15,7 +15,7 @@ export type RootStackParamList = {
     Map: undefined;
     MyBorrowings: undefined;
     MyBorrowingDetails: { borrowingId: string };
-    AddReview: { reviewId: string, borrowing: Borrowing };
+    BorrowerAddReview: { reviewId: string, borrowing: Borrowing };
     Chat: undefined;
     Profile: undefined;
     PersonalDetails: undefined;
@@ -29,6 +29,7 @@ export type RootStackParamList = {
     // Lender Profile
     MyCalendar: undefined;
     LendingDetails: { lendingId: string };
+    LenderAddReview: { reviewId: string, lending: Borrowing };
     Listings: undefined;
     AddListing: { listingId: string };
     LenderDashboard: undefined;
