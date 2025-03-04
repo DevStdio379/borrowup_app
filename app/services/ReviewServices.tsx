@@ -5,32 +5,56 @@ import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } fr
 // Define the Review interface
 export interface Review {
   id?: string;  // Add an optional id field
-  reviewerId: string;
   borrowingId: string;
+  borrowerReviewerId?: string;
+  lenderReviewerId?: string;
 
-  overallRating: number;
-  collectionRating: number;
-  collectionFeedback: string[];
-  otherCollectionReview: string;
-  returnRating: number;
-  returnFeedback: string[];
-  otherReturnReview: string;
-  listingMatch: string;
-  listingMatchFeedback: string[];
-  otherListingMatchReview: string;
-  communicationRating: number;
-  communicationFeedback: string[];
-  otherCommunicationReview: string;
-  productConditionRating: number;
-  productConditionFeedback: string[];
-  otherProductConditionReview: string;
-  priceWorthyRating: number;
-  publicReview: string;
-  privateNotesforLender: string;
-  status: number;
+  // borrowerReview
+  borrowerOverallRating?: number;
+  borrowerCollectionRating?: number;
+  borrowerCollectionFeedback?: string[];
+  borrowerOtherCollectionReview?: string;
+  borrowerReturnRating?: number;
+  borrowerReturnFeedback?: string[];
+  borrowerOtherReturnReview?: string;
+  borrowerListingMatch?: string;
+  borrowerListingMatchFeedback?: string[];
+  borrowerOtherListingMatchReview?: string;
+  borrowerCommunicationRating?: number;
+  borrowerCommunicationFeedback?: string[];
+  borrowerOtherCommunicationReview?: string;
+  borrowerProductConditionRating?: number;
+  borrowerProductConditionFeedback?: string[];
+  borrowerOtherProductConditionReview?: string;
+  borrowerPriceWorthyRating?: number;
+  borrowerPublicReview?: string;
+  borrowerPrivateNotesforLender?: string;
+  borrowerStatus?: number;
+  borrowerCreateAt?: any; 
+  borrowerUpdatedAt?: any;
 
-  createAt: any;  // Use the Firebase Timestamp object for createAt
-  updatedAt: any;  // Use the Firebase Timestamp object for updatedAt
+  // lenderReview
+  lenderOverallRating?: number;
+  lenderCollectionRating?: number;
+  lenderCollectionFeedback?: string[];
+  lenderOtherCollectionReview?: string;
+  lenderReturnRating?: number;
+  lenderReturnFeedback?: string[];
+  lenderOtherReturnReview?: string;
+  lenderGivenInstructionFollowed?: string;
+  lenderGivenInstructionFollowedFeedback?: string[];
+  lenderOtherGivenInstructionFollowedReview?: string;
+  lenderCommunicationRating?: number;
+  lenderCommunicationFeedback?: string[];
+  lenderOtherCommunicationReview?: string;
+  lenderReturnedProductConditionRating?: number;
+  lenderReturnedProductConditionFeedback?: string[];
+  lenderOtherReturnedProductConditionReview?: string;
+  lenderPublicReview?: string;
+  lenderPrivateNotesforLender?: string;
+  lenderStatus?: number;
+  lenderCreateAt?: any;
+  lenderUpdatedAt?: any;
 }
 
 // Function to fetch a review based on borrowingId
