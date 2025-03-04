@@ -320,11 +320,38 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                 </View>
                             ) : (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-
-                                    {review && review.id ? (
-                                        review.status === 1 ? (
-                                            // Add your JSX for review status 1 here
-                                            <Text>Reviewed</Text>
+                                    {review ? (
+                                        review.borrowerStatus === 0 ? (
+                                            <TouchableOpacity
+                                                style={{
+                                                    backgroundColor: COLORS.primary,
+                                                    padding: 10,
+                                                    borderRadius: 10,
+                                                    marginVertical: 10,
+                                                    width: '80%',
+                                                    alignItems: 'center',
+                                                }}
+                                                onPress={() => {
+                                                    console.log('Review found');
+                                                    navigation.navigate('BorrowerAddReview', { reviewId: review.id || 'newReview', borrowing: borrowing });
+                                                }}
+                                            >
+                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Edit Review</Text>
+                                            </TouchableOpacity>
+                                        ) : review.borrowerStatus ? (
+                                            <TouchableOpacity
+                                                style={{
+                                                    backgroundColor: COLORS.primary,
+                                                    padding: 10,
+                                                    borderRadius: 10,
+                                                    marginVertical: 10,
+                                                    width: '80%',
+                                                    alignItems: 'center',
+                                                }}
+                                                onPress={() => { }}
+                                            >
+                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Review Completed</Text>
+                                            </TouchableOpacity>
                                         ) : (
                                             <TouchableOpacity
                                                 style={{
@@ -335,9 +362,12 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                                     width: '80%',
                                                     alignItems: 'center',
                                                 }}
-                                                onPress={async () => { navigation.navigate('AddReview', { reviewId: review.id || 'newReview', borrowing: borrowing }) }}
+                                                onPress={() => {
+                                                    console.log('Review found');
+                                                    navigation.navigate('BorrowerAddReview', { reviewId: review.id || 'newReview', borrowing: borrowing });
+                                                }}
                                             >
-                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Update Review</Text>
+                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>
                                             </TouchableOpacity>
                                         )
                                     ) : (
@@ -350,7 +380,10 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                                 width: '80%',
                                                 alignItems: 'center',
                                             }}
-                                            onPress={async () => { navigation.navigate('AddReview', { reviewId: 'newReview', borrowing: borrowing }) }}
+                                            onPress={async () => {
+                                                console.log('Review not found');
+                                                navigation.navigate('BorrowerAddReview', { reviewId: 'newReview', borrowing: borrowing });
+                                            }}
                                         >
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>
                                         </TouchableOpacity>

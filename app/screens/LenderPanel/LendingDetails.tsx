@@ -12,6 +12,7 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { fetchSelectedBorrowing, Borrowing, updateBorrowing } from '../../services/BorrowingServices';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
+import { getReviewByBorrowingId, Review } from '../../services/ReviewServices';
 
 type LendingDetailsScreenProps = StackScreenProps<RootStackParamList, 'LendingDetails'>;
 
@@ -25,11 +26,12 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 
-    const [borrowing, setBorrowing] = useState<Borrowing>();
+    const [lending, setLending] = useState<Borrowing>();
     const [owner, setOwner] = useState<User>();
     const [images, setImages] = useState<string[]>([]);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [status, setStatus] = useState<number | null>(null);
+    const [review, setReview] = useState<Review>();
 
     const CODE_LENGTH = 7;
     const [collectionCode, setCollectionCode] = useState<string[]>(Array(CODE_LENGTH).fill(""));
@@ -55,7 +57,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     };
 
     const validatePin = async (enteredPin: string) => {
-        const correctPin = borrowing?.collectionCode; // Replace with actual validation logic
+        const correctPin = lending?.collectionCode; // Replace with actual validation logic
         if (enteredPin === correctPin) {
             await updateBorrowing(lendingId, { status: status! + 1 });
             setStatus(status! + 1);
@@ -81,11 +83,21 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
             try {
                 const selectedBorrowing = await fetchSelectedBorrowing(lendingId);
                 if (selectedBorrowing) {
-                    setBorrowing(selectedBorrowing);
+                    setLending(selectedBorrowing);
                     setStatus(selectedBorrowing.status);
+
+                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.productOwnerId);
+                    if (fetchedOwner) {
+                        setOwner(fetchedOwner);
+                    }
+
+                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.productId, lendingId);
+                    if (fetchedReview && fetchedReview.id) {
+                        setReview(fetchedReview);
+                    }
                 }
             } catch (error) {
-                console.error('Failed to fetch selected borrowing details:', error);
+                console.error('Failed to fetch selected lending details:', error);
             }
         }
         setLoading(false);
@@ -93,14 +105,14 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
 
     useEffect(() => {
         fetchSelectedBorrowingData();
-    }, [status]);
+    }, [status, lendingId]);
 
     useEffect(() => {
-        if (borrowing) {
-            setImages(borrowing.productImageUrls);
-            setSelectedImage(borrowing.productImageUrls[0]);
+        if (lending) {
+            setImages(lending.productImageUrls);
+            setSelectedImage(lending.productImageUrls[0]);
         }
-    }, [borrowing]);
+    }, [lending]);
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -123,11 +135,11 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     };
 
     const steps = [
-        { label: "Rental\nCreated", date: `${formatDate(borrowing?.startDate)},\n${borrowing?.productCollectionTime}`, completed: (status ?? 0) >= 0 },
+        { label: "Rental\nCreated", date: `${formatDate(lending?.startDate)},\n${lending?.productCollectionTime}`, completed: (status ?? 0) >= 0 },
         { label: "Pickup\n", date: "Enter pickup\ncode", completed: (status ?? 0) > 2 },
         { label: "Active\nRental", date: "\n", completed: (status ?? 0) > 2 },
         { label: "Return\n", date: "Show return\ncode", completed: (status ?? 0) > 3 },
-        { label: "Rental\nCompleted", date: `${formatDate(borrowing?.endDate)},\n ${borrowing?.productReturnTime}`, completed: (status ?? 0) > 5 },
+        { label: "Rental\nCompleted", date: `${formatDate(lending?.endDate)},\n ${lending?.productReturnTime}`, completed: (status ?? 0) > 5 },
     ];
 
     const actions = [
@@ -142,7 +154,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     return (
         <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
             <Header title='My Lending Details' />
-            {borrowing ? (
+            {lending ? (
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ flexGrow: 1, paddingBottom: 70, alignItems: 'flex-start' }}
@@ -186,7 +198,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                         <View style={{ backgroundColor: "#f3f3f3", padding: 16, borderRadius: 12, alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, marginVertical: 20, marginHorizontal: 10 }}>
                             {status === 0 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontWeight: 'bold' }}>Please confirm this borrowing?</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>Please confirm this lending?</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                                         <TouchableOpacity
                                             style={{
@@ -237,8 +249,8 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                             />
                                         ))}
                                     </View>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.status}</Text>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.collectionCode}</Text>
+                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{lending.status}</Text>
+                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{lending.collectionCode}</Text>
                                     <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10, color: COLORS.danger }}>{validationMessage}</Text>
                                 </View>
                             ) : status === 2 ? (
@@ -264,9 +276,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                             ) : status === 3 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>
-                                        {borrowing?.endDate ? `${Math.ceil((new Date(borrowing.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left` : "N/A"}
+                                        {lending?.endDate ? `${Math.ceil((new Date(lending.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left` : "N/A"}
                                     </Text>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.status}</Text>
+                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{lending.status}</Text>
                                     <TouchableOpacity
                                         style={{
                                             backgroundColor: COLORS.primary,
@@ -287,7 +299,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                             ) : status === 4 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Your return code is</Text>
-                                    <Text style={{ fontSize: 24, fontWeight: "bold", color: "indigo" }}>{borrowing.returnCode}</Text>
+                                    <Text style={{ fontSize: 24, fontWeight: "bold", color: "indigo" }}>{lending.returnCode}</Text>
                                 </View>
                             ) : status === 5 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
@@ -326,20 +338,74 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                 </View>
                             ) : (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <TouchableOpacity
-                                        style={{
-                                            backgroundColor: COLORS.primary,
-                                            padding: 10,
-                                            borderRadius: 10,
-                                            marginVertical: 10,
-                                            width: '80%',
-                                            alignItems: 'center',
-                                        }}
-                                        onPress={async () => {
-                                        }}
-                                    >
-                                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>
-                                    </TouchableOpacity>
+                                    {review ? (
+                                        review.lenderStatus === 0 ? (
+                                            <TouchableOpacity
+                                                style={{
+                                                    backgroundColor: COLORS.primary,
+                                                    padding: 10,
+                                                    borderRadius: 10,
+                                                    marginVertical: 10,
+                                                    width: '80%',
+                                                    alignItems: 'center',
+                                                }}
+                                                onPress={() => {
+                                                    console.log('Review found');
+                                                    navigation.navigate('LenderAddReview', { reviewId: review.id || 'newReview', lending: lending });
+                                                }}
+                                            >
+                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Edit Review</Text>
+                                            </TouchableOpacity>
+                                        ) : review.lenderStatus ? (
+                                            <TouchableOpacity
+                                                style={{
+                                                    backgroundColor: COLORS.primary,
+                                                    padding: 10,
+                                                    borderRadius: 10,
+                                                    marginVertical: 10,
+                                                    width: '80%',
+                                                    alignItems: 'center',
+                                                }}
+                                                onPress={() => { }}
+                                            >
+                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Review Completed</Text>
+                                            </TouchableOpacity>
+                                        ) : (
+                                            <TouchableOpacity
+                                                style={{
+                                                    backgroundColor: COLORS.primary,
+                                                    padding: 10,
+                                                    borderRadius: 10,
+                                                    marginVertical: 10,
+                                                    width: '80%',
+                                                    alignItems: 'center',
+                                                }}
+                                                onPress={() => {
+                                                    console.log('Review found');
+                                                    navigation.navigate('LenderAddReview', { reviewId: review.id || 'newReview', lending: lending });
+                                                }}
+                                            >
+                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>
+                                            </TouchableOpacity>
+                                        )
+                                    ) : (
+                                        <TouchableOpacity
+                                            style={{
+                                                backgroundColor: COLORS.primary,
+                                                padding: 10,
+                                                borderRadius: 10,
+                                                marginVertical: 10,
+                                                width: '80%',
+                                                alignItems: 'center',
+                                            }}
+                                            onPress={async () => {
+                                                console.log('Review not found');
+                                                navigation.navigate('LenderAddReview', { reviewId: 'newReview', lending: lending });
+                                            }}
+                                        >
+                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>
+                                        </TouchableOpacity>
+                                    )}
                                 </View>
                             )
                             }
@@ -426,9 +492,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                     }
                                 </View>
                                 <View style={{ flex: 7, paddingLeft: 20 }}>
-                                    <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { productId: borrowing.productId })}>
+                                    <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { productId: lending.productId })}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{borrowing.productTitle}</Text>
+                                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{lending.productTitle}</Text>
                                             <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />
                                         </View>
                                     </TouchableOpacity>
@@ -438,10 +504,10 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Borrowing Notes</Text>
                             <Text style={{ marginBottom: 30 }}>{greetings + '\n'}</Text>
-                            <Text style={{ marginBottom: 30 }}>{borrowing.productBorrowingNotes}</Text>
+                            <Text style={{ marginBottom: 30 }}>{lending.productBorrowingNotes}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Pickup Instructions</Text>
-                            <Text style={{ marginBottom: 30 }}>{borrowing.productPickupInstructions}</Text>
+                            <Text style={{ marginBottom: 30 }}>{lending.productPickupInstructions}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20, marginBottom: 10 }}>Location</Text>
                             <View style={{ height: 200, borderRadius: 20, overflow: 'hidden', borderColor: COLORS.blackLight, borderWidth: 1, }}>
@@ -470,10 +536,10 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                 </MapView>
                                 <View style={GlobalStyleSheet.line} />
                             </View>
-                            <Text style={{ marginBottom: 30, marginTop: 5 }}>{borrowing.addressName}, {borrowing.address}</Text>
+                            <Text style={{ marginBottom: 30, marginTop: 5 }}>{lending.addressName}, {lending.address}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Return Instructions</Text>
-                            <Text style={{ marginBottom: 30 }}>{borrowing.productReturnInstructions}</Text>
+                            <Text style={{ marginBottom: 30 }}>{lending.productReturnInstructions}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Additional Information</Text>
                             <FlatList
