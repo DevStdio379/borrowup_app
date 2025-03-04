@@ -9,14 +9,13 @@ import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import Input from '../../components/Input/Input';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { createReview, getReviewByBorrowingId, updateReview } from '../../services/ReviewServices';
-import { set } from 'date-fns';
 
-type AddReviewScreenProps = StackScreenProps<RootStackParamList, 'AddReview'>;
+type LenderAddReviewScreenProps = StackScreenProps<RootStackParamList, 'LenderAddReview'>;
 
-const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
+const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
 
     const { user } = useUser();
-    const { reviewId, borrowing } = route.params;
+    const { reviewId, lending } = route.params;
     const [index, setIndex] = useState(reviewId === 'newReview' ? 0 : 1);
 
     const [overallRating, setOverallRating] = useState<number>(0);
@@ -26,15 +25,15 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
     const [returnRating, setReturnRating] = useState<number>(0);
     const [returnFeedback, setReturnFeedback] = useState<string[]>([]);
     const [otherReturnReview, setOtherReturnReview] = useState<string>('');
-    const [listingMatch, setListingMatch] = useState<string>('');
-    const [listingMatchFeedback, setListingMatchFeedback] = useState<string[]>([]);
-    const [otherListingMatchReview, setOtherListingMatchReview] = useState<string>('');
+    const [givenInstructionFollowed, setGivenInstructionFollowed] = useState<string>('');
+    const [givenInstructionFollowedFeedback, setGivenInstructionFollowedFeedback] = useState<string[]>([]);
+    const [otherGivenInstructionFollowedReview, setOtherGivenInstructionFollowedReview] = useState<string>('');
     const [communicationRating, setCommunicationRating] = useState<number>(0);
     const [communicationFeedback, setCommunicationFeedback] = useState<string[]>([]);
     const [otherCommunicationReview, setOtherCommunicationReview] = useState<string>('');
-    const [productConditionRating, setProductConditionRating] = useState<number>(0);
-    const [productConditionFeedback, setProductConditionFeedback] = useState<string[]>([]);
-    const [otherProductConditionReview, setOtherProductConditionReview] = useState<string>('');
+    const [productConditionRating, setReturnedProductConditionRating] = useState<number>(0);
+    const [productConditionFeedback, setReturnedProductConditionFeedback] = useState<string[]>([]);
+    const [otherProductConditionReview, setOtherReturnedProductConditionReview] = useState<string>('');
     const [priceWorthyRating, setPriceWorthyRating] = useState<number>(0);
     const [publicReview, setPublicReview] = useState<string>('');
     const [privateNotesforLender, setPrivateNotesforLender] = useState<string>('');
@@ -49,7 +48,7 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
 
     const bottomSheetRef = useRef<BottomSheet>(null);
 
-    const [owner, setOwner] = useState<User>();
+    const [borrower, setBorrower] = useState<User>();
     const [loading, setLoading] = useState(true);
 
     const snapPoints = useMemo(() => ['1%', '35%'], []);
@@ -70,11 +69,11 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
         );
     };
 
-    const toggleListingMatchFeedback = (listingMatchFeedback: string) => {
-        setListingMatchFeedback((prevListingMatchFeedback) =>
-            prevListingMatchFeedback.includes(listingMatchFeedback)
-                ? prevListingMatchFeedback.filter((f) => f !== listingMatchFeedback)
-                : [...prevListingMatchFeedback, listingMatchFeedback]
+    const toggleListingMatchFeedback = (givenInstructionFollowedFeedback: string) => {
+        setGivenInstructionFollowedFeedback((prevListingMatchFeedback) =>
+            prevListingMatchFeedback.includes(givenInstructionFollowedFeedback)
+                ? prevListingMatchFeedback.filter((f) => f !== givenInstructionFollowedFeedback)
+                : [...prevListingMatchFeedback, givenInstructionFollowedFeedback]
         );
     };
 
@@ -87,51 +86,50 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
     };
 
     const toggleProductConditionFeedback = (productConditionFeedback: string) => {
-        setProductConditionFeedback((prevProductConditionFeedback) =>
+        setReturnedProductConditionFeedback((prevProductConditionFeedback) =>
             prevProductConditionFeedback.includes(productConditionFeedback)
                 ? prevProductConditionFeedback.filter((f) => f !== productConditionFeedback)
                 : [...prevProductConditionFeedback, productConditionFeedback]
         );
     };
 
-    const fetchOwner = async () => {
-        const fetchedOwner = await fetchSelectedUser(borrowing.productOwnerId);
-        if (fetchedOwner) {
-            setOwner(fetchedOwner);
+    const fetchBorrower = async () => {
+        const fetchedBorrower = await fetchSelectedUser(lending.userId);
+        if (fetchedBorrower) {
+            setBorrower(fetchedBorrower);
         }
         setLoading(false);
     };
 
     useEffect(() => {
-        fetchOwner();
+        fetchBorrower();
     }, []);
 
     useEffect(() => {
         if (reviewId !== 'newReview') {
             const fetchReview = async () => {
                 try {
-                    if (borrowing.productId && borrowing.id) {
-                        const selectedProduct = await getReviewByBorrowingId(borrowing.productId, borrowing.id);
+                    if (lending.productId && lending.id) {
+                        const selectedProduct = await getReviewByBorrowingId(lending.productId, lending.id);
                         if (selectedProduct) {
-                            setOverallRating(selectedProduct.overallRating);
-                            setCollectionRating(selectedProduct.collectionRating);
-                            setCollectionFeedback(selectedProduct.collectionFeedback);
-                            setOtherCollectionReview(selectedProduct.otherCollectionReview || '');
-                            setReturnRating(selectedProduct.returnRating);
-                            setReturnFeedback(selectedProduct.returnFeedback);
-                            setOtherReturnReview(selectedProduct.otherReturnReview || '');
-                            setListingMatch(selectedProduct.listingMatch);
-                            setListingMatchFeedback(selectedProduct.listingMatchFeedback);
-                            setOtherListingMatchReview(selectedProduct.otherListingMatchReview || '');
-                            setCommunicationRating(selectedProduct.communicationRating);
-                            setCommunicationFeedback(selectedProduct.communicationFeedback);
-                            setOtherCommunicationReview(selectedProduct.otherCommunicationReview || '');
-                            setProductConditionRating(selectedProduct.productConditionRating);
-                            setProductConditionFeedback(selectedProduct.productConditionFeedback);
-                            setOtherProductConditionReview(selectedProduct.otherProductConditionReview || '');
-                            setPriceWorthyRating(selectedProduct.priceWorthyRating);
-                            setPublicReview(selectedProduct.publicReview);
-                            setPrivateNotesforLender(selectedProduct.privateNotesforLender);
+                            setOverallRating(selectedProduct.lenderOverallRating || 0);
+                            setCollectionRating(selectedProduct.lenderCollectionRating || 0);
+                            setCollectionFeedback(selectedProduct.lenderCollectionFeedback || []);
+                            setOtherCollectionReview(selectedProduct.lenderOtherCollectionReview || '');
+                            setReturnRating(selectedProduct.lenderReturnRating || 0);
+                            setReturnFeedback(selectedProduct.lenderReturnFeedback || []);
+                            setOtherReturnReview(selectedProduct.lenderOtherReturnReview || '');
+                            setGivenInstructionFollowed(selectedProduct.lenderGivenInstructionFollowed || '');
+                            setGivenInstructionFollowedFeedback(selectedProduct.lenderGivenInstructionFollowedFeedback || []);
+                            setOtherGivenInstructionFollowedReview(selectedProduct.lenderOtherGivenInstructionFollowedReview || '');
+                            setCommunicationRating(selectedProduct.lenderCommunicationRating || 0);
+                            setCommunicationFeedback(selectedProduct.lenderCommunicationFeedback || []);
+                            setOtherCommunicationReview(selectedProduct.lenderOtherCommunicationReview || '');
+                            setReturnedProductConditionRating(selectedProduct.lenderReturnedProductConditionRating || 0);
+                            setReturnedProductConditionFeedback(selectedProduct.lenderReturnedProductConditionFeedback || []);
+                            setOtherReturnedProductConditionReview(selectedProduct.lenderOtherReturnedProductConditionReview || '');
+                            setPublicReview(selectedProduct.lenderPublicReview || '');
+                            setPrivateNotesforLender(selectedProduct.lenderPrivateNotesforLender || '');
                         }
                     } else {
                         console.error('Product ID or Borrowing ID is missing.');
@@ -151,7 +149,7 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
         bottomSheetRef.current?.snapToIndex(1);
     }, []);
 
-    const screens = 10;
+    const screens = 9;
 
     const nextScreen = async () => {
         if (index === 1 && !overallRating) {
@@ -166,7 +164,7 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
             alert('Please provide both a return rating and at least one feedback.');
             return;
         }
-        if (index === 4 && (!listingMatch || listingMatchFeedback.length === 0)) {
+        if (index === 4 && (!givenInstructionFollowed || givenInstructionFollowedFeedback.length === 0)) {
             alert('Please select a listing match condition and at least one feedback.');
             return;
         }
@@ -178,15 +176,11 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
             alert('Please provide both a product condition rating and at least one feedback.');
             return;
         }
-        if (index === 7 && !priceWorthyRating) {
-            alert('Please give a price worthy rating');
-            return;
-        }
-        if (index === 8 && !publicReview) {
+        if (index === 7 && !publicReview) {
             alert('Please provide a public review.');
             return;
         }
-        if (index === 9 && !privateNotesforLender) {
+        if (index === 8 && !privateNotesforLender) {
             alert('Please provide a private note for the lender.');
             return;
         }
@@ -201,57 +195,56 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
             if (user?.uid) {
                 if (reviewId === 'newReview') {
                     await createReview({
-                        reviewerId: user.uid,
-                        borrowingId: borrowing.id || '',
-                        overallRating: overallRating || 0,
-                        collectionRating: collectionRating || 0,
-                        collectionFeedback: collectionFeedback || [''],
-                        otherCollectionReview: otherCollectionReview,
-                        returnRating: returnRating || 0,
-                        returnFeedback: returnFeedback || [''],
-                        otherReturnReview: otherReturnReview || '',
-                        listingMatch: listingMatch || '',
-                        listingMatchFeedback: listingMatchFeedback || [''],
-                        otherListingMatchReview: otherListingMatchReview || '',
-                        communicationRating: communicationRating || 0,
-                        communicationFeedback: communicationFeedback || [''],
-                        otherCommunicationReview: otherCommunicationReview || '',
-                        productConditionRating: productConditionRating || 0,
-                        productConditionFeedback: productConditionFeedback || [''],
-                        otherProductConditionReview: otherProductConditionReview || '',
-                        priceWorthyRating: priceWorthyRating || 0,
-                        publicReview: publicReview || '',
-                        privateNotesforLender: privateNotesforLender || '',
-                        status: status,
-                        updatedAt: new Date(),
-                        createAt: new Date(),
-                    }, borrowing.productId);
+                        borrowingId: lending.id || '',
+                        lenderReviewerId: user.uid,
+                        lenderOverallRating: overallRating || 0,
+
+                        lenderCollectionRating: collectionRating || 0,
+                        lenderCollectionFeedback: collectionFeedback || [''],
+                        lenderOtherCollectionReview: otherCollectionReview,
+                        lenderReturnRating: returnRating || 0,
+                        lenderReturnFeedback: returnFeedback || [''],
+                        lenderOtherReturnReview: otherReturnReview || '',
+                        lenderGivenInstructionFollowed: givenInstructionFollowed || '',
+                        lenderGivenInstructionFollowedFeedback: givenInstructionFollowedFeedback || [''],
+                        lenderOtherGivenInstructionFollowedReview: otherGivenInstructionFollowedReview || '',
+                        lenderCommunicationRating: communicationRating || 0,
+                        lenderCommunicationFeedback: communicationFeedback || [''],
+                        lenderOtherCommunicationReview: otherCommunicationReview || '',
+                        lenderReturnedProductConditionRating: productConditionRating || 0,
+                        lenderReturnedProductConditionFeedback: productConditionFeedback || [''],
+                        lenderOtherReturnedProductConditionReview: otherProductConditionReview || '',
+                        lenderPublicReview: publicReview || '',
+                        lenderPrivateNotesforLender: privateNotesforLender || '',
+                        lenderUpdatedAt: new Date(),
+                        lenderCreateAt: new Date(),
+                        lenderStatus: status,
+                    }, lending.productId);
                     alert('Review created successfully.');
                 } else {
-                    await updateReview(borrowing.productId, reviewId, {
-                        reviewerId: user.uid,
-                        borrowingId: borrowing.id || '',
-                        overallRating: overallRating || 0,
-                        collectionRating: collectionRating || 0,
-                        collectionFeedback: collectionFeedback || [''],
-                        otherCollectionReview: otherCollectionReview,
-                        returnRating: returnRating || 0,
-                        returnFeedback: returnFeedback || [''],
-                        otherReturnReview: otherReturnReview || '',
-                        listingMatch: listingMatch || '',
-                        listingMatchFeedback: listingMatchFeedback || [''],
-                        otherListingMatchReview: otherListingMatchReview || '',
-                        communicationRating: communicationRating || 0,
-                        communicationFeedback: communicationFeedback || [''],
-                        otherCommunicationReview: otherCommunicationReview || '',
-                        productConditionRating: productConditionRating || 0,
-                        productConditionFeedback: productConditionFeedback || [''],
-                        otherProductConditionReview: otherProductConditionReview || '',
-                        priceWorthyRating: priceWorthyRating || 0,
-                        publicReview: publicReview || '',
-                        privateNotesforLender: privateNotesforLender || '',
-                        status: status,
-                        updatedAt: new Date(),
+                    await updateReview(lending.productId, reviewId, {
+                        borrowingId: lending.id || '',
+                        lenderReviewerId: user.uid,
+                        lenderOverallRating: overallRating || 0,
+                        lenderCollectionRating: collectionRating || 0,
+                        lenderCollectionFeedback: collectionFeedback || [''],
+                        lenderOtherCollectionReview: otherCollectionReview,
+                        lenderReturnRating: returnRating || 0,
+                        lenderReturnFeedback: returnFeedback || [''],
+                        lenderOtherReturnReview: otherReturnReview || '',
+                        lenderGivenInstructionFollowed: givenInstructionFollowed || '',
+                        lenderGivenInstructionFollowedFeedback: givenInstructionFollowedFeedback || [''],
+                        lenderOtherGivenInstructionFollowedReview: otherGivenInstructionFollowedReview || '',
+                        lenderCommunicationRating: communicationRating || 0,
+                        lenderCommunicationFeedback: communicationFeedback || [''],
+                        lenderOtherCommunicationReview: otherCommunicationReview || '',
+                        lenderReturnedProductConditionRating: productConditionRating || 0,
+                        lenderReturnedProductConditionFeedback: productConditionFeedback || [''],
+                        lenderOtherReturnedProductConditionReview: otherProductConditionReview || '',
+                        lenderPublicReview: publicReview || '',
+                        lenderPrivateNotesforLender: privateNotesforLender || '',
+                        lenderUpdatedAt: new Date(),
+                        lenderStatus: status,
                     });
                     alert(`Review updated successfully. Status: ${status}`);
                 }
@@ -342,9 +335,9 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                             <View>
                                 <View>
                                     {
-                                        owner ? (
+                                        borrower ? (
                                             <Image
-                                                source={{ uri: owner.profileImageUrl }}
+                                                source={{ uri: borrower.profileImageUrl }}
                                                 style={{
                                                     width: 100,
                                                     height: 100,
@@ -369,7 +362,7 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                                     }
                                 </View>
                                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 20, }}>Your review is important</Text>
-                                <Text style={{ fontSize: 15, color: COLORS.black }}>Your review will make this app a good community lending &borrowing platform.</Text>
+                                <Text style={{ fontSize: 15, color: COLORS.black }}>Your review will make this app a good community lending &lending platform.</Text>
                                 <Text style={{ fontSize: 15, color: COLORS.black }}>{'\n'}Your review also will increse your profile rating unlocking, lesser deposit, and trust</Text>
                             </View>
                         </View>
@@ -377,8 +370,8 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                     }
                     {index === 1 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Rate your borrowing experience</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Let us know your overall borrowing experience</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Rate your lending experience</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Let us know your overall lending experience</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 20 }}>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <TouchableOpacity key={star} onPress={() => setOverallRating(star)}>
@@ -495,21 +488,21 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                     }
                     {index === 4 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Did the borrowed product match the description?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Tell us the borrowing condition matched as described or not.</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Did the borrower followed your defined instruction?</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Tell us about borrower followed guidelines or not.</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, }}>
                                 {['Not Matched', 'Partially Matched', 'Matched'].map((condition, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
-                                            backgroundColor: listingMatch === condition ? COLORS.primary : COLORS.input,
-                                            borderColor: listingMatch === condition ? COLORS.primary : COLORS.blackLight,
+                                            backgroundColor: givenInstructionFollowed === condition ? COLORS.primary : COLORS.input,
+                                            borderColor: givenInstructionFollowed === condition ? COLORS.primary : COLORS.blackLight,
                                             padding: 15,
                                             alignItems: 'center',
                                             marginBottom: 10,
                                             borderWidth: 1,
                                         }}
-                                        onPress={() => setListingMatch(condition)}
+                                        onPress={() => setGivenInstructionFollowed(condition)}
                                     >
                                         <Text style={{ fontSize: 14, color: COLORS.title }}>{condition}</Text>
                                     </TouchableOpacity>
@@ -521,7 +514,7 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                                             key={index}
                                             style={{
                                                 borderRadius: 60,
-                                                backgroundColor: listingMatchFeedback ? (listingMatchFeedback.includes(feedback) ? COLORS.primary : COLORS.input) : COLORS.input,
+                                                backgroundColor: givenInstructionFollowedFeedback ? (givenInstructionFollowedFeedback.includes(feedback) ? COLORS.primary : COLORS.input) : COLORS.input,
                                                 padding: 15,
                                                 alignItems: 'center',
                                                 marginBottom: 10
@@ -533,25 +526,25 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                                     ))}
                                 </View>
                             </View>
-                            <Text>{listingMatchFeedback}</Text>
+                            <Text>{givenInstructionFollowedFeedback}</Text>
                             <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
                             <Input
                                 onFocus={() => setisFocused3(true)}
                                 onBlur={() => setisFocused3(false)}
                                 isFocused={isFocused3}
-                                onChangeText={setOtherListingMatchReview}
+                                onChangeText={setOtherGivenInstructionFollowedReview}
                                 backround={COLORS.card}
                                 style={{ fontSize: 12, borderRadius: 10, backgroundColor: COLORS.input }}
                                 placeholder='Add your other listing match review here'
                                 keyboardType='default'
-                                value={otherListingMatchReview}
+                                value={otherGivenInstructionFollowedReview}
                             />
                         </View>
                     }
                     {index === 5 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>How's the communication with {borrowing.firstName}?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>From collection to return, how well did {borrowing.firstName} communicate with you?</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>How's the communication with {lending.firstName}?</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>From collection to return, how well did {lending.firstName} communicate with you?</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 40 }}>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <TouchableOpacity key={star} onPress={() => setCommunicationRating(star)}>
@@ -599,11 +592,11 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                     }
                     {index === 6 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>What do you think about condition of the product?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Your opinion about the borrowing product when you start borrowing.</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>What do you think about condition of the returned product?</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Your opinion about the lending product when you start lending.</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 40 }}>
                                 {[1, 2, 3, 4, 5].map((star) => (
-                                    <TouchableOpacity key={star} onPress={() => setProductConditionRating(star)}>
+                                    <TouchableOpacity key={star} onPress={() => setReturnedProductConditionRating(star)}>
                                         <Ionicons
                                             name={star <= productConditionRating ? 'star' : 'star-outline'}
                                             size={40}
@@ -637,7 +630,7 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                                 onFocus={() => setisFocused5(true)}
                                 onBlur={() => setisFocused5(false)}
                                 isFocused={isFocused5}
-                                onChangeText={setOtherProductConditionReview}
+                                onChangeText={setOtherReturnedProductConditionReview}
                                 backround={COLORS.card}
                                 style={{ fontSize: 12, borderRadius: 10, backgroundColor: COLORS.input }}
                                 placeholder='Add your other product condition review here'
@@ -648,26 +641,8 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                     }
                     {index === 7 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Price worthy the borrowing?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>How was the value of {borrowing.firstName}'s place for the price?</Text>
-                            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 20 }}>
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <TouchableOpacity key={star} onPress={() => setPriceWorthyRating(star)}>
-                                        <Ionicons
-                                            name={star <= priceWorthyRating ? 'star' : 'star-outline'}
-                                            size={40}
-                                            color={COLORS.primary}
-                                            style={{ marginHorizontal: 5 }}
-                                        />
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
-                        </View>
-                    }
-                    {index === 8 &&
-                        <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Write a public review</Text>
-                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>We'll show this feedback to other borrower in {borrowing.firstName}'s' listings. Say a few word about your borrowing.</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>We'll show this feedback to other borrower in {lending.firstName}'s' listings. Say a few word about your lending.</Text>
                             <Input
                                 onFocus={() => setisFocused6(true)}
                                 onBlur={() => setisFocused6(false)}
@@ -690,10 +665,10 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                             />
                         </View>
                     }
-                    {index === 9 &&
+                    {index === 8 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Write a private note</Text>
-                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>This feedback just for {borrowing.firstName} - share what they can improve about their place or how they host.</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>This feedback just for {lending.firstName} - share what they can improve about their place or how they host.</Text>
                             <Input
                                 onFocus={() => setisFocused7(true)}
                                 onBlur={() => setisFocused7(false)}
@@ -738,7 +713,7 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
                             <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Start</Text>
                         </TouchableOpacity>
                     </View>
-                ) : index === 9 ? (
+                ) : index === 8 ? (
                     <View style={[GlobalStyleSheet.container, { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 15, paddingVertical: 10 }]}>
                         <TouchableOpacity
                             style={{
@@ -859,4 +834,4 @@ const AddReview = ({ navigation, route }: AddReviewScreenProps) => {
     )
 }
 
-export default AddReview
+export default LenderAddReview
