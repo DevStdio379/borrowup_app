@@ -212,3 +212,26 @@ export const updateProduct = async (productId: string, updatedProduct: Partial<P
     throw error;  // Throwing the error to handle it at the call site
   }
 };
+
+// Function to fetch borrowing dates (start and end dates) for a specific product
+export const fetchBorrowingDates = async (productId: string): Promise<{ startDate: string, endDate: string }[]> => {
+  try {
+    const borrowingDates: { startDate: string, endDate: string }[] = [];
+    const snapshot = await getDocs(collection(db, 'borrowings')); // Fetch borrowings from 'borrowings' collection
+
+    snapshot.forEach(doc => {
+      const borrowingData = doc.data();
+      if (borrowingData.productId === productId) {  // Check if the borrowing is for the specified product
+        borrowingDates.push({
+          startDate: new Date(borrowingData.startDate).toISOString().split('T')[0],
+          endDate: new Date(borrowingData.endDate).toISOString().split('T')[0]
+        });
+      }
+    });
+
+    return borrowingDates;
+  } catch (error) {
+    console.error('Error fetching borrowing dates: ', error);
+    throw error;  // Throwing the error to handle it at the call site
+  }
+};
