@@ -100,3 +100,26 @@ export const updateReview = async (productId: string, reviewId: string, updatedR
     throw error;  // Throwing the error to handle it at the call site
   }
 };
+
+
+// Function to fetch reviews based on productId
+export const getReviewsByProductId = async (productId: string) => {
+  try {
+    const reviewsRef = collection(db, 'products', productId, 'reviews');
+    const querySnapshot = await getDocs(reviewsRef);
+    const reviews = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        borrowerOverallRating: data.borrowerOverallRating,
+        borrowerPublicReview: data.borrowerPublicReview,
+        borrowerUpdatedAt: data.borrowerUpdatedAt.toDate(),  // Convert Firestore timestamp to JavaScript Date
+        borrowerReviewerId: data.borrowerReviewerId
+      };
+    });
+    return reviews;
+  } catch (error) {
+    console.error('Error fetching reviews: ', error);
+    throw error;  // Throwing the error to handle it at the call site
+  }
+};
