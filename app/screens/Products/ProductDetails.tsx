@@ -10,9 +10,9 @@ import { fetchBorrowingDates, fetchSelectedProduct, Product } from '../../servic
 import { Calendar, DateData } from 'react-native-calendars';
 import { format } from 'date-fns';
 import MapView, { Marker } from 'react-native-maps';
-import ReviewCard from '../../components/Card/ReviewCard';
 import { Address, fetchProductAddress, fetchUserAddresses } from '../../services/AddressServices';
 import { createBorrowing } from '../../services/BorrowingServices';
+import { getReviewsByProductId } from '../../services/ReviewServices';
 
 type ProductDetailsScreenProps = StackScreenProps<RootStackParamList, 'ProductDetails'>;
 const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
@@ -41,6 +41,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   });
 
   const [coordinates, setCoordinates] = useState({ latitude: 37.78825, longitude: -122.4324 });
+  const [reviews, setReviews] = useState<any[]>([]);
   const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
   const [index, setIndex] = useState(0);
@@ -87,7 +88,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       text: "Balance: £50.00",
     },
   ]
-  
+
   const getDateRange = (start: string, end: string) => {
     const range: string[] = [];
     let currentDate = new Date(start);
@@ -117,9 +118,28 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
           }
 
           try {
+            const fetchedReviews = await getReviewsByProductId(productId);
+            const reviewsWithUserDetails = await Promise.all(
+              fetchedReviews.map(async (review) => {
+                const reviewer = await fetchSelectedUser(review.borrowerReviewerId);
+                return {
+                  ...review,
+                  borrowerFirstName: reviewer?.firstName || '',
+                  borrowerLastName: reviewer?.lastName || '',
+                  borrowerProfilePicture: reviewer?.profileImageUrl || '',
+                };
+              })
+            );
+            setReviews(reviewsWithUserDetails);
+            console.log('Fetched reviews:', fetchedReviews);
+          } catch (error) {
+            console.error('Failed to fetch reviews', error);
+          }
+
+          try {
             const fetchedDates = await getBookedDates();
-            setBookedDates(fetchedDates); // Store booked dates separately
-            setSelectedDates(fetchedDates); // Initialize selectedDates with booked dates
+            setBookedDates(fetchedDates);
+            setSelectedDates(fetchedDates);
           } catch (error) {
             Alert.alert("Error", "Failed to fetch booked dates.");
           }
@@ -605,18 +625,50 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={{ paddingBottom: 10 }}
                 >
-                  <ReviewCard
-                    reviewerName="John Doe"
-                    rating={4.5}
-                    reviewText="Great product! I absolutely love it. The quality is superb, and it arrived on time."
-                    // avatarUrl="https://example.com/avatar1.jpg"
-                    date="Sept 20, 2024"
-                  />
-                  <ReviewCard
-                    reviewerName="Jane Smith"
-                    rating={5}
-                    reviewText="Fantastic service and amazing quality. Highly recommended!"
-                  />
+                  {reviews.map((review, index) => (
+                    <TouchableOpacity key={index} onPress={() => { /* Handle review card press */ }}>
+                      <View
+                        style={{
+                          backgroundColor: COLORS.card,
+                          borderRadius: 10,
+                          padding: 15,
+                          marginRight: 10,
+                          width: 250,
+                        }}
+                      >
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Image
+                            source={{ uri: review.borrowerProfilePicture }}
+                            style={{ width: 60, height: 60, borderRadius: 60, marginRight: 10 }}
+                          />
+                          <View>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                              {`${review.borrowerFirstName} ${review.borrowerLastName}`}
+                            </Text>
+                            <Text style={{ fontSize: 14, color: COLORS.blackLight }}>
+                              {new Date(review.borrowerUpdatedAt).toLocaleDateString()}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text style={{ fontSize: 14, color: COLORS.black, marginVertical: 10 }}>
+                          {review.borrowerPublicReview}
+                        </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <Ionicons
+                              key={i}
+                              name="star"
+                              size={16}
+                              color={i < review.borrowerOverallRating ? COLORS.primary : COLORS.blackLight}
+                            />
+                          ))}
+                          <Text style={{ fontSize: 14, color: COLORS.black, marginLeft: 5 }}>
+                            {review.borrowerOverallRating}
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
                 </ScrollView>
               </View>
             </View>
