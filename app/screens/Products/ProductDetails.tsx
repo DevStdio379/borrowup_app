@@ -6,8 +6,8 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { Ionicons } from '@expo/vector-icons';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
-import { fetchSelectedProduct, Product } from '../../services/ProductServices';
-import { Calendar } from 'react-native-calendars';
+import { fetchBorrowingDates, fetchSelectedProduct, Product } from '../../services/ProductServices';
+import { Calendar, DateData } from 'react-native-calendars';
 import { format } from 'date-fns';
 import MapView, { Marker } from 'react-native-maps';
 import ReviewCard from '../../components/Card/ReviewCard';
@@ -32,10 +32,17 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const [bookedDates, setBookedDates] = useState<{ [key: string]: any }>({});
   const [selectedDates, setSelectedDates] = useState<{ [key: string]: any }>({});
+  const [range, setRange] = useState<{ start: string | null; end: string | null }>({
+    start: null,
+    end: null,
+  });
+
   const [coordinates, setCoordinates] = useState({ latitude: 37.78825, longitude: -122.4324 });
   const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
-  const [endDate, setEndDate] = useState(tomorrow.toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
   const [index, setIndex] = useState(0);
   const [accordionOpen, setAccordionOpen] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState<string | null>(null);
@@ -80,16 +87,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       text: "Balance: £50.00",
     },
   ]
-
-  const getDaysInterval = (start: string, end: string) => {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    const timeDiff = endDate.getTime() - startDate.getTime();
-    const daysDiff = timeDiff / (1000 * 3600 * 24);
-    return daysDiff;
-  };
-
-
+  
   const getDateRange = (start: string, end: string) => {
     const range: string[] = [];
     let currentDate = new Date(start);
@@ -101,41 +99,6 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     }
 
     return range;
-  };
-
-
-  const handleDayPress = (day: any) => {
-    const date = day.dateString;
-
-    if (!startDate || (startDate && endDate)) {
-      setStartDate(date);
-      setEndDate('');
-      setSelectedDates({
-        [date]: { startingDay: true, color: COLORS.primary, textColor: COLORS.white },
-      });
-    } else if (startDate && !endDate) {
-      const range = getDateRange(startDate, date);
-      const daysInterval = getDaysInterval(startDate, date);
-
-      if (daysInterval >= 0) {
-        const newSelectedDates: { [key: string]: any } = {};
-        range.forEach((d, index) => {
-          newSelectedDates[d] = {
-            color: COLORS.primary,
-            textColor: COLORS.white,
-            ...(index === 0 && { startingDay: true }),
-            ...(index === range.length - 1 && { endingDay: true }),
-          };
-        });
-        setEndDate(date);
-        setSelectedDates(newSelectedDates);
-      } else {
-        setStartDate(date);
-        setSelectedDates({
-          [date]: { startingDay: true, color: COLORS.primary, textColor: COLORS.white },
-        });
-      }
-    }
   };
 
   const fetchSelectedProductData = async () => {
@@ -152,12 +115,148 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
           if (fetchedOwner) {
             setOwner(fetchedOwner);
           }
+
+          try {
+            const fetchedDates = await getBookedDates();
+            setBookedDates(fetchedDates); // Store booked dates separately
+            setSelectedDates(fetchedDates); // Initialize selectedDates with booked dates
+          } catch (error) {
+            Alert.alert("Error", "Failed to fetch booked dates.");
+          }
         }
       } catch (error) {
         console.error('Failed to fetch product details:', error);
       }
     }
     setLoading(false);
+  };
+
+  const getBookedDates = async () => {
+    let markedDates: any = {};
+
+    const productId = "aT1Ras79LeZdz3QMy3Oh"; // Replace with actual product ID
+    const bookedDateRanges = await fetchBorrowingDates(productId);
+
+    bookedDateRanges.forEach(({ startDate, endDate }) => {
+      let date = new Date(startDate);
+      while (date <= new Date(endDate)) {
+        const dateString = date.toISOString().split("T")[0];
+
+        markedDates[dateString] = {
+          disabled: true,
+          disableTouchEvent: true,
+          color: COLORS.blackLight,
+          textColor: "white",
+        };
+
+        date.setDate(date.getDate() + 1);
+      }
+
+      markedDates[startDate] = { ...markedDates[startDate], startingDay: true };
+      markedDates[endDate] = { ...markedDates[endDate], endingDay: true };
+    });
+
+    return markedDates;
+  };
+
+  const handleDayPress = (day: DateData) => {
+    if (selectedDates[day.dateString]?.disabled) {
+      Alert.alert("Unavailable", "This date is already booked.");
+      return;
+    }
+
+    let newRange = { ...range };
+
+    if (!range.start || (range.start && range.end)) {
+      // First tap: Set start date
+      newRange = { start: day.dateString, end: null };
+    } else {
+      // Second tap: Set end date
+      newRange.end = day.dateString;
+
+      if (newRange.start && newRange.end && new Date(newRange.start) > new Date(newRange.end)) {
+        // Swap start and end if necessary
+        newRange = { start: newRange.end, end: newRange.start };
+      }
+
+      // Check if any booked dates exist in this range
+      const conflictDates = getConflictDates(newRange.start!, newRange.end!);
+
+      if (conflictDates.length > 0) {
+        Alert.alert(
+          "Selected Range Includes Booked Dates",
+          "Your selected range contains booked dates. Please select a different range."
+        );
+        return; // Stop further processing
+      }
+    }
+    if (newRange.start && newRange.end) {
+      setStartDate(newRange.start);
+      setEndDate(newRange.end);
+    }
+    setRange(newRange);
+    setSelectedDates({
+      ...bookedDates, // Preserve booked dates
+      ...getHighlightedDates(newRange.start, newRange.end),
+    });
+
+  };
+
+  const getConflictDates = (start: string, end: string) => {
+    let conflicts: string[] = [];
+    let date = new Date(start);
+
+    while (date <= new Date(end)) {
+      const dateString = date.toISOString().split("T")[0];
+
+      if (selectedDates[dateString]?.disabled) {
+        conflicts.push(dateString);
+      }
+
+      date.setDate(date.getDate() + 1);
+    }
+
+    return conflicts;
+  };
+
+
+
+  const getHighlightedDates = (start: string | null, end: string | null) => {
+    let markedDates: any = {};
+
+    if (!start) return markedDates;
+
+    if (!end) {
+      markedDates[start] = {
+        selected: true,
+        startingDay: true,
+        color: COLORS.primary,
+        textColor: "white",
+      };
+      return markedDates;
+    }
+
+    let date = new Date(start);
+    while (date <= new Date(end)) {
+      const dateString = date.toISOString().split("T")[0];
+
+      if (bookedDates[dateString]) {
+        markedDates[dateString] = bookedDates[dateString]; // Keep booked dates red
+      } else {
+        markedDates[dateString] = {
+          selected: true,
+          color: COLORS.primary,
+          textColor: "white",
+        };
+      }
+
+      date.setDate(date.getDate() + 1);
+    }
+
+    markedDates[start] = { ...markedDates[start], startingDay: true };
+    markedDates[end] = { ...markedDates[end], endingDay: true };
+
+    return markedDates;
   };
 
   const getAddresses = async () => {
@@ -622,24 +721,24 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                   key={index}
                   activeOpacity={0.8}
                   style={{
-                  padding: 15,
-                  borderColor: paymentMethod === method.title ? COLORS.primary : COLORS.blackLight,
-                  borderRadius: 10,
-                  borderWidth: 1,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                    padding: 15,
+                    borderColor: paymentMethod === method.title ? COLORS.primary : COLORS.blackLight,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                   onPress={() => setPaymentMethod(method.title)}
                 >
                   <Ionicons name={'logo-apple'} size={30} color={COLORS.blackLight} style={{ margin: 5 }} />
                   <View style={{ flex: 1, paddingLeft: 10 }}>
-                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                    {method.title}
-                  </Text>
-                  <Text style={{ fontSize: 13, color: COLORS.black }}>
-                    {method.text}
-                  </Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                      {method.title}
+                    </Text>
+                    <Text style={{ fontSize: 13, color: COLORS.black }}>
+                      {method.text}
+                    </Text>
                   </View>
                 </TouchableOpacity>
               ))}
