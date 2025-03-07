@@ -26,6 +26,7 @@ import LendingDetails from '../screens/LenderPanel/LendingDetails';
 import BorrowerAddReview from '../screens/Products/BorrowerAddReview';
 import LenderAddReview from '../screens/LenderPanel/LenderAddReview';
 import MyBorrowings from '../screens/MyBorrowings/MyBorrowings';
+import Temp from '../screens/Temp';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -66,6 +67,8 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="MyCalendar" component={MyCalendar} />
 				<StackComponent.Screen name="LendingDetails" component={LendingDetails} />
 				<StackComponent.Screen name="LenderAddReview" component={LenderAddReview} />
+
+				<StackComponent.Screen name="Temp" component={Temp} />
 
 			</StackComponent.Navigator>
 		</View>

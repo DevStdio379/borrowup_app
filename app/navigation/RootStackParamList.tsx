@@ -35,4 +35,6 @@ export type RootStackParamList = {
     LenderDashboard: undefined;
     Messages: undefined;
 
+    Temp: undefined;
+
 };
