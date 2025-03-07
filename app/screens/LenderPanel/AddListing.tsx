@@ -13,6 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { createProduct, fetchSelectedProduct, updateProduct } from '../../services/ProductServices';
 import { fetchUserAddresses } from '../../services/AddressServices';
+import { set } from 'date-fns';
 
 type AddListingScreenProps = StackScreenProps<RootStackParamList, 'AddListing'>;
 
@@ -36,7 +37,16 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
     const [searchAddress, setSearchAddress] = useState<string>('');
     const [isFocused11, setisFocused11] = useState(false);
     const [isFocused12, setisFocused12] = useState(false);
+
     const [addressID, setAddressID] = useState<string>('');
+    const [latitude, setLatitude] = useState<number>(0);
+    const [longitude, setLongitude] = useState<number>(0);
+    const [addressName, setAddressName] = useState<string>('');
+    const [address, setAddress] = useState<string>('');
+    const [addressAdditionalDetails, setAddressAdditionalDetails] = useState<string>('');
+    const [postcode, setPostcode] = useState<string>('');
+
+
     const [isFocused7, setisFocused7] = useState(false);
     const [isFocused8, setisFocused8] = useState(false);
     const [pickupInstructions, setPickupInstructions] = useState<string>('');
@@ -91,6 +101,12 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                         setPickupInstructions(selectedProduct.pickupInstructions);
                         setReturnInstructions(selectedProduct.returnInstructions);
                         setAddressID(selectedProduct.addressID);
+                        setLatitude(selectedProduct.latitude);
+                        setLongitude(selectedProduct.longitude);
+                        setAddressName(selectedProduct.addressName);
+                        setAddress(selectedProduct.address);
+                        setAddressAdditionalDetails(selectedProduct.addressAdditionalDetails);
+                        setPostcode(selectedProduct.postcode);
                         setIsCollectDeposit(selectedProduct.isCollectDeposit);
                         setDepositAmount(selectedProduct.depositAmount);
                         setIsActive(selectedProduct.isActive);
@@ -252,6 +268,12 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                         pickupInstructions: pickupInstructions || '',
                         returnInstructions: returnInstructions || '',
                         addressID: addressID || '',
+                        latitude: latitude || 0,
+                        longitude: longitude || 0,
+                        addressName: addressName || '',
+                        address: address || '',
+                        addressAdditionalDetails: addressAdditionalDetails || '',
+                        postcode: postcode || '',
                         isCollectDeposit: isCollectDeposit || false,
                         depositAmount: depositAmount || 0,
                         isActive: isActive || false,
@@ -274,6 +296,12 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                         pickupInstructions: pickupInstructions || '',
                         returnInstructions: returnInstructions || '',
                         addressID: addressID || '',
+                        latitude: latitude || 0,
+                        longitude: longitude || 0,
+                        addressName: addressName || '',
+                        address: address || '',
+                        addressAdditionalDetails: addressAdditionalDetails || '',
+                        postcode: postcode || '',
                         isCollectDeposit: isCollectDeposit || false,
                         depositAmount: depositAmount || 0,
                         isActive: isActive || false,
@@ -654,9 +682,9 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                         value={collectionTime}
                                         keyboardType={'numeric'}
                                     />
-                                    <Text style={{  fontSize: 10, color: COLORS.title, marginTop: 5 }}>collection time</Text>
+                                    <Text style={{ fontSize: 10, color: COLORS.title, marginTop: 5 }}>collection time</Text>
                                 </View>
-                                <Text style={{  fontSize: 12, color: COLORS.title, marginTop: 15, marginBottom: 5, paddingLeft: 5, paddingRight: 5 }}>until</Text>
+                                <Text style={{ fontSize: 12, color: COLORS.title, marginTop: 15, marginBottom: 5, paddingLeft: 5, paddingRight: 5 }}>until</Text>
                                 <View style={{ alignItems: 'center', flex: 1 }}>
                                     <Input
                                         onFocus={() => setisFocused5(true)}
@@ -670,9 +698,9 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                         value={returnTime}
                                         keyboardType={'numeric'}
                                     />
-                                    <Text style={{  fontSize: 10, color: COLORS.title, marginTop: 5 }}>return time</Text>
+                                    <Text style={{ fontSize: 10, color: COLORS.title, marginTop: 5 }}>return time</Text>
                                 </View>
-                                <Text style={{  fontSize: 12, color: COLORS.title, marginTop: 15, marginBottom: 5, paddingLeft: 5, paddingRight: 5 }}>.</Text>
+                                <Text style={{ fontSize: 12, color: COLORS.title, marginTop: 15, marginBottom: 5, paddingLeft: 5, paddingRight: 5 }}>.</Text>
                             </View>
                             <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.black, paddingTop: 40, paddingBottom: 10, }}>Set your available slots to borrow</Text>
                             <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 5, paddingBottom: 20 }}>Select the available slots throughout the week.</Text>
@@ -690,7 +718,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                         }}
                                         onPress={() => toggleDaySelection(day)}
                                     >
-                                        <Text style={{  fontSize: 14, color: COLORS.title }}>{day}</Text>
+                                        <Text style={{ fontSize: 14, color: COLORS.title }}>{day}</Text>
                                     </TouchableOpacity>
                                 ))}
                             </View>
@@ -774,6 +802,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                             <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>No worries the address will be disclosed to renters when the rental is created. The location will be generic to an area (in the catalogue) and an exact pinpoint will be revealed upon rental creation by renter.</Text>
                             <View style={{ marginBottom: 15 }}>
                                 <FlatList
+                                    nestedScrollEnabled
                                     data={addresses}
                                     keyExtractor={(item) => item.id}
                                     renderItem={({ item }) => (
@@ -787,37 +816,45 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                                     borderWidth: 1,
                                                     borderColor: addressID ? COLORS.primary : COLORS.blackLight,
                                                 }}
-                                                onPress={() => setAddressID(item.id)}>
+                                                onPress={() => {
+                                                    console.log(item);
+                                                    setAddressID(item.id);
+                                                    setLatitude(item.latitude);
+                                                    setLongitude(item.longitude);
+                                                    setAddressName(item.addressName);
+                                                    setAddress(item.address);
+                                                    setAddressAdditionalDetails(item.additionalDetails);
+                                                    setPostcode(item.postcode);
+                                                }}>
                                                 <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', alignItems: 'flex-start' }]}>
                                                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20, width: SIZES.width * 0.8 }}>
                                                         <Ionicons name="location" size={24} color={COLORS.title} />
                                                         <View style={{ width: SIZES.width * 0.7 }}>
-                                                            <Text style={{  fontSize: 16, color: COLORS.title, fontWeight: 'bold' }}>{item.addressName}</Text>
-                                                            <Text style={{  fontSize: 14, color: COLORS.title }}>{item.address}</Text>
+                                                            <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold' }}>{item.addressName}</Text>
+                                                            <Text style={{ fontSize: 14, color: COLORS.title }}>{item.address}</Text>
                                                         </View>
                                                         <TouchableOpacity
                                                             activeOpacity={0.8}
-                                                            onPress={() => {}}>
+                                                            onPress={() => { }}>
                                                             <Ionicons name="pencil" size={20} color={COLORS.title} />
                                                         </TouchableOpacity>
                                                     </View>
                                                 </View>
                                             </TouchableOpacity>
-                                            <View style={[GlobalStyleSheet.line, {marginTop: 20}]} />
+                                            <View style={[GlobalStyleSheet.line, { marginTop: 20 }]} />
                                         </View>
                                     )}
-
                                 />
                             </View>
                             <View style={{ marginBottom: 15 }}>
                                 <TouchableOpacity
                                     activeOpacity={0.8}
-                                    onPress={() => {}}>
+                                    onPress={() => { }}>
                                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
                                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20, width: SIZES.width * 0.8 }}>
                                             <Ionicons name="add" size={26} color={COLORS.title} />
                                             <View>
-                                                <Text style={{  fontSize: 16, color: COLORS.title, fontWeight: 'bold' }}>Add a new address</Text>
+                                                <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold' }}>Add a new address</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -884,7 +921,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                                 style={{ width: 100, height: 55, borderRadius: 10, backgroundColor: COLORS.input, fontSize: 12 }}
                                                 inputicon
                                                 placeholder='£5.00'
-                                                value={ depositAmount ? depositAmount.toString() : ''.toString()}
+                                                value={depositAmount ? depositAmount.toString() : ''.toString()}
                                                 keyboardType='numeric'
                                             />
 
@@ -971,8 +1008,8 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                 justifyContent: 'center',
                                 width: '100%'
                             }}
-                            onPress={() => { 
-                                handleListing() 
+                            onPress={() => {
+                                handleListing()
                                 Alert.alert('Listing Completed');
                                 navigation.goBack();
                             }}

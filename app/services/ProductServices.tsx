@@ -17,7 +17,16 @@ export interface Product {
   borrowingNotes: string;
   pickupInstructions: string;
   returnInstructions: string;
+
+  // address 
   addressID: string;
+  latitude: number;
+  longitude: number;
+  addressName: string;
+  address: string;
+  addressAdditionalDetails: string;
+  postcode: string;
+
   isCollectDeposit: boolean;
   depositAmount: number;  // Add an optional depositAmount field
   isActive: boolean;
@@ -25,35 +34,49 @@ export interface Product {
   updatedAt: any;  // Use the Firebase Timestamp object for updatedAt
 }
 
+// Utility function to map Firestore document data to Product interface
+const mapDocToProduct = (doc: any): Product => {
+  const productData = doc.data();
+  return {
+    id: doc.id,
+    ownerID: productData.ownerID,
+    imageUrls: productData.imageUrls,
+    title: productData.title,
+    description: productData.description,
+    category: productData.category,
+    lendingRate: productData.lendingRate,
+    collectionTime: productData.collectionTime,
+    returnTime: productData.returnTime,
+    availableDays: productData.availableDays,
+    borrowingNotes: productData.borrowingNotes,
+    pickupInstructions: productData.pickupInstructions,
+    returnInstructions: productData.returnInstructions,
+
+    // address 
+    addressID: productData.addressID,
+    latitude: productData.latitude,
+    longitude: productData.longitude,
+    addressName: productData.addressName,
+    address: productData.address,
+    addressAdditionalDetails: productData.addressAdditionalDetails,
+    postcode: productData.postcode,
+
+    isCollectDeposit: productData.isCollectDeposit,
+    depositAmount: productData.depositAmount,
+    isActive: productData.isActive,
+    createAt: productData.createAt,
+    updatedAt: productData.updatedAt,
+  };
+};
+
 // Function to fetch products from Firestore
 export const fetchProducts = async (): Promise<Product[]> => {
   try {
     const productList: Product[] = [];
     const snapshot = await getDocs(collection(db, 'products')); // Fetch products from 'products' collection
     snapshot.forEach(doc => {
-      const productData = doc.data();
-      if (productData.isActive) {  // Check if the product is active
-        const product: Product = {
-          id: doc.id, // Get the document ID
-          ownerID: productData.ownerID,
-          imageUrls: productData.imageUrls,
-          title: productData.title,
-          description: productData.description,
-          category: productData.category,
-          lendingRate: productData.lendingRate,
-          collectionTime: productData.collectionTime,
-          returnTime: productData.returnTime,
-          availableDays: productData.availableDays,
-          borrowingNotes: productData.borrowingNotes,
-          pickupInstructions: productData.pickupInstructions,
-          returnInstructions: productData.returnInstructions,
-          addressID: productData.addressID,
-          isCollectDeposit: productData.isCollectDeposit,
-          depositAmount: productData.depositAmount,
-          isActive: productData.isActive,
-          createAt: productData.createAt,
-          updatedAt: productData.updatedAt
-        };
+      const product = mapDocToProduct(doc);
+      if (product.isActive) {  // Check if the product is active
         productList.push(product);  // Push the formatted product to the list
       }
     });
@@ -63,6 +86,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
     throw error;  // Throwing the error to handle it at the call site
   }
 };
+
 // Function to upload an image to Firebase Storage
 export const uploadImages = async (imageName: string, imagesUrl: string[]) => {
   const urls: string[] = [];
@@ -111,29 +135,8 @@ export const fetchUserProductListings = async (userID: string): Promise<Product[
     const userProductList: Product[] = [];
     const snapshot = await getDocs(collection(db, 'products')); // Fetch products from 'products' collection
     snapshot.forEach(doc => {
-      const productData = doc.data();
-      if (productData.ownerID === userID) {  // Check if the product belongs to the user
-        const product: Product = {
-          id: doc.id, // Get the document ID
-          ownerID: productData.ownerID,
-          imageUrls: productData.imageUrls,
-          title: productData.title,
-          description: productData.description,
-          category: productData.category,
-          lendingRate: productData.lendingRate,
-          collectionTime: productData.collectionTime,
-          returnTime: productData.returnTime,
-          availableDays: productData.availableDays,
-          borrowingNotes: productData.borrowingNotes,
-          pickupInstructions: productData.pickupInstructions,
-          returnInstructions: productData.returnInstructions,
-          addressID: productData.addressID,
-          isCollectDeposit: productData.isCollectDeposit,
-          depositAmount: productData.depositAmount,
-          isActive: productData.isActive,
-          createAt: productData.createAt,
-          updatedAt: productData.updatedAt,
-        };
+      const product = mapDocToProduct(doc);
+      if (product.ownerID === userID) {  // Check if the product belongs to the user
         userProductList.push(product);  // Push the formatted product to the list
       }
     });
@@ -150,29 +153,7 @@ export const fetchSelectedProduct = async (productId: string): Promise<Product |
     const productDoc = await getDoc(productRef);
 
     if (productDoc.exists() && productDoc.data()) {
-      const productData = productDoc.data();
-      const product: Product = {
-        id: productDoc.id,
-        ownerID: productData.ownerID,
-        imageUrls: productData.imageUrls,
-        title: productData.title,
-        description: productData.description,
-        category: productData.category,
-        lendingRate: productData.lendingRate,
-        collectionTime: productData.collectionTime,
-        returnTime: productData.returnTime,
-        availableDays: productData.availableDays,
-        borrowingNotes: productData.borrowingNotes,
-        pickupInstructions: productData.pickupInstructions,
-        returnInstructions: productData.returnInstructions,
-        addressID: productData.addressID,
-        isCollectDeposit: productData.isCollectDeposit,
-        depositAmount: productData.depositAmount,
-        isActive: productData.isActive,
-        createAt: productData.createAt,
-        updatedAt: productData.updatedAt,
-      };
-      return product;
+      return mapDocToProduct(productDoc);
     } else {
       console.log('No such selected product exists.');
       return null;
@@ -182,7 +163,6 @@ export const fetchSelectedProduct = async (productId: string): Promise<Product |
     throw error;  // Throwing the error to handle it at the call site
   }
 };
-
 
 // Function to save a product to Firestore
 export const createProduct = async (product: Product) => {
