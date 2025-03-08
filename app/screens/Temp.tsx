@@ -13,7 +13,7 @@ type ChatScreenProps = StackScreenProps<RootStackParamList, 'Temp'>
 export const Temp = ({ navigation }: ChatScreenProps) => {
     return (
         <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-            <Text>TEMP SCREEN</Text>
+            <Text>READY TO EJECT EXPO</Text>
         </View>
     );
 };
