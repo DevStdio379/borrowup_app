@@ -4,7 +4,7 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import { fetchBorrowingDates, fetchSelectedProduct, Product } from '../../services/ProductServices';
 import { Calendar, DateData } from 'react-native-calendars';
@@ -414,20 +414,20 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   const nextScreen = async () => {
     if (index === 0 && (!startDate || !endDate)) {
-      alert('Please set start date and end date');
+      Alert.alert('Please set start date and end date');
       return;
     }
     if (index === 1 && !deliveryMethod) {
-      alert('Please select a delivery method');
+      Alert.alert('Please select a delivery method');
       return;
     }
     if (index === 2 && !paymentMethod) {
-      alert('Please select a payment method');
+      Alert.alert('Please select a payment method');
       return;
     }
     if (index === 3) {
       handleCheckout();
-      alert('order created')
+      Alert.alert('order created')
       return;
     }
     setIndex((prev) => (prev + 1) % screens);

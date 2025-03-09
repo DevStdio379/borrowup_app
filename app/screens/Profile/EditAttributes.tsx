@@ -8,7 +8,7 @@ import Input from '../../components/Input/Input';
 // import ImagePicker from 'react-native-image-crop-picker';
 import { COLORS } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { doc, getDoc, updateDoc } from "firebase/firestore";

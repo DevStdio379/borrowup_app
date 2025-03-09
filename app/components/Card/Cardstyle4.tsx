@@ -6,7 +6,7 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeFromwishList } from '../../redux/reducer/wishListReducer'
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type Props = {
     id: string;

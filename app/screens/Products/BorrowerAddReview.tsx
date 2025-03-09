@@ -4,7 +4,7 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import Input from '../../components/Input/Input';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
@@ -156,39 +156,39 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
 
     const nextScreen = async () => {
         if (index === 1 && !overallRating) {
-            alert('Please give an overall rating.');
+            Alert.alert('Please give an overall rating.');
             return;
         }
         if (index === 2 && (!collectionRating || collectionFeedback.length === 0)) {
-            alert('Please provide both a collection rating and at least one feedback.');
+            Alert.alert('Please provide both a collection rating and at least one feedback.');
             return;
         }
         if (index === 3 && (!returnRating || returnFeedback.length === 0)) {
-            alert('Please provide both a return rating and at least one feedback.');
+            Alert.alert('Please provide both a return rating and at least one feedback.');
             return;
         }
         if (index === 4 && (!listingMatch || listingMatchFeedback.length === 0)) {
-            alert('Please select a listing match condition and at least one feedback.');
+            Alert.alert('Please select a listing match condition and at least one feedback.');
             return;
         }
         if (index === 5 && (!communicationRating || communicationFeedback.length === 0)) {
-            alert('Please provide both a communication rating and at least one feedback.');
+            Alert.alert('Please provide both a communication rating and at least one feedback.');
             return;
         }
         if (index === 6 && (!productConditionRating || productConditionFeedback.length === 0)) {
-            alert('Please provide both a product condition rating and at least one feedback.');
+            Alert.alert('Please provide both a product condition rating and at least one feedback.');
             return;
         }
         if (index === 7 && !priceWorthyRating) {
-            alert('Please give a price worthy rating');
+            Alert.alert('Please give a price worthy rating');
             return;
         }
         if (index === 8 && !publicReview) {
-            alert('Please provide a public review.');
+            Alert.alert('Please provide a public review.');
             return;
         }
         if (index === 9 && !privateNotesforLender) {
-            alert('Please provide a private note for the lender.');
+            Alert.alert('Please provide a private note for the lender.');
             return;
         }
         setIndex((prev) => (prev + 1) % screens);
@@ -227,7 +227,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                         borrowerCreateAt: new Date(),
                         borrowerStatus: status,
                     }, borrowing.productId);
-                    alert('Review created successfully.');
+                    Alert.alert('Review created successfully.');
                 } else {
                     await updateReview(borrowing.productId, reviewId, {
                         borrowingId: borrowing.id || '',
@@ -254,13 +254,13 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                         borrowerUpdatedAt: new Date(),
                         borrowerStatus: status,
                     });
-                    alert(`Review updated successfully. Status: ${status}`);
+                    Alert.alert(`Review updated successfully. Status: ${status}`);
                 }
             } else {
-                alert('User ID is missing.');
+                Alert.alert('User ID is missing.');
             }
         } catch (error) {
-            alert('Failed to create or update listing.');
+            Alert.alert('Failed to create or update listing.');
             console.error(error);
             return;
         }

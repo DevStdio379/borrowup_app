@@ -5,11 +5,11 @@ import { IMAGES } from '../../constants/Images';
 import { COLORS, SIZES } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser } from '../../context/UserContext';
 import Input from '../../components/Input/Input';
 import MapView from 'react-native-maps';
-import * as ImagePicker from 'expo-image-picker';
+// import * as ImagePicker from 'expo-image-picker';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { createProduct, fetchSelectedProduct, updateProduct } from '../../services/ProductServices';
 import { fetchUserAddresses } from '../../services/AddressServices';
@@ -141,48 +141,48 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
 
 
     const selectImages = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            Alert.alert('Permission Required', 'You need to grant gallery access to select images.');
-            return;
-        }
+        // const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        // if (status !== 'granted') {
+        //     Alert.alert('Permission Required', 'You need to grant gallery access to select images.');
+        //     return;
+        // }
 
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsMultipleSelection: true,
-            selectionLimit: 5,
-            quality: 1,
-        });
+        // const result = await ImagePicker.launchImageLibraryAsync({
+        //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        //     allowsMultipleSelection: true,
+        //     selectionLimit: 5,
+        //     quality: 1,
+        // });
 
-        if (!result.canceled) {
-            const selectedImages = result.assets.map((asset) => asset.uri);
-            setImages(selectedImages);
-            setSelectedImage(selectedImages[0]); // Set first image as the main preview
-        }
+        // if (!result.canceled) {
+        //     const selectedImages = result.assets.map((asset) => asset.uri);
+        //     setImages(selectedImages);
+        //     setSelectedImage(selectedImages[0]); // Set first image as the main preview
+        // }
     };
 
     // Function to handle image selection (Gallery & Camera)
     const cameraImage = async () => {
-        let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        // let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
-        if (permissionResult.status !== 'granted') {
-            Alert.alert('Permission Required', 'You need to grant camera access.');
-            return;
-        }
+        // if (permissionResult.status !== 'granted') {
+        //     Alert.alert('Permission Required', 'You need to grant camera access.');
+        //     return;
+        // }
 
-        let result = await ImagePicker.launchCameraAsync({
-            quality: 1,
-        });
+        // let result = await ImagePicker.launchCameraAsync({
+        //     quality: 1,
+        // });
 
-        if (!result.canceled) {
-            const newImages = [result.assets[0].uri];
+        // if (!result.canceled) {
+        //     const newImages = [result.assets[0].uri];
 
-            setImages((prev) => {
-                const updatedImages = [...prev, ...newImages].slice(0, 5); // Keep only 5 images max
-                setSelectedImage(updatedImages[0]); // Set first image as main preview
-                return updatedImages;
-            });
-        }
+        //     setImages((prev) => {
+        //         const updatedImages = [...prev, ...newImages].slice(0, 5); // Keep only 5 images max
+        //         setSelectedImage(updatedImages[0]); // Set first image as main preview
+        //         return updatedImages;
+        //     });
+        // }
     };
 
     // Function to delete the selected image
@@ -208,39 +208,39 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
 
     const nextScreen = async () => {
         if (index === 1 && !selectedImage) {
-            alert('Please select at least one image.');
+            Alert.alert('Please select at least one image.');
             return;
         }
         if (index === 2 && (!title || !description)) {
-            alert('Please provide both title and description.');
+            Alert.alert('Please provide both title and description.');
             return;
         }
         if (index === 3 && category.length === 0) {
-            alert('Please select at least one category.');
+            Alert.alert('Please select at least one category.');
             return;
         }
         if (index === 4 && (!lendingRate || !collectionTime || !returnTime || !availableDays)) {
-            alert('Please fill in all the fields.');
+            Alert.alert('Please fill in all the fields.');
             return;
         }
         if (index === 5 && (!borrowingNotes)) {
-            alert('Please fill in all the fields.');
+            Alert.alert('Please fill in all the fields.');
             return;
         }
         if (index === 6 && (!pickupInstructions || !returnInstructions)) {
-            alert('Please provide both pickup and return instructions.');
+            Alert.alert('Please provide both pickup and return instructions.');
             return;
         }
         if (index === 7 && (!addressID)) {
-            alert('Please provide both search and pickup addresses.');
+            Alert.alert('Please provide both search and pickup addresses.');
             return;
         }
         if (index === 8 && isCollectDeposit && !depositAmount) {
-            alert('Please provide deposit amount');
+            Alert.alert('Please provide deposit amount');
             return;
         }
         if (index === 9 && (!depositAmount || !depositReleaseThreshold)) {
-            alert('Please provide both deposit amount and release threshold.');
+            Alert.alert('Please provide both deposit amount and release threshold.');
             return;
         }
         setIndex((prev) => (prev + 1) % screens);
@@ -280,7 +280,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                         updatedAt: new Date(),
                         createAt: new Date(),
                     });
-                    alert('Listing created successfully.');
+                    Alert.alert('Listing created successfully.');
                 } else {
                     await updateProduct(listingId, {
                         ownerID: user.uid,
@@ -307,13 +307,13 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                         isActive: isActive || false,
                         updatedAt: new Date(),
                     });
-                    alert('Listing updated successfully.');
+                    Alert.alert('Listing updated successfully.');
                 }
             } else {
-                alert('User ID is missing.');
+                Alert.alert('User ID is missing.');
             }
         } catch (error) {
-            alert('Failed to create or update listing.');
+            Alert.alert('Failed to create or update listing.');
             console.error(error);
             return;
         }

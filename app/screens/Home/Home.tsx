@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image, TouchableOpacity, TextInput, StyleSheet,
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, SIZES } from '../../constants/theme';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch } from 'react-redux';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';

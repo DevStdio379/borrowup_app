@@ -6,11 +6,11 @@ import MapView, { Marker } from 'react-native-maps';
 import { IMAGES } from '../../constants/Images';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS } from '../../constants/theme';
-import { Feather } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Cardstyle2 from '../../components/Card/Cardstyle2';
 import { fetchProducts, Product } from '../../services/ProductServices';
-import * as Location from "expo-location";
+// import * as Location from "expo-location";
 
 const CardSwiperData = [
   {
@@ -39,7 +39,7 @@ const Map = ({ navigation }: any) => {
   const [backgroundColor, setBackgroundColor] = useState('transparent'); // Default background color
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [location, setLocation] = useState<any | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number; address: string; addressName?: string } | null>(null);
   const mapRef = useRef<MapView | null>(null);
 
@@ -67,33 +67,33 @@ const Map = ({ navigation }: any) => {
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permission denied", "Allow location access to continue");
-        return;
-      }
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       Alert.alert("Permission denied", "Allow location access to continue");
+  //       return;
+  //     }
 
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-      setSelectedLocation({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-        address: "Current Location",
-      });
-    })();
-    if (location) {
-      mapRef.current?.animateCamera({
-        center: { latitude: location.coords.latitude, longitude: location.coords.longitude },
-        zoom: 18, // Max zoom level for react-native-maps
-        heading: 0,
-        pitch: 0,
-      });
-    }
-    bottomSheetRef.current?.snapToIndex(0);
-    getProducts();
-  }, []);
+  //     let currentLocation = await Location.getCurrentPositionAsync({});
+  //     setLocation(currentLocation);
+  //     setSelectedLocation({
+  //       latitude: currentLocation.coords.latitude,
+  //       longitude: currentLocation.coords.longitude,
+  //       address: "Current Location",
+  //     });
+  //   })();
+  //   if (location) {
+  //     mapRef.current?.animateCamera({
+  //       center: { latitude: location.coords.latitude, longitude: location.coords.longitude },
+  //       zoom: 18, // Max zoom level for react-native-maps
+  //       heading: 0,
+  //       pitch: 0,
+  //     });
+  //   }
+  //   bottomSheetRef.current?.snapToIndex(0);
+  //   getProducts();
+  // }, []);
 
   // Create a reference for the BottomSheet
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -141,10 +141,10 @@ const Map = ({ navigation }: any) => {
       <View style={[GlobalStyleSheet.container, { paddingBottom: 10 }]}>
         <View style={{ paddingHorizontal: 10, backgroundColor }}>
           <View style={styles.container1}>
-            <Feather name='arrow-left' size={28} color={'transparent'} />
+            <Ionicons name='arrow-left' size={28} color={'transparent'} />
             <Text style={styles.title}>Map </Text>
             <TouchableOpacity style={styles.iconContainer} onPress={() => bottomSheetRef.current?.expand()}>
-              <Feather name='filter' size={28} color={'#000000'} />
+              <Ionicons name='filter' size={28} color={'#000000'} />
             </TouchableOpacity>
           </View>
         </View>
@@ -224,7 +224,7 @@ const Map = ({ navigation }: any) => {
                         marginBottom: 20,
                       }}
                     >
-                      <Feather color={COLORS.primary} size={24} name='heart' />
+                      <Ionicons color={COLORS.primary} size={24} name='heart' />
                     </View>
                     <Text style={{ color: colors.title, marginBottom: 8 }}>Your Wishlist is Empty!</Text>
                     <Text
@@ -250,7 +250,7 @@ const Map = ({ navigation }: any) => {
         handleComponent={() => (
           <View style={styles.header}>
             <TouchableOpacity onPress={handleClosePress}>
-              <Feather name='x' size={28} color={'#000000'} />
+              <Ionicons name='x' size={28} color={'#000000'} />
             </TouchableOpacity>
             <Text style={styles.headerText}>Filters</Text>
             <Text style={styles.headerText}>Reset</Text>
@@ -291,7 +291,7 @@ const Map = ({ navigation }: any) => {
               <View style={styles.switchContainer}>
                 <TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheckbox}>
                   <View style={[styles.checkbox, isChecked && styles.checkedCheckbox]}>
-                    {isChecked && <Feather name="check" size={16} color="#fff" />}
+                    {isChecked && <Ionicons name="check" size={16} color="#fff" />}
                   </View>
                 </TouchableOpacity>
               </View>
@@ -301,7 +301,7 @@ const Map = ({ navigation }: any) => {
               <View style={styles.switchContainer}>
                 <TouchableOpacity style={styles.checkboxContainer} onPress={toggleCheckbox}>
                   <View style={[styles.checkbox, isChecked && styles.checkedCheckbox]}>
-                    {isChecked && <Feather name="check" size={16} color="#fff" />}
+                    {isChecked && <Ionicons name="check" size={16} color="#fff" />}
                   </View>
                 </TouchableOpacity>
               </View>

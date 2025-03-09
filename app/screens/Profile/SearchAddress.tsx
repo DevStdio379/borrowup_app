@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet, Alert, FlatList, TextInput, TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import * as Location from "expo-location";
+// import * as Location from "expo-location";
 import axios from "axios";
 import { COLORS, SIZES } from "../../constants/theme";
 import { GlobalStyleSheet } from "../../constants/StyleSheet";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
@@ -15,7 +15,7 @@ const GOOGLE_PLACES_API_KEY = "AIzaSyB1wqLWl6aAosy_4qXuex_euKpu6aMoxbE"; // Repl
 type SearchAddressScreenProps = StackScreenProps<RootStackParamList, 'SearchAddress'>;
 const SearchAddress = ({ navigation, route }: SearchAddressScreenProps) => {
 
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [location, setLocation] = useState<any| null>(null);
   const [places, setPlaces] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number; address: string; addressName?: string } | null>(null);
@@ -24,21 +24,21 @@ const SearchAddress = ({ navigation, route }: SearchAddressScreenProps) => {
   const mapRef = useRef<MapView | null>(null);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permission denied", "Allow location access to continue");
-        return;
-      }
+    // (async () => {
+    //   let { status } = await Location.requestForegroundPermissionsAsync();
+    //   if (status !== "granted") {
+    //     Alert.alert("Permission denied", "Allow location access to continue");
+    //     return;
+    //   }
 
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-      setSelectedLocation({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-        address: "Current Location",
-      });
-    })();
+    //   let currentLocation = await Location.getCurrentPositionAsync({});
+    //   setLocation(currentLocation);
+    //   setSelectedLocation({
+    //     latitude: currentLocation.coords.latitude,
+    //     longitude: currentLocation.coords.longitude,
+    //     address: "Current Location",
+    //   });
+    // })();
   }, []);
 
   const handleBackToSearch = () => {

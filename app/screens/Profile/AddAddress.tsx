@@ -8,7 +8,7 @@ import Input from '../../components/Input/Input';
 // import ImagePicker from 'react-native-image-crop-picker';
 import { COLORS, SIZES } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import MapView, { Marker } from 'react-native-maps';
 import { RootStackParamList } from '../../navigation/RootStackParamList';

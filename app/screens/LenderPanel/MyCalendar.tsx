@@ -1,5 +1,5 @@
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Image, RefreshControl, ActivityIndicator } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from "../../constants/theme";
 import { GlobalStyleSheet } from "../../constants/StyleSheet";
 import { StackScreenProps } from "@react-navigation/stack";

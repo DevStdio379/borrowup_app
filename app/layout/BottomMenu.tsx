@@ -1,22 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-    View,
-    Animated,
-    StyleSheet,
-    TouchableOpacity,
-    Text,
-    Image,
-    Dimensions,
-    Platform
-} from 'react-native';
+import { View, Animated, StyleSheet, TouchableOpacity, Text, Image, Dimensions, Platform} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../constants/StyleSheet';
 import { SIZES, COLORS } from '../constants/theme';
 import { IMAGES } from '../constants/Images';
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type Props = {
@@ -25,7 +13,7 @@ type Props = {
     descriptors: any
 }
 
-const BorrowerBottomMenu = ({ state, navigation, descriptors }: Props) => {
+const BottomMenu = ({ state, navigation, descriptors }: Props) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
@@ -114,16 +102,16 @@ const BorrowerBottomMenu = ({ state, navigation, descriptors }: Props) => {
                                     <Ionicons
                                         name={
                                             label === 'Map'
-                                                ? 'location-outline'
+                                                ? 'compass'
                                                 : label === 'Home'
-                                                    ? 'home-outline'
-                                                    : label === 'MyBorrowings'
-                                                        ? 'cube-outline'
+                                                    ? 'home'
+                                                    : label === 'MyRental'
+                                                        ? 'package'
                                                         : label === 'Chat'
-                                                            ? 'chatbubble-outline'
+                                                            ? 'message-square'
                                                             : label === 'Profile'
-                                                                ? 'menu'
-                                                                : 'alert-outline'
+                                                                ? 'user'
+                                                                : 'home'
                                         }
                                         size={28}
                                         color={isFocused ? (theme.dark ? COLORS.card : colors.title) : COLORS.blackLight}
@@ -131,7 +119,7 @@ const BorrowerBottomMenu = ({ state, navigation, descriptors }: Props) => {
 
                                     <Text style={[styles.navText, { color: isFocused ? COLORS.title : colors.blackLight }]}>
                                         {(() => {
-                                            if (label === 'MyBorrowings') return 'My Borrowings';
+                                            if (label === 'MyRental') return 'My Rental';
                                             if (label === 'Chat') return 'Messages';
                                             return label;
                                         })()}
@@ -168,4 +156,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default BorrowerBottomMenu;
+export default BottomMenu;

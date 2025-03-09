@@ -8,7 +8,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
 import { useDispatch } from 'react-redux';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser, defaultUser } from '../../context/UserContext';
 import { openDrawer } from '../../redux/actions/drawerAction';
 

@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     Text
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS, SIZES  } from '../../constants/theme';
 import { useTheme } from '@react-navigation/native';
 

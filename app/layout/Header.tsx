@@ -8,7 +8,7 @@ import {
     Image
 } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../constants/theme';
 import { GlobalStyleSheet } from '../constants/StyleSheet';
 

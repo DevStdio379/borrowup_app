@@ -6,7 +6,7 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
 import { COLORS } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 

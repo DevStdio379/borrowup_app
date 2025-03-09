@@ -11,7 +11,7 @@ import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { fetchSelectedBorrowing, Borrowing, updateBorrowing } from '../../services/BorrowingServices';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getReviewByBorrowingId, Review } from '../../services/ReviewServices';
 
 type LendingDetailsScreenProps = StackScreenProps<RootStackParamList, 'LendingDetails'>;

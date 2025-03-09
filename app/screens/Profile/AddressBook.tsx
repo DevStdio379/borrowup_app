@@ -5,7 +5,7 @@ import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, SIZES } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchUserAddresses } from '../../services/AddressServices';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';

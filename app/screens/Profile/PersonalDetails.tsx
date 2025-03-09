@@ -5,8 +5,8 @@ import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
-import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+// import * as ImagePicker from 'expo-image-picker';
 import { set } from 'date-fns';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -25,43 +25,43 @@ const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
     }, []);
 
     const selectImage = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            Alert.alert('Permission Required', 'You need to grant gallery access to select image.');
-            return;
-        }
+        // const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        // if (status !== 'granted') {
+        //     Alert.alert('Permission Required', 'You need to grant gallery access to select image.');
+        //     return;
+        // }
 
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsMultipleSelection: false, // Set to false to allow only one image selection
-            quality: 1,
-        });
+        // const result = await ImagePicker.launchImageLibraryAsync({
+        //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        //     allowsMultipleSelection: false, // Set to false to allow only one image selection
+        //     quality: 1,
+        // });
 
-        if (!result.canceled) {
-            const selectedImage = result.assets[0].uri; // Get the URI of the selected image
-            setSelectedImage(selectedImage); // Set the selected image as the main preview
-            if (user?.uid) {
-                await updateUserData(user.uid, { profileImageUrl: selectedImage }); // Update the user profile image
-            }
-        }
+        // if (!result.canceled) {
+        //     const selectedImage = result.assets[0].uri; // Get the URI of the selected image
+        //     setSelectedImage(selectedImage); // Set the selected image as the main preview
+        //     if (user?.uid) {
+        //         await updateUserData(user.uid, { profileImageUrl: selectedImage }); // Update the user profile image
+        //     }
+        // }
     };
 
     const takePhoto = async () => {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') {
-            Alert.alert('Permission Required', 'You need to grant camera access to take a photo.');
-            return;
-        }
+        // const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        // if (status !== 'granted') {
+        //     Alert.alert('Permission Required', 'You need to grant camera access to take a photo.');
+        //     return;
+        // }
 
-        const result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 1,
-        });
+        // const result = await ImagePicker.launchCameraAsync({
+        //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        //     quality: 1,
+        // });
 
-        if (!result.canceled) {
-            const selectedImage = result.assets[0].uri; // Get the URI of the taken photo
-            setSelectedImage(selectedImage); // Set the taken photo as the main preview
-        }
+        // if (!result.canceled) {
+        //     const selectedImage = result.assets[0].uri; // Get the URI of the taken photo
+        //     setSelectedImage(selectedImage); // Set the taken photo as the main preview
+        // }
     };
 
     const handleProfileAttributeClick = (profileAttribute: { attributeName: string }) => {
