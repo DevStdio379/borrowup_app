@@ -1,21 +1,66 @@
-import { View, Text,  ScrollView, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
-import { useTheme } from '@react-navigation/native';
-import Header from '../../layout/Header';
-import { IMAGES } from '../../constants/Images';
-import { GlobalStyleSheet } from '../../constants/StyleSheet';
-import { COLORS } from '../../constants/theme';
+import React, { useState, useEffect, useCallback } from 'react';
+import { auth, db } from '../../services/firebaseConfig';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
+import { GiftedChat, IMessage } from 'react-native-gifted-chat';
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { useUser } from '../../context/UserContext';
 
-type ChatScreenProps = StackScreenProps<RootStackParamList, 'Chat'>
+type ChatScreenProps = StackScreenProps<RootStackParamList, 'Chat'>;
 
-export const Chat = ({ navigation }: ChatScreenProps) => {
-    return (
-        <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-            <Text> CHAT SCREEN</Text>
-        </View>
+export const Chat = ({ route }: ChatScreenProps) => {
+  const { chatId } = route.params as { chatId: string };
+  const { user } = useUser();
+  const [messages, setMessages] = useState<IMessage[]>([]);
+
+  useEffect(() => {
+    const messagesQuery = query(
+      collection(db, 'chats', chatId, 'messages'),
+      orderBy('timestamp', 'desc')
     );
+    
+    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+      const fetchedMessages = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          _id: doc.id,
+          text: data.message,
+          createdAt: data.timestamp?.toDate() || new Date(),
+          user: {
+            _id: data.userId,
+            name: data.userName || 'User',
+          },
+        };
+      });
+      setMessages(fetchedMessages);
+    });
+
+    return () => unsubscribe();
+  }, [chatId]);
+
+  const onSend = useCallback(async (newMessages: IMessage[] = []) => {
+    if (!auth.currentUser) return;
+
+    const { _id, text, createdAt, user } = newMessages[0];
+
+    await addDoc(collection(db, 'chats', chatId, 'messages'), {
+      userId: user._id,
+      userName: user.name,
+      message: text,
+      timestamp: serverTimestamp(),
+    });
+  }, [chatId]);
+
+  return (
+    <GiftedChat
+      messages={messages}
+      onSend={(newMessages) => onSend(newMessages)}
+      user={{
+        _id: user?.uid || '',
+        name: auth.currentUser?.displayName || 'User',
+      }}
+    />
+  );
 };
 
-export default Chat
+export default Chat;
