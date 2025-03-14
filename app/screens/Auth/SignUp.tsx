@@ -10,7 +10,8 @@ import Input from '../../components/Input/Input'
 
 import { useUser, User } from '../../context/UserContext'
 import { createUserWithEmailAndPassword } from "firebase/auth"
-// import { auth } from '../../services/firebaseConfig'
+import { auth } from '../../services/firebaseConfig'
+
 
 type SignUpScreenProps = StackScreenProps<RootStackParamList, 'SignUp'>;
 
@@ -30,32 +31,32 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
 
     // sign up with email and password
     const handleSignUp = async () => {
-        // try {
-        //     // Firebase authentication: create user profile
-        //     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        //     const user = userCredential.user;
+        try {
+            // Firebase authentication: create user profile
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
 
-        //     const userData: User = {
-        //         uid: user.uid,
-        //         email: user.email || '',
-        //         userName: username,
-        //         isActive: true,
-        //         firstName: '',
-        //         lastName: '',
-        //         phoneNumber: '',
-        //         accountType: 'borrower',
-        //         createAt: new Date(),
-        //         updatedAt: new Date(),
-        //     };
+            const userData: User = {
+                uid: user.uid,
+                email: user.email || '',
+                userName: username,
+                isActive: true,
+                firstName: '',
+                lastName: '',
+                phoneNumber: '',
+                accountType: 'borrower',
+                createAt: new Date(),
+                updatedAt: new Date(),
+            };
 
-        //     // Call the context function to create the user in Firestore and update context
-        //     await createUser(userData);
+            // Call the context function to create the user in Firestore and update context
+            await createUser(userData);
 
-        //     Alert.alert("Success!", "Account created successfully.");
-        //     navigation.navigate('DrawerNavigation', { screen: 'Home' });
-        // } catch (error: any) {
-        //     Alert.alert("Error", error.message);
-        // }
+            Alert.alert("Success!", "Account created successfully.");
+            navigation.navigate('DrawerNavigation', { screen: 'Home' });
+        } catch (error: any) {
+            Alert.alert("Error", error.message);
+        }
     };
 
     return (

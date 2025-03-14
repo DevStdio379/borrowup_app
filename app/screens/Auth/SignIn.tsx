@@ -8,7 +8,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList'
 import Input from '../../components/Input/Input'
 import Ionicons  from 'react-native-vector-icons/Ionicons';
 import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from '../../services/firebaseConfig';
+import { auth } from '../../services/firebaseConfig';
 import { useUser } from '../../context/UserContext';
 
 type SignInScreenProps = StackScreenProps<RootStackParamList, 'SignIn'>;
@@ -26,30 +26,30 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
     const [password, setPassword] = useState<string>('12345678');
 
     const handleSignIn = async () => {
-        // try {
-        //     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        //     const user = userCredential.user;
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
 
-        //     // Fetch user data and update global state
-        //     await fetchUser(user.uid);
-        //     await updateUserData(user.uid, { 'isActive': true });
-        //     Alert.alert("Success!", "Signed in successfully.");
-        //     navigation.navigate('DrawerNavigation', { screen: 'Home' });
-        // } catch (error: any) {
-        //     switch (error.code) {
-        //         case "auth/invalid-email":
-        //             Alert.alert("Error", "The email address is invalid.");
-        //             break;
-        //         case "auth/user-not-found":
-        //             Alert.alert("Error", "No user found with this email.");
-        //             break;
-        //         case "auth/wrong-password":
-        //             Alert.alert("Error", "Incorrect password.");
-        //             break;
-        //         default:
-        //             Alert.alert("Error", error.message || "An error occurred.");
-        //     }
-        // }
+            // Fetch user data and update global state
+            await fetchUser(user.uid);
+            await updateUserData(user.uid, { 'isActive': true });
+            Alert.alert("Success!", "Signed in successfully.");
+            navigation.navigate('DrawerNavigation', { screen: 'Home' });
+        } catch (error: any) {
+            switch (error.code) {
+                case "auth/invalid-email":
+                    Alert.alert("Error", "The email address is invalid.");
+                    break;
+                case "auth/user-not-found":
+                    Alert.alert("Error", "No user found with this email.");
+                    break;
+                case "auth/wrong-password":
+                    Alert.alert("Error", "Incorrect password.");
+                    break;
+                default:
+                    Alert.alert("Error", error.message || "An error occurred.");
+            }
+        }
     };
 
 
