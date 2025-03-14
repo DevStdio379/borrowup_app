@@ -1,9 +1,9 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
-import { BorrowerBottomTabParamList } from "./BorrowerBottomTabParamList";
+import { BottomTabParamList } from "./BottomTabParamList";
 import { Borrowing } from "../services/BorrowingServices";
 
 export type RootStackParamList = {
-    DrawerNavigation: NavigatorScreenParams<BorrowerBottomTabParamList>;
+    DrawerNavigation: NavigatorScreenParams<BottomTabParamList>;
     OnBoarding: undefined;
     SignUp: undefined;
     SignIn: undefined;
@@ -16,7 +16,9 @@ export type RootStackParamList = {
     MyBorrowings: undefined;
     MyBorrowingDetails: { borrowingId: string };
     BorrowerAddReview: { reviewId: string, borrowing: Borrowing };
-    Chat: undefined;
+    ChatList: undefined;
+    NewChat: undefined;
+    Chat: { chatId: string };
     Profile: undefined;
     PersonalDetails: undefined;
     EditAttributes: { profileAttribute: { attributeName: string } };

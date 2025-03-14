@@ -27,6 +27,9 @@ import BorrowerAddReview from '../screens/Products/BorrowerAddReview';
 import LenderAddReview from '../screens/LenderPanel/LenderAddReview';
 import MyBorrowings from '../screens/MyBorrowings/MyBorrowings';
 import Temp from '../screens/Temp';
+import Chat from '../screens/Chat/Chat';
+import ChatList from '../screens/Chat/ChatList';
+import NewChat from '../screens/Chat/NewChat';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -35,7 +38,7 @@ const StackNavigator = () => {
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
 			<StackComponent.Navigator
-				initialRouteName='OnBoarding'
+				initialRouteName='SignIn'
 				screenOptions={{
 					headerShown: false,
 					cardStyle: { backgroundColor: "transparent" },
@@ -53,6 +56,9 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="MyBorrowingDetails" component={MyBorrowingDetails} />
 				<StackComponent.Screen name="BorrowerAddReview" component={BorrowerAddReview} />
 				<StackComponent.Screen name="Profile" component={Profile} />
+				<StackComponent.Screen name="ChatList" component={ChatList} />
+				<StackComponent.Screen name="NewChat" component={NewChat} />
+				<StackComponent.Screen name="Chat" component={Chat} />
 				<StackComponent.Screen name="PersonalDetails" component={PersonalDetails} />
 				<StackComponent.Screen name="EditAttributes" component={EditAttributes} />
 				<StackComponent.Screen name="AddressBook" component={AddressBook} />
