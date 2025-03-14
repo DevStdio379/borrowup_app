@@ -2,12 +2,17 @@ import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomTabParamList } from './BottomTabParamList';
 import MyBorrowingScreen from '../screens/MyBorrowings/MyBorrowings';
-import ChatScreen from '../screens/Chat/Chat';
+import ChatListScreen from '../screens/Chat/ChatList';
 import HomeScreen from '../screens/Home/Home';
 import MapScreen from '../screens/Map/Map';
 import ProfileScreen from '../screens/Profile/Profile';
 import BottomMenu from '../layout/BottomMenu';
 import { useTheme } from '@react-navigation/native';
+import { useUser } from '../context/UserContext';
+import LenderDashboard from '../screens/LenderPanel/LenderDashboard';
+import MyCalendarScreen from '../screens/LenderPanel/MyCalendar';
+import ListingsScreen from '../screens/LenderPanel/Listings';
+import MessagesScreen from '../screens/LenderPanel/Messages';
 
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -16,37 +21,73 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 const BottomNavigation = () => {
 
     const theme = useTheme();
-    const {colors}:{colors : any} = theme;
+    const { colors }: { colors: any } = theme;
+    const { user } = useUser();
+
+    if (!user) {
+        return null;
+    }
 
     return (
-        <Tab.Navigator
-            initialRouteName='Home'
-            screenOptions={{
-                headerShown : false
-            }}
-            tabBar={(props:any) => <BottomMenu {...props}/>}
-        >
-            <Tab.Screen 
-                name='Map'
-                component={MapScreen}
-            />
-            <Tab.Screen 
-                name='MyBorrowings'
-                component={MyBorrowingScreen}
-            />
-            <Tab.Screen 
-                name='Home'
-                component={HomeScreen}
-            />
-            <Tab.Screen 
-                name='Chat'
-                component={ChatScreen}
-            />
-            <Tab.Screen 
-                name='Profile'
-                component={ProfileScreen}
-            />
-        </Tab.Navigator>
+        user.accountType === 'borrower' ? (
+            <Tab.Navigator
+                initialRouteName='Home'
+                screenOptions={{
+                    headerShown: false
+                }}
+                tabBar={(props: any) => <BottomMenu {...props} />}
+            >
+                <Tab.Screen
+                    name='Map'
+                    component={MapScreen}
+                />
+                <Tab.Screen
+                    name='MyBorrowings'
+                    component={MyBorrowingScreen}
+                />
+                <Tab.Screen
+                    name='Home'
+                    component={HomeScreen}
+                />
+                <Tab.Screen
+                    name='ChatList'
+                    component={ChatListScreen}
+                />
+                <Tab.Screen
+                    name='Profile'
+                    component={ProfileScreen}
+                />
+            </Tab.Navigator>
+        ) : (
+            <Tab.Navigator
+                initialRouteName='LenderDashboard'
+                screenOptions={{
+                    headerShown: false
+                }}
+                tabBar={(props: any) => <BottomMenu {...props} />}
+            >
+                <Tab.Screen
+                    name='MyCalendar'
+                    component={MyCalendarScreen}
+                />
+                <Tab.Screen
+                    name='Listings'
+                    component={ListingsScreen}
+                />
+                <Tab.Screen
+                    name='LenderDashboard'
+                    component={LenderDashboard}
+                />
+                <Tab.Screen
+                    name='ChatList'
+                    component={ChatListScreen}
+                />
+                <Tab.Screen
+                    name='Profile'
+                    component={ProfileScreen}
+                />
+            </Tab.Navigator>
+        )
     )
 }
 
