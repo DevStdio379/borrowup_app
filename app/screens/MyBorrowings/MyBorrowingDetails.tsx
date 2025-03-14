@@ -282,7 +282,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                         {returnCode.map((digit, index) => (
                                             <TextInput
                                                 key={index}
-                                                ref={(el) => (inputs.current[index] = el)}
+                                                ref={(el) => { inputs.current[index] = el; }}
                                                 style={{ width: 35, height: 50, borderWidth: 2, borderColor: COLORS.blackLight, textAlign: "center", fontSize: 20, borderRadius: 10 }}
                                                 keyboardType="numeric"
                                                 maxLength={1}

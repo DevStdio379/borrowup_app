@@ -136,7 +136,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         } as any));
     }
 
-    const scrollViewHome = useRef<any>();
+    const scrollViewHome = useRef<any>(null);
 
     // Local machine to repo migration
 
