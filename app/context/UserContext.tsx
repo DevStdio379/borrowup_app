@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import React, { createContext, useState, ReactNode, useContext } from "react";
 import { db, storage } from "../services/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -201,6 +201,33 @@ export const fetchSelectedUser = async (userId: string): Promise<User | null> =>
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
+    throw error;
+  }
+};
+
+export const fetchAllUsers = async (): Promise<User[]> => {
+  try {
+    const usersCollectionRef = collection(db, "users");
+    const usersSnapshot = await getDocs(usersCollectionRef);
+    const usersList: User[] = usersSnapshot.docs.map(doc => {
+      const userData = doc.data();
+      return {
+        uid: userData.uid || '',
+        email: userData.email || '',
+        userName: userData.userName || '',
+        isActive: userData.isActive || false,
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        phoneNumber: userData.phoneNumber || '',
+        accountType: userData.accountType || '',
+        profileImageUrl: userData.profileImageUrl || '',
+        createAt: userData.createAt || '',
+        updatedAt: userData.updatedAt || '',
+      };
+    });
+    return usersList;
+  } catch (error) {
+    console.error("Error fetching users data:", error);
     throw error;
   }
 };
