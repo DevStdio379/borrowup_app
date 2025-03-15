@@ -7,6 +7,7 @@ export const GlobalStyleSheet = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         width: '100%',
+        height: '100%',
     },
     mainContainer: {
         maxWidth: SIZES.container,
@@ -14,6 +15,12 @@ export const GlobalStyleSheet = StyleSheet.create({
         marginRight: 'auto',
         width: '100%',
         flex: 1,
+    },
+    loadingOverlay: {
+        ...StyleSheet.absoluteFillObject, // Covers the whole screen
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     line: {
         width: '100%',
@@ -43,9 +50,9 @@ export const GlobalStyleSheet = StyleSheet.create({
         marginHorizontal: -5,
     },
     rowcenter: {
-        flexDirection:'row',
-        alignItems:'center',
-        gap:5
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 5
     },
     col50: {
         width: '50%',
@@ -81,7 +88,7 @@ export const GlobalStyleSheet = StyleSheet.create({
         borderBottomColor: COLORS.inputBorder,
         paddingHorizontal: 15,
         paddingVertical: 15,
-        borderStyle:'dashed'
+        borderStyle: 'dashed'
     },
     cardBody: {
         paddingHorizontal: 15,
@@ -176,111 +183,111 @@ export const GlobalStyleSheet = StyleSheet.create({
         resizeMode: 'contain',
         opacity: .8,
     },
-    backbtn:{
-        height:35,
-        width:35,
-        alignItems:'center',
-        justifyContent:'center',
-        borderRadius:8,
+    backbtn: {
+        height: 35,
+        width: 35,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8,
     },
-    border:{
-        borderTopWidth:1,
-        borderColor:COLORS.borderColor
+    border: {
+        borderTopWidth: 1,
+        borderColor: COLORS.borderColor
     },
-    inputborder:{
-        borderWidth:1,
-        borderRadius:8,
-        borderColor:COLORS.inputBorder,
-        paddingRight:35,
-        paddingHorizontal:15,
-        paddingVertical:10
+    inputborder: {
+        borderWidth: 1,
+        borderRadius: 8,
+        borderColor: COLORS.inputBorder,
+        paddingRight: 35,
+        paddingHorizontal: 15,
+        paddingVertical: 10
     },
-    flexend:{
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'flex-end'
+    flexend: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end'
     },
-    flexcenter:{
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center'
+    flexcenter: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
-    flex:{
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between'
+    flex: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
-    background2:{
-        height:35,
-        width:35,
-        borderRadius:6,
-        alignItems:'center',
-        justifyContent:'center',
+    background2: {
+        height: 35,
+        width: 35,
+        borderRadius: 6,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    background3:{
-        height:40,
-        width:40,
-        borderRadius:8,
-        alignItems:'center',
-        justifyContent:'center',
+    background3: {
+        height: 40,
+        width: 40,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    Arrival2:{
+    Arrival2: {
         height: 48,
         alignItems: 'center',
-        gap:5,
-        flexDirection:'row',
+        gap: 5,
+        flexDirection: 'row',
         borderRadius: 6,
         paddingHorizontal: 5,
         paddingVertical: 5,
-        overflow:'hidden'
+        overflow: 'hidden'
     },
-    Arrival:{
+    Arrival: {
         height: 35,
         alignItems: 'center',
-        gap:5,
-        flexDirection:'row',
+        gap: 5,
+        flexDirection: 'row',
         borderRadius: 34,
-        borderWidth:1,
+        borderWidth: 1,
         paddingHorizontal: 5,
         paddingVertical: 5,
-        overflow:'hidden',
-        paddingRight:10
+        overflow: 'hidden',
+        paddingRight: 10
     },
-    imagebanner:{
-        height:undefined,
-        width:'100%',
-        aspectRatio:1/1.1,
-        borderRadius:6,
-        alignItems:'center',
-        justifyContent:'center',
+    imagebanner: {
+        height: undefined,
+        width: '100%',
+        aspectRatio: 1 / 1.1,
+        borderRadius: 6,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    countcricle:{
-        height:18,
-        width:18,
-        borderRadius:30,
-        backgroundColor:COLORS.card,
-        alignItems:'center',
-        justifyContent:'center',
+    countcricle: {
+        height: 18,
+        width: 18,
+        borderRadius: 30,
+        backgroundColor: COLORS.card,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    outline:{
-        height:2,
-        flex:1,
-        backgroundColor:COLORS.card,
-        opacity:.3,
-        marginHorizontal:10
+    outline: {
+        height: 2,
+        flex: 1,
+        backgroundColor: COLORS.card,
+        opacity: .3,
+        marginHorizontal: 10
     },
-    checkboximage:{
-        height:20,
-        width:20,
-        borderRadius:25,
-        alignItems:'center',
-        justifyContent:'center',
+    checkboximage: {
+        height: 20,
+        width: 20,
+        borderRadius: 25,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    bottombtn:{
-        flexDirection:'row',
-        justifyContent:'center',
-        alignItems:'center',
-        gap:5,
-        marginTop:10
+    bottombtn: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 5,
+        marginTop: 10
     }
 });

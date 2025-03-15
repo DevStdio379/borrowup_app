@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, Alert } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, Alert, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react';
 import { COLORS } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
@@ -6,7 +6,7 @@ import { useTheme } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { RootStackParamList } from '../../navigation/RootStackParamList'
 import Input from '../../components/Input/Input'
-import Ionicons  from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../services/firebaseConfig';
 import { useUser } from '../../context/UserContext';
@@ -25,7 +25,10 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
     const [email, setEmail] = useState<string>('farizah@gmail.com');
     const [password, setPassword] = useState<string>('12345678');
 
+    const [loading, setLoading] = useState(false);
+
     const handleSignIn = async () => {
+        setLoading(true);
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
@@ -49,44 +52,39 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
                 default:
                     Alert.alert("Error", error.message || "An error occurred.");
             }
+        } finally {
+            setLoading(false);
         }
     };
 
-
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.card, }}>
-            <ScrollView style={{ flexGrow: 1, }} showsVerticalScrollIndicator={false}>
-                <View style={[GlobalStyleSheet.container, { flexGrow: 1, paddingBottom: 0, paddingHorizontal: 30, paddingTop: 80 }]}>
-                    <View style={{}}>
-                        <View style={{ marginBottom: 30 }}>
-                            <Text style={{ color: colors.title, fontWeight: 'bold', fontSize: 30, marginBottom: 5 }}>Welcome back! Glad to see you, Again!</Text>
-                        </View>
-                        <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                            <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Email</Text>
-                        </View>
-                        <View style={{ marginBottom: 20, marginTop: 0 }}>
-                            <Input
-                                onFocus={() => setisFocused(true)}
-                                onBlur={() => setisFocused(false)}
-                                onChangeText={setEmail}
-                                isFocused={isFocused}
-                                inputBorder
-                            />
-                        </View>
-                        <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
-                            <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Password</Text>
-                        </View>
-                        <View style={{ marginBottom: 10, marginTop: 0 }}>
-                            <Input
-                                onFocus={() => setisFocused2(true)}
-                                onBlur={() => setisFocused2(false)}
-                                backround={colors.card}
-                                onChangeText={setPassword}
-                                isFocused={isFocused2}
-                                type={'password'}
-                                inputBorder
-                            />
-                        </View>
+        <View>
+            <View style={[GlobalStyleSheet.container, { backgroundColor: COLORS.backgroundColor, paddingHorizontal: 30, justifyContent: 'center', alignItems: 'center' }]}>
+                <View>
+                    <View style={{ paddingTop: 80, marginBottom: 30 }}>
+                        <Text style={{ color: colors.title, fontWeight: 'bold', fontSize: 30, marginBottom: 5 }}>Welcome back! Glad to see you, Again!</Text>
+                    </View>
+                    <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Email</Text>
+                    <View style={{ marginBottom: 20, marginTop: 0 }}>
+                        <Input
+                            onFocus={() => setisFocused(true)}
+                            onBlur={() => setisFocused(false)}
+                            onChangeText={setEmail}
+                            isFocused={isFocused}
+                            inputBorder
+                        />
+                    </View>
+                    <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Password</Text>
+                    <View style={{ marginBottom: 10, marginTop: 0 }}>
+                        <Input
+                            onFocus={() => setisFocused2(true)}
+                            onBlur={() => setisFocused2(false)}
+                            backround={colors.card}
+                            onChangeText={setPassword}
+                            isFocused={isFocused2}
+                            type={'password'}
+                            inputBorder
+                        />
                     </View>
                     <View style={{ marginTop: 30 }}>
                         <TouchableOpacity
@@ -145,8 +143,13 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
                         </View>
                     </View>
                 </View>
-            </ScrollView>
-        </SafeAreaView>
+            </View>
+            {loading && (
+                <View style={GlobalStyleSheet.loadingOverlay}>
+                    <ActivityIndicator size="large" color={ COLORS.primary } />
+                </View>
+            )}
+        </View>
     )
 }
 
