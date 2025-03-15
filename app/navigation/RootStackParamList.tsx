@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { BottomTabParamList } from "./BottomTabParamList";
 import { Borrowing } from "../services/BorrowingServices";
+import { Product } from "../services/ProductServices";
 
 export type RootStackParamList = {
     DrawerNavigation: NavigatorScreenParams<BottomTabParamList>;
@@ -10,7 +11,7 @@ export type RootStackParamList = {
 
     Home: undefined;
     Products: undefined;
-    ProductDetails: { productId: string };
+    ProductDetails: { product: Product };
     PaymentSuccess: { borrowingId: string, collectionCode: string, latitude: number, longitude: number, addressName: string, address: string, postcode: string };
     Map: undefined;
     MyBorrowings: undefined;

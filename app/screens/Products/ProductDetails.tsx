@@ -17,13 +17,12 @@ import { getReviewsByProductId } from '../../services/ReviewServices';
 type ProductDetailsScreenProps = StackScreenProps<RootStackParamList, 'ProductDetails'>;
 const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const { user } = useUser();
-  const { productId } = route.params;
+  const { product } = route.params;
   const mapRef = useRef<MapView | null>(null);
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
-  const [product, setProduct] = useState<Product>();
   const [productAddress, setProductAddress] = useState<Address>();
   const [addresses, setAddresses] = useState<{ [key: string]: any; id: string; }[]>([]);
   const [owner, setOwner] = useState<User>();
@@ -51,15 +50,6 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const [selectedAddress, setSelectedAddress] = useState<{ [key: string]: any; id: string; address: string } | null>(null);
   const [numberOfDays, setNumberOfDays] = useState<number>();
   const [total, setTotal] = useState<number>();
-
-  useEffect(() => {
-    if (startDate && endDate && product) {
-      const days = getDateRange(startDate, endDate).length;
-      setNumberOfDays(days);
-      const totalAmount = Number(days * product.lendingRate) + Number(product.depositAmount);
-      setTotal(totalAmount);
-    }
-  }, [startDate, endDate, product]);
 
   const paymentMethods = [
     {
@@ -103,11 +93,10 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   };
 
   const fetchSelectedProductData = async () => {
-    if (productId) {
+    if (product) {
       try {
-        const selectedProduct = await fetchSelectedProduct(productId);
+        const selectedProduct = await fetchSelectedProduct(product.id || 'undefined');
         if (selectedProduct) {
-          setProduct(selectedProduct);
           const selectedProductAddress = await fetchProductAddress(selectedProduct.ownerID, selectedProduct.addressID)
           if (selectedProductAddress) {
             setProductAddress(selectedProductAddress);
@@ -137,7 +126,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
           // fetch Reviews
           try {
-            const fetchedReviews = await getReviewsByProductId(productId);
+            const fetchedReviews = await getReviewsByProductId(product.id || 'undefined');
             const reviewsWithUserDetails = await Promise.all(
               fetchedReviews.map(async (review) => {
                 const reviewer = await fetchSelectedUser(review.borrowerReviewerId);
@@ -165,8 +154,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const getBookedDates = async () => {
     let markedDates: any = {};
 
-    const productId = "aT1Ras79LeZdz3QMy3Oh"; // Replace with actual product ID
-    const bookedDateRanges = await fetchBorrowingDates(productId);
+    const product = "aT1Ras79LeZdz3QMy3Oh"; // Replace with actual product ID
+    const bookedDateRanges = await fetchBorrowingDates(product);
 
     bookedDateRanges.forEach(({ startDate, endDate }) => {
       let date = new Date(startDate);
@@ -299,30 +288,49 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   };
 
   useEffect(() => {
-    fetchSelectedProductData();
-    getAddresses();
-    setIndex(0);
-  }, []);
+    const fetchReviews = async () => {
+      const fetchedReviews = await getReviewsByProductId(product.id || 'undefined');
+      const reviewsWithUserDetails = await Promise.all(
+        fetchedReviews.map(async (review) => {
+          const reviewer = await fetchSelectedUser(review.borrowerReviewerId);
+          return {
+            ...review,
+            borrowerFirstName: reviewer?.firstName || '',
+            borrowerLastName: reviewer?.lastName || '',
+            borrowerProfilePicture: reviewer?.profileImageUrl || '',
+          };
+        })
+      );
+      setReviews(reviewsWithUserDetails);
+    };
+    fetchReviews();
+    
+    const fetchProductAddressData = async () => {
+      if (product) {
+        const selectedProductAddress = await fetchProductAddress(product.ownerID, product.addressID);
+        if (selectedProductAddress) {
+          setProductAddress(selectedProductAddress);
+          setCoordinates({ latitude: selectedProductAddress.latitude, longitude: selectedProductAddress.longitude });
+        }
+      }
+    };
 
-  useEffect(() => {
-    if (product) {
+    if (startDate && endDate && product) {
+      const days = getDateRange(startDate, endDate).length;
+      setNumberOfDays(days);
+      const totalAmount = Number(days * product.lendingRate) + Number(product.depositAmount);
+      setTotal(totalAmount);
       setImages(product.imageUrls);
       setSelectedImage(product.imageUrls[0]);
+      getAddresses();
+      fetchProductAddressData();
     }
-  }, [product]);
+  }, [startDate, endDate, product]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchSelectedProductData().then(() => setRefreshing(false));
   }, []);
-
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
-      </View>
-    );
-  }
 
   const handleCheckout = async () => {
     if (total === undefined) {
@@ -357,7 +365,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       ownerFirstName: owner?.firstName || '',
       ownerLastName: owner?.lastName || '',
       // products copy
-      productId: productId,
+      product: product,
       productOwnerId: product.ownerID,
       productTitle: product.title,
       productDescription: product.description,

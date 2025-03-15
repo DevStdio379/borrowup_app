@@ -32,11 +32,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const { colors }: { colors: any; } = theme;
     const { user } = useUser();
 
-    const handleProductClick = (productId: string) => {
-        console.log('Product ID: ', productId);
-        navigation.navigate('ProductDetails', { productId });
-    };
-
     const renderItem = ({ item }: { item: any }) => {
         if (item.empty) {
             // Render an invisible spacer if the item is marked as "empty"
@@ -48,37 +43,35 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <Cardstyle4
                     id={item.id}
                     imageUrl={item.imageUrls[0]}
-                    price={item.lendingRate}
+                    price={item.lendingRate.toString()}
                     ownerID={item.ownerID}
                     description={item.description}
                     location={item.location}
                     title={item.title}
-                    onPress={() => handleProductClick(item.id)}
+                    onPress={() => navigation.navigate('ProductDetails', { product: item})}
                     onPress5={() => addItemToWishList(item)}
                     product={true}
+                    reviewCount= { item.reviewCount }
                 />
             </View>
         );
     };
 
-    const renderItemHorizontal = ({ item }: { item: any }) => {
-        if (item.empty) {
-            // Render an invisible spacer if the item is marked as "empty"
-            return <View style={{ flex: 1, margin: 5, backgroundColor: 'transparent' }} />;
-        }
+    const renderItemHorizontal = ({ item }: { item: Product }) => {
         return (
             <View style={{ flex: 1, margin: 5 }} >
                 <Cardstyle4
-                    id={item.id}
+                    id={item.id || 'undefined'}
                     imageUrl={item.imageUrls[0]}
-                    price={item.rate}
+                    price={item.lendingRate}
                     ownerID={item.ownerID}
                     description={item.description}
                     location={item.addressID}
                     title={item.title}
-                    onPress={() => handleProductClick(item.id)}
+                    onPress={() => navigation.navigate('ProductDetails', { product: item})}
                     onPress5={() => addItemToWishList(item)}
                     product={true}
+                    reviewCount= { item.reviewCount }
                 />
             </View>
         );
@@ -111,14 +104,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     useEffect(() => {
         getProducts();
         getBanners();
-        console.log('test fetching continuity');
     }, []);
 
     useEffect(() => {
         if (products) {
             setProducts(products);
         }
-        console.log('test fetching continuity');
     }, [products]);
 
     const onRefresh = useCallback(async () => {
