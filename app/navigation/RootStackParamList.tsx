@@ -15,7 +15,7 @@ export type RootStackParamList = {
     PaymentSuccess: { borrowingId: string, collectionCode: string, latitude: number, longitude: number, addressName: string, address: string, postcode: string };
     Map: undefined;
     MyBorrowings: undefined;
-    MyBorrowingDetails: { borrowingId: string };
+    MyBorrowingDetails: { borrowing: Borrowing };
     BorrowerAddReview: { reviewId: string, borrowing: Borrowing };
     ChatList: undefined;
     NewChat: undefined;

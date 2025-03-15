@@ -84,7 +84,7 @@ const MyBorrowings = ({ navigation }: MyBorrowingsScreenProps) => {
                                 <View style={{ marginVertical: 5, height: 100 }} key={index}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        onPress={() => navigation.navigate('MyBorrowingDetails', { borrowingId: data.id })}
+                                        onPress={() => navigation.navigate('MyBorrowingDetails', { borrowing: data })}
                                         style={{
                                             borderRadius: 10,
                                             borderWidth: 1,
@@ -124,7 +124,7 @@ const MyBorrowings = ({ navigation }: MyBorrowingsScreenProps) => {
                                 <View style={{ marginVertical: 5, height: 100 }} key={index}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        onPress={() => navigation.navigate('MyBorrowingDetails', { borrowingId: data.id })}
+                                        onPress={() => navigation.navigate('MyBorrowingDetails', { borrowing: data })}
                                         style={{
                                             borderRadius: 10,
                                             borderWidth: 1,

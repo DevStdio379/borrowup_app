@@ -21,12 +21,10 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
 
     const mapRef = useRef<MapView | null>(null);
     const { user } = useUser();
-    const { borrowingId } = route.params;
+    const { borrowing } = route.params;
     const [coordinates, setCoordinates] = useState({ latitude: 37.78825, longitude: -122.4324 });
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-
-    const [borrowing, setBorrowing] = useState<Borrowing>();
     const [owner, setOwner] = useState<User>();
     const [images, setImages] = useState<string[]>([]);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -59,7 +57,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
     const validatePin = async (enteredPin: string) => {
         const correctPin = borrowing?.returnCode; // Replace with actual validation logic
         if (enteredPin === correctPin) {
-            await updateBorrowing(borrowingId, { status: status! + 1 });
+            await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1 });
             setStatus(status! + 1);
             setCollectionCode(Array(CODE_LENGTH).fill("")); // Reset input
             inputs.current[0]?.focus(); // Focus back to first input
@@ -79,11 +77,10 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
     };
 
     const fetchSelectedBorrowingData = async () => {
-        if (borrowingId) {
+        if (borrowing) {
             try {
-                const selectedBorrowing = await fetchSelectedBorrowing(borrowingId);
+                const selectedBorrowing = await fetchSelectedBorrowing(borrowing.id || 'undefined');
                 if (selectedBorrowing) {
-                    setBorrowing(selectedBorrowing);
                     setStatus(selectedBorrowing.status);
 
                     const fetchedOwner = await fetchSelectedUser(selectedBorrowing.productOwnerId);
@@ -91,7 +88,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                         setOwner(fetchedOwner);
                     }
 
-                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.productId, borrowingId);
+                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.productId || 'undefined', selectedBorrowing.id || 'unefined');
                     if (fetchedReview && fetchedReview.id) {
                         setReview(fetchedReview);
                     }
@@ -104,28 +101,33 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
     };
 
     useEffect(() => {
-        fetchSelectedBorrowingData();
-    }, [status, borrowingId]);
+        const fetchData = async () => {
+            if (borrowing) {
+                setImages(borrowing.productImageUrls);
+                setSelectedImage(borrowing.productImageUrls[0]);
 
-    useEffect(() => {
-        if (borrowing) {
-            setImages(borrowing.productImageUrls);
-            setSelectedImage(borrowing.productImageUrls[0]);
-        }
+                const selectedBorrowing = await fetchSelectedBorrowing(borrowing.id || 'undefined');
+                if (selectedBorrowing) {
+                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.productOwnerId);
+                    if (fetchedOwner) {
+                        setOwner(fetchedOwner);
+                    }
+
+                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.productId || 'undefined', selectedBorrowing.id || 'undefined');
+                    if (fetchedReview && fetchedReview.id) {
+                        setReview(fetchedReview);
+                    }
+                }
+            }
+        };
+        setStatus(borrowing.status);
+        fetchData();
     }, [borrowing]);
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchSelectedBorrowingData().then(() => setRefreshing(false));
     }, []);
-
-    if (loading) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color={COLORS.primary} />
-            </View>
-        );
-    }
 
     const steps = [
         { label: "Rental\nCreated", date: "7/10/24, Mon\n09:00 AM", completed: (status ?? 0) >= 0 },
@@ -202,7 +204,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                             alignItems: 'center',
                                         }}
                                         onPress={async () => {
-                                            await updateBorrowing(borrowingId, { status: status! + 1 });
+                                            await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1 });
                                             setStatus(status! + 1);
                                         }}
                                     >
@@ -242,7 +244,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                                 alignItems: 'center',
                                             }}
                                             onPress={async () => {
-                                                await updateBorrowing(borrowingId, { status: status! + 1 });
+                                                await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1 });
                                                 setStatus(status! + 1);
                                             }}
                                         >
@@ -267,7 +269,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                             alignItems: 'center',
                                         }}
                                         onPress={async () => {
-                                            await updateBorrowing(borrowingId, { status: status! + 1, returnCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
+                                            await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1, returnCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
                                             setStatus(status! + 1);
                                         }}
                                     >
@@ -310,7 +312,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                             alignItems: 'center',
                                         }}
                                         onPress={async () => {
-                                            await updateBorrowing(borrowingId, { status: status! + 1 });
+                                            await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1 });
                                             setStatus(status! + 1);
                                         }}
                                     >
@@ -474,7 +476,9 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                     }
                                 </View>
                                 <View style={{ flex: 7, paddingLeft: 20 }}>
-                                    <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { productId: borrowing.productId })}>
+                                    <TouchableOpacity
+                                        // onPress={() => navigation.navigate('ProductDetails', { product: borrowing.product })}>
+                                        onPress={() => {} }>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{borrowing.productTitle}</Text>
                                             <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />
