@@ -111,19 +111,19 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     useEffect(() => {
         getProducts();
         getBanners();
+        console.log('test fetching continuity');
     }, []);
 
     useEffect(() => {
         if (products) {
             setProducts(products);
         }
+        console.log('test fetching continuity');
     }, [products]);
 
-    const onRefresh = useCallback(() => {
-        if (scrollY.current > 0) { // Prevent refresh if not at the top
-            setRefreshing(true);
-            getProducts().then(() => setRefreshing(false));
-        }
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        getProducts().then(() => setRefreshing(false));
     }, []);
 
     const addItemToWishList = (data: any) => {
@@ -315,37 +315,6 @@ const styles = StyleSheet.create({
     text: {
         color: 'black',
     },
-    colorCardTitle: {
-        fontSize: 12,
-        color: COLORS.title,
-        lineHeight: 20,
-        textAlign: 'center'
-    },
-    profilecard2: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-        marginRight: 10,
-        marginBottom: 20,
-    },
-    arrivaldata: {
-        backgroundColor: COLORS.card,
-        borderRadius: 18,
-        width: 199,
-        paddingHorizontal: 10,
-        paddingLeft: 25,
-        paddingVertical: 15,
-        borderWidth: 1,
-        borderColor: '#EFEFEF',
-        shadowColor: "rgba(4,118,78,.6)",
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.34,
-        shadowRadius: 18.27,
-        elevation: 4,
-    }
 })
 
 export default Home;
