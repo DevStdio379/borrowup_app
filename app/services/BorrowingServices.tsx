@@ -14,7 +14,7 @@ export interface Borrowing {
   ownerFirstName: string,
   ownerLastName: string,
   // products copy
-  productId: string;
+  productId?: string;
   productOwnerId: string;
   productTitle: string;
   productDescription: string;
