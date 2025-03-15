@@ -59,7 +59,7 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
 
     return (
         <View>
-            <View style={[GlobalStyleSheet.container, { backgroundColor: COLORS.backgroundColor, paddingHorizontal: 30, justifyContent: 'center', alignItems: 'center' }]}>
+            <View style={[GlobalStyleSheet.container, { height: '100%', backgroundColor: COLORS.backgroundColor, paddingHorizontal: 30, justifyContent: 'center', alignItems: 'center' }]}>
                 <View>
                     <View style={{ paddingTop: 80, marginBottom: 30 }}>
                         <Text style={{ color: colors.title, fontWeight: 'bold', fontSize: 30, marginBottom: 5 }}>Welcome back! Glad to see you, Again!</Text>

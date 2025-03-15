@@ -7,7 +7,6 @@ export const GlobalStyleSheet = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         width: '100%',
-        height: '100%',
     },
     mainContainer: {
         maxWidth: SIZES.container,
