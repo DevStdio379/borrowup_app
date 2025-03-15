@@ -18,6 +18,8 @@ export interface Product {
   pickupInstructions: string;
   returnInstructions: string;
 
+  reviewCount?: number;
+
   // address 
   addressID: string;
   latitude: number;
@@ -74,12 +76,17 @@ export const fetchProducts = async (): Promise<Product[]> => {
   try {
     const productList: Product[] = [];
     const snapshot = await getDocs(collection(db, 'products')); // Fetch products from 'products' collection
-    snapshot.forEach(doc => {
+    for (const doc of snapshot.docs) {
       const product = mapDocToProduct(doc);
       if (product.isActive) {  // Check if the product is active
-        productList.push(product);  // Push the formatted product to the list
+        // Fetch the count of reviews for the product
+        const reviewsSnapshot = await getDocs(collection(db, 'products', doc.id, 'reviews'));
+        const reviewCount = reviewsSnapshot.size;
+
+        // Add the review count to the product object
+        productList.push({ ...product, reviewCount });  // Push the formatted product to the list
       }
-    });
+    }
     return productList;
   } catch (error) {
     console.error('Error fetching products: ', error);
