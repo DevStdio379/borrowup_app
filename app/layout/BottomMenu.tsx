@@ -100,28 +100,53 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                             <View key={index} style={styles.tabItem}>
                                 <TouchableOpacity onPress={onPress} style={styles.tabLink}>
                                     <Ionicons
-                                        name={
-                                            label === 'Map'
-                                                ? 'compass'
-                                                : label === 'Home'
-                                                    ? 'home'
-                                                    : label === 'MyRental'
-                                                        ? 'package'
-                                                        : label === 'Chat'
-                                                            ? 'message-square'
-                                                            : label === 'Profile'
-                                                                ? 'user'
-                                                                : 'home'
-                                        }
+                                        name={(() => {
+                                            switch (label) {
+                                                // borrower
+                                                case 'Map':
+                                                    return 'compass';
+                                                case 'Home':
+                                                    return 'home';
+                                                case 'MyBorrowings':
+                                                    return 'cube';
+                                                // both universal
+                                                case 'ChatList':
+                                                    return 'chatbox';
+                                                case 'Profile':
+                                                    return 'menu';
+                                                // lender
+                                                case 'MyCalendar':
+                                                    return 'calendar';
+                                                case 'Listings':
+                                                    return 'clipboard';
+                                                case 'LenderDashboard':
+                                                    return 'grid';
+                                                default:
+                                                    return 'home';
+                                            }
+                                        })()}
                                         size={28}
                                         color={isFocused ? (theme.dark ? COLORS.card : colors.title) : COLORS.blackLight}
                                     />
 
                                     <Text style={[styles.navText, { color: isFocused ? COLORS.title : colors.blackLight }]}>
                                         {(() => {
-                                            if (label === 'MyRental') return 'My Rental';
-                                            if (label === 'Chat') return 'Messages';
-                                            return label;
+                                            switch (label) {
+                                                case 'MyRental':
+                                                    return 'My Rental';
+                                                case 'MyBorrowings':
+                                                    return 'Borrowings';
+                                                case 'LenderDashboard':
+                                                    return 'Dashboard';
+                                                case 'ChatList':
+                                                    return 'Chat';
+                                                case 'Profile':
+                                                    return 'Menus';
+                                                case 'Chat':
+                                                    return 'Messages';
+                                                default:
+                                                    return label;
+                                            }
                                         })()}
                                     </Text>
                                 </TouchableOpacity>

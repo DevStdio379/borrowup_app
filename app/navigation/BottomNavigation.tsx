@@ -19,15 +19,12 @@ const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 
 const BottomNavigation = () => {
-
-    const theme = useTheme();
-    const { colors }: { colors: any } = theme;
     const { user } = useUser();
 
     if (!user) {
         return null;
     }
-
+    
     return (
         user.accountType === 'borrower' ? (
             <Tab.Navigator
