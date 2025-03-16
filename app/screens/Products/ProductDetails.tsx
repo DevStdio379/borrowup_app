@@ -13,6 +13,7 @@ import MapView, { Circle, Marker } from 'react-native-maps';
 import { Address, fetchProductAddress, fetchUserAddresses } from '../../services/AddressServices';
 import { createBorrowing } from '../../services/BorrowingServices';
 import { getReviewsByProductId } from '../../services/ReviewServices';
+import { getOrCreateChat } from '../../services/ChatServices';
 
 type ProductDetailsScreenProps = StackScreenProps<RootStackParamList, 'ProductDetails'>;
 const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
@@ -151,6 +152,13 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     setLoading(false);
   };
 
+  const handleChat = async (otherUserId: string) => {
+    const chatId = await getOrCreateChat(otherUserId);
+    if (chatId) {
+      navigation.navigate("Chat", { chatId: chatId });
+    }
+  };
+
   const handleDayPress = (day: DateData) => {
     if (selectedDates[day.dateString]?.disabled) {
       Alert.alert("Unavailable", "This date is already booked.");
@@ -261,24 +269,24 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   const getBookedDates = async (productId: string) => {
     let markedDates: any = {};
-  
+
     const bookedDateRanges = await fetchBorrowingDates(productId);
-  
+
     bookedDateRanges.forEach(({ startDate, endDate }) => {
       let date = new Date(startDate);
       while (date <= new Date(endDate)) {
         const dateString = date.toISOString().split("T")[0];
-  
+
         markedDates[dateString] = {
           disabled: true,
           disableTouchEvent: true,
           color: COLORS.blackLight,
           textColor: "white",
         };
-  
+
         date.setDate(date.getDate() + 1);
       }
-  
+
       markedDates[startDate] = { ...markedDates[startDate], startingDay: true };
       markedDates[endDate] = { ...markedDates[endDate], endingDay: true };
     });
@@ -373,9 +381,9 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       ownerFirstName: owner?.firstName || '',
       ownerLastName: owner?.lastName || '',
       // products copy
-      
+
       product: product,
-      
+
       // end products copy
       total: total,
       deliveryMethod: deliveryMethod,
@@ -599,7 +607,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                             alignItems: 'center',
                           }}
                         >
-                          <Text style={{ color: COLORS.blackLight }}>No image selected</Text>
+                          <Ionicons name={'image-outline'} size={20} color={COLORS.blackLight} style={{ opacity: .5 }} />
                         </View>
                       )
                     }
@@ -615,6 +623,18 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     </TouchableOpacity>
                     <Text style={{ fontSize: 14, color: COLORS.blackLight }}>by {owner?.firstName} {owner?.lastName} </Text>
                   </View>
+                  <TouchableOpacity
+                    onPress={() => owner && handleChat(owner.uid)}
+                    style={{
+                      bottom: 10,
+                      right: 10,
+                      backgroundColor: COLORS.placeholder,
+                      padding: 10,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <Ionicons name="chatbubble-ellipses-outline" size={24} color={COLORS.white} />
+                  </TouchableOpacity>
                 </View>
                 <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 10 }}>£ {product.lendingRate} / day</Text>
                 <Text style={{ fontSize: 18, fontWeight: 'semibold', color: COLORS.black }}>{productAddress?.address}</Text>

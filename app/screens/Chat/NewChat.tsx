@@ -42,7 +42,7 @@ export const NewChat = ({ navigation }: NewChatScreenProps) => {
     fetchUsers();
   }, []);
 
-  const startChat = async (otherUserId: string) => {
+  const handleChat = async (otherUserId: string) => {
     const chatId = await getOrCreateChat(otherUserId);
     if (chatId) {
       navigation.navigate("Chat", { chatId: chatId });
@@ -54,7 +54,7 @@ export const NewChat = ({ navigation }: NewChatScreenProps) => {
       data={users}
       keyExtractor={(item) => item.uid}
       renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => startChat(item.uid)}>
+        <TouchableOpacity onPress={() => handleChat(item.uid)}>
           <View style={{ padding: 16, borderBottomWidth: 1 }}>
             <Text>{item.userName}</Text>
           </View>
