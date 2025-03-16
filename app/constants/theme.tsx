@@ -17,6 +17,7 @@ export const COLORS = {
 	black: "#000",
 	blackLight: "#B0B5B9",
 	placeholder:"#D9D9D9",
+	inputBackground:"#868D94",
 	
 	//light theme
 	card : '#F6F6F6',
