@@ -223,3 +223,45 @@ export const fetchBorrowingDates = async (productId: string): Promise<{ startDat
     throw error;  // Throwing the error to handle it at the call site
   }
 };
+
+// Function to search products based on user query
+export const searchProducts = async (queryStr: string): Promise<Product[]> => {
+  try {
+    if (queryStr.length < 3) return []; // Prevent unnecessary queries for short strings
+
+    const lowerCaseQuery = queryStr.toLowerCase();
+    const productList: Product[] = [];
+
+    // Firestore does not support 'contains' search, so we fetch products in a paginated way
+    const productSnapshot = await getDocs(collection(db, "products"));
+
+    // Convert Firestore snapshot to a list of products
+    const allProducts = productSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Product[];
+
+    // 🔍 Efficient filtering (case-insensitive) before returning the results
+    const filteredProducts = allProducts
+      .filter(product => 
+        product.isActive && (
+          product.title.toLowerCase().includes(lowerCaseQuery) || 
+          product.description.toLowerCase().includes(lowerCaseQuery) ||
+          product.category.toLowerCase().includes(lowerCaseQuery)
+        )
+      );
+
+    // Fetch review counts in parallel to reduce Firestore calls
+    await Promise.all(filteredProducts.map(async product => {
+      if (product.id) {
+        const reviewsSnapshot = await getDocs(collection(db, "products", product.id, "reviews"));
+        productList.push({ ...product, reviewCount: reviewsSnapshot.size });
+      }
+    }));
+
+    return productList;
+  } catch (error) {
+    console.error("Error searching products:", error);
+    throw error;
+  }
+};
