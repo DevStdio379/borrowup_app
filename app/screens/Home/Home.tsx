@@ -129,7 +129,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <TouchableOpacity
-                                onPress={() => { }}
+                                onPress={() => navigation.navigate('Search')}
                                 activeOpacity={0.5}
                                 style={[GlobalStyleSheet.background3, {}]}
                             >
