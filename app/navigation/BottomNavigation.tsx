@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomTabParamList } from './BottomTabParamList';
 import MyBorrowingScreen from '../screens/MyBorrowings/MyBorrowings';
@@ -7,12 +7,11 @@ import HomeScreen from '../screens/Home/Home';
 import MapScreen from '../screens/Map/Map';
 import ProfileScreen from '../screens/Profile/Profile';
 import BottomMenu from '../layout/BottomMenu';
-import { useTheme } from '@react-navigation/native';
 import { useUser } from '../context/UserContext';
 import LenderDashboard from '../screens/LenderPanel/LenderDashboard';
 import MyCalendarScreen from '../screens/LenderPanel/MyCalendar';
 import ListingsScreen from '../screens/LenderPanel/Listings';
-import MessagesScreen from '../screens/LenderPanel/Messages';
+import HomeStack from './HomeStack';
 
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -44,7 +43,7 @@ const BottomNavigation = () => {
                 />
                 <Tab.Screen
                     name='Home'
-                    component={HomeScreen}
+                    component={HomeStack}  // Use HomeStack here
                 />
                 <Tab.Screen
                     name='ChatList'
