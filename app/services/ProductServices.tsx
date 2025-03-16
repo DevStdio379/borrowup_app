@@ -1,6 +1,7 @@
 import { db, storage } from './firebaseConfig';  // Import the Firestore instance
 import { collection, getDocs, addDoc, doc, updateDoc, getDoc } from 'firebase/firestore';  // Firestore functions
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';  // Import Firebase storage functions
+import { COLORS } from '../constants/theme';
 
 // Define the Product interface
 export interface Product {
@@ -154,6 +155,7 @@ export const fetchUserProductListings = async (userID: string): Promise<Product[
   }
 };
 
+
 export const fetchSelectedProduct = async (productId: string): Promise<Product | null> => {
   try {
     const productRef = doc(db, 'products', productId);
@@ -205,10 +207,9 @@ export const fetchBorrowingDates = async (productId: string): Promise<{ startDat
   try {
     const borrowingDates: { startDate: string, endDate: string }[] = [];
     const snapshot = await getDocs(collection(db, 'borrowings')); // Fetch borrowings from 'borrowings' collection
-
     snapshot.forEach(doc => {
       const borrowingData = doc.data();
-      if (borrowingData.productId === productId) {  // Check if the borrowing is for the specified product
+      if (borrowingData.product.id === productId) {  // Check if the borrowing is for the specified product
         borrowingDates.push({
           startDate: new Date(borrowingData.startDate).toISOString().split('T')[0],
           endDate: new Date(borrowingData.endDate).toISOString().split('T')[0]

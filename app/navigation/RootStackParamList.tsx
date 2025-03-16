@@ -17,6 +17,7 @@ export type RootStackParamList = {
     MyBorrowings: undefined;
     MyBorrowingDetails: { borrowing: Borrowing };
     BorrowerAddReview: { reviewId: string, borrowing: Borrowing };
+
     ChatList: undefined;
     NewChat: undefined;
     Chat: { chatId: string };

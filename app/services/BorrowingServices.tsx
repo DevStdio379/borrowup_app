@@ -1,5 +1,7 @@
 import { db } from './firebaseConfig';
 import { collection, addDoc, query, where, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { Product } from './ProductServices';
+import { Address } from './AddressServices';
 
 export interface Borrowing {
   id?: string;
@@ -13,35 +15,8 @@ export interface Borrowing {
   // owner copy
   ownerFirstName: string,
   ownerLastName: string,
-  // products copy
-  productId?: string;
-  productOwnerId: string;
-  productTitle: string;
-  productDescription: string;
-  productCategory: string;
-  productImageUrls: string[];
-  productLendingRate: number;
-  productCollectionTime: string;
-  productReturnTime: string;
-  productAvailableDays: string[];
-  productBorrowingNotes: string;
-  productPickupInstructions: string;
-  productReturnInstructions: string;
-  productAddressID: string;
-  productIsCollectDeposit: boolean;
-  productDepositAmount: number;
-  // end products copy
-  // address copy
-  latitude: number;
-  longitude: number;
-  addressName: string;
-  address: string;
-  buildingType: string;
-  additionalDetails: string;
-  postcode: string;
-  addressLabel: string;
-  instruction: string;
-  // end address copy
+  product: Product;
+
   total: number;
   deliveryMethod: string;
   paymentMethod: string;
@@ -79,33 +54,7 @@ const mapBorrowingData = (doc: any): Borrowing => {
     ownerFirstName: data.ownerFirstName,
     ownerLastName: data.ownerLastName,
     // products copy
-    productId: data.productId,
-    productOwnerId: data.productOwnerId,
-    productTitle: data.productTitle,
-    productDescription: data.productDescription,
-    productCategory: data.productCategory,
-    productImageUrls: data.productImageUrls,
-    productLendingRate: data.productLendingRate,
-    productCollectionTime: data.productCollectionTime,
-    productReturnTime: data.productReturnTime,
-    productAvailableDays: data.productAvailableDays,
-    productBorrowingNotes: data.productBorrowingNotes,
-    productPickupInstructions: data.productPickupInstructions,
-    productReturnInstructions: data.productReturnInstructions,
-    productAddressID: data.productAddressID,
-    productIsCollectDeposit: data.productIsCollectDeposit,
-    productDepositAmount: data.productDepositAmount,
-    // end products copy
-    // address copy
-    latitude: data.latitude,
-    longitude: data.longitude,
-    addressName: data.addressName,
-    address: data.address,
-    buildingType: data.buildingType,
-    additionalDetails: data.additionalDetails,
-    postcode: data.postcode,
-    addressLabel: data.addressLabel,
-    instruction: data.instruction,
+    product: data.product,
     // end address copy
     total: data.total,
     deliveryMethod: data.deliveryMethod,
