@@ -83,12 +83,12 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                 if (selectedBorrowing) {
                     setStatus(selectedBorrowing.status);
 
-                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.productOwnerId);
+                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.product.ownerID);
                     if (fetchedOwner) {
                         setOwner(fetchedOwner);
                     }
 
-                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.productId || 'undefined', selectedBorrowing.id || 'unefined');
+                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.product.id || 'undefined', selectedBorrowing.id || 'unefined');
                     if (fetchedReview && fetchedReview.id) {
                         setReview(fetchedReview);
                     }
@@ -103,17 +103,17 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
     useEffect(() => {
         const fetchData = async () => {
             if (borrowing) {
-                setImages(borrowing.productImageUrls);
-                setSelectedImage(borrowing.productImageUrls[0]);
+                setImages(borrowing.product.imageUrls);
+                setSelectedImage(borrowing.product.imageUrls[0]);
 
                 const selectedBorrowing = await fetchSelectedBorrowing(borrowing.id || 'undefined');
                 if (selectedBorrowing) {
-                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.productOwnerId);
+                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.product.ownerID);
                     if (fetchedOwner) {
                         setOwner(fetchedOwner);
                     }
 
-                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.productId || 'undefined', selectedBorrowing.id || 'undefined');
+                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.id || 'undefined', selectedBorrowing.id || 'undefined');
                     if (fetchedReview && fetchedReview.id) {
                         setReview(fetchedReview);
                     }
@@ -480,7 +480,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                         // onPress={() => navigation.navigate('ProductDetails', { product: borrowing.product })}>
                                         onPress={() => {} }>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{borrowing.productTitle}</Text>
+                                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{borrowing.product.title}</Text>
                                             <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />
                                         </View>
                                     </TouchableOpacity>
@@ -490,10 +490,10 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Borrowing Notes</Text>
                             <Text style={{ marginBottom: 30 }}>{greetings + '\n'}</Text>
-                            <Text style={{ marginBottom: 30 }}>{borrowing.productBorrowingNotes}</Text>
+                            <Text style={{ marginBottom: 30 }}>{borrowing.product.borrowingNotes}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Pickup Instructions</Text>
-                            <Text style={{ marginBottom: 30 }}>{borrowing.productPickupInstructions}</Text>
+                            <Text style={{ marginBottom: 30 }}>{borrowing.product.pickupInstructions}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20, marginBottom: 10 }}>Location</Text>
                             <View style={{ height: 200, borderRadius: 20, overflow: 'hidden', borderColor: COLORS.blackLight, borderWidth: 1, }}>
@@ -522,10 +522,10 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                 </MapView>
                                 <View style={GlobalStyleSheet.line} />
                             </View>
-                            <Text style={{ marginBottom: 30, marginTop: 5 }}>{borrowing.addressName}, {borrowing.address}</Text>
+                            <Text style={{ marginBottom: 30, marginTop: 5 }}>{borrowing.product.addressName}, {borrowing.product.address}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Return Instructions</Text>
-                            <Text style={{ marginBottom: 30 }}>{borrowing.productReturnInstructions}</Text>
+                            <Text style={{ marginBottom: 30 }}>{borrowing.product.returnInstructions}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Additional Information</Text>
                             <FlatList
