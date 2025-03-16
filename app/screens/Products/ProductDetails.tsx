@@ -6,7 +6,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
-import { fetchBorrowingDates, fetchSelectedProduct, Product } from '../../services/ProductServices';
+import { fetchBorrowingDates, fetchSelectedProduct } from '../../services/ProductServices';
 import { Calendar, DateData } from 'react-native-calendars';
 import { format } from 'date-fns';
 import MapView, { Circle, Marker } from 'react-native-maps';
@@ -117,7 +117,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
           }
           // fetch Booked Dates on Calendar
           try {
-            const fetchedDates = await getBookedDates();
+            const fetchedDates = await getBookedDates(product.id || 'undefined');
             setBookedDates(fetchedDates);
             setSelectedDates(fetchedDates);
           } catch (error) {
@@ -149,34 +149,6 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       }
     }
     setLoading(false);
-  };
-
-  const getBookedDates = async () => {
-    let markedDates: any = {};
-
-    const product = "aT1Ras79LeZdz3QMy3Oh"; // Replace with actual product ID
-    const bookedDateRanges = await fetchBorrowingDates(product);
-
-    bookedDateRanges.forEach(({ startDate, endDate }) => {
-      let date = new Date(startDate);
-      while (date <= new Date(endDate)) {
-        const dateString = date.toISOString().split("T")[0];
-
-        markedDates[dateString] = {
-          disabled: true,
-          disableTouchEvent: true,
-          color: COLORS.blackLight,
-          textColor: "white",
-        };
-
-        date.setDate(date.getDate() + 1);
-      }
-
-      markedDates[startDate] = { ...markedDates[startDate], startingDay: true };
-      markedDates[endDate] = { ...markedDates[endDate], endingDay: true };
-    });
-
-    return markedDates;
   };
 
   const handleDayPress = (day: DateData) => {
@@ -287,44 +259,80 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     }
   };
 
+  const getBookedDates = async (productId: string) => {
+    let markedDates: any = {};
+  
+    const bookedDateRanges = await fetchBorrowingDates(productId);
+  
+    bookedDateRanges.forEach(({ startDate, endDate }) => {
+      let date = new Date(startDate);
+      while (date <= new Date(endDate)) {
+        const dateString = date.toISOString().split("T")[0];
+  
+        markedDates[dateString] = {
+          disabled: true,
+          disableTouchEvent: true,
+          color: COLORS.blackLight,
+          textColor: "white",
+        };
+  
+        date.setDate(date.getDate() + 1);
+      }
+  
+      markedDates[startDate] = { ...markedDates[startDate], startingDay: true };
+      markedDates[endDate] = { ...markedDates[endDate], endingDay: true };
+    });
+    return markedDates;
+  };
+
   useEffect(() => {
-    const fetchReviews = async () => {
-      const fetchedReviews = await getReviewsByProductId(product.id || 'undefined');
-      const reviewsWithUserDetails = await Promise.all(
-        fetchedReviews.map(async (review) => {
-          const reviewer = await fetchSelectedUser(review.borrowerReviewerId);
-          return {
-            ...review,
-            borrowerFirstName: reviewer?.firstName || '',
-            borrowerLastName: reviewer?.lastName || '',
-            borrowerProfilePicture: reviewer?.profileImageUrl || '',
-          };
-        })
-      );
-      setReviews(reviewsWithUserDetails);
-    };
-    fetchReviews();
-    
-    const fetchProductAddressData = async () => {
+    const fetchData = async () => {
       if (product) {
+        // fetch owner
+        const fetchedOwner = await fetchSelectedUser(product.ownerID);
+        if (fetchedOwner) {
+          setOwner(fetchedOwner);
+        }
+
+        // fetch bookedDates
+        const fetchedDates = await getBookedDates(product.id || 'undefined');
+        setBookedDates(fetchedDates);
+        setSelectedDates(fetchedDates);
+
+        // fetch reviews
+        const fetchedReviews = await getReviewsByProductId(product.id || 'undefined');
+        const reviewsWithUserDetails = await Promise.all(
+          fetchedReviews.map(async (review) => {
+            const reviewer = await fetchSelectedUser(review.borrowerReviewerId);
+            return {
+              ...review,
+              borrowerFirstName: reviewer?.firstName || '',
+              borrowerLastName: reviewer?.lastName || '',
+              borrowerProfilePicture: reviewer?.profileImageUrl || '',
+            };
+          })
+        );
+        setReviews(reviewsWithUserDetails);
+
         const selectedProductAddress = await fetchProductAddress(product.ownerID, product.addressID);
         if (selectedProductAddress) {
           setProductAddress(selectedProductAddress);
           setCoordinates({ latitude: selectedProductAddress.latitude, longitude: selectedProductAddress.longitude });
         }
+
+        if (startDate && endDate) {
+          const days = getDateRange(startDate, endDate).length;
+          setNumberOfDays(days);
+          const totalAmount = Number(days * product.lendingRate) + Number(product.depositAmount);
+          setTotal(totalAmount);
+          setImages(product.imageUrls);
+          setSelectedImage(product.imageUrls[0]);
+          getAddresses();
+        }
       }
     };
 
-    if (startDate && endDate && product) {
-      const days = getDateRange(startDate, endDate).length;
-      setNumberOfDays(days);
-      const totalAmount = Number(days * product.lendingRate) + Number(product.depositAmount);
-      setTotal(totalAmount);
-      setImages(product.imageUrls);
-      setSelectedImage(product.imageUrls[0]);
-      getAddresses();
-      fetchProductAddressData();
-    }
+    fetchData();
   }, [startDate, endDate, product]);
 
   const onRefresh = useCallback(() => {
@@ -365,34 +373,10 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       ownerFirstName: owner?.firstName || '',
       ownerLastName: owner?.lastName || '',
       // products copy
+      
       product: product,
-      productOwnerId: product.ownerID,
-      productTitle: product.title,
-      productDescription: product.description,
-      productCategory: product.category,
-      productImageUrls: product.imageUrls,
-      productLendingRate: product.lendingRate,
-      productCollectionTime: product.collectionTime,
-      productReturnTime: product.returnTime,
-      productAvailableDays: product.availableDays,
-      productBorrowingNotes: product.borrowingNotes,
-      productPickupInstructions: product.pickupInstructions,
-      productReturnInstructions: product.returnInstructions,
-      productAddressID: product.addressID,
-      productIsCollectDeposit: product.isCollectDeposit,
-      productDepositAmount: product.depositAmount,
+      
       // end products copy
-      // address copy
-      latitude: productAddress.latitude,
-      longitude: productAddress.longitude,
-      addressName: productAddress.addressName,
-      address: productAddress.address,
-      buildingType: productAddress.buildingType,
-      additionalDetails: productAddress.additionalDetails,
-      postcode: productAddress.postcode,
-      addressLabel: productAddress.addressLabel,
-      instruction: productAddress.instruction,
-      // end address copy
       total: total,
       deliveryMethod: deliveryMethod,
       paymentMethod: paymentMethod,
@@ -591,8 +575,48 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                 </View>
               )}
               <View>
-                <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 10 }}>£ {product.lendingRate}/ day</Text>
-                <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black }}>{product.title}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginBottom: 10, marginTop: 20 }}>
+                  <View style={{ flex: 1, alignItems: 'center' }}>
+                    {
+                      owner ? (
+                        <Image
+                          source={{ uri: owner.profileImageUrl }}
+                          style={{
+                            width: 60,
+                            height: 60,
+                            borderRadius: 40,
+                          }}
+                        />
+                      ) : (
+                        <View
+                          style={{
+                            width: 60,
+                            height: 60,
+                            borderRadius: 40,
+                            marginBottom: 10,
+                            backgroundColor: COLORS.card,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <Text style={{ color: COLORS.blackLight }}>No image selected</Text>
+                        </View>
+                      )
+                    }
+                  </View>
+                  <View style={{ flex: 7, paddingLeft: 20 }}>
+                    <TouchableOpacity
+                      // onPress={() => navigation.navigate('ProductDetails', { product: borrowing.product })}>
+                      onPress={() => { }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{product.title}</Text>
+                        <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />
+                      </View>
+                    </TouchableOpacity>
+                    <Text style={{ fontSize: 14, color: COLORS.blackLight }}>by {owner?.firstName} {owner?.lastName} </Text>
+                  </View>
+                </View>
+                <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 10 }}>£ {product.lendingRate} / day</Text>
                 <Text style={{ fontSize: 18, fontWeight: 'semibold', color: COLORS.black }}>{productAddress?.address}</Text>
                 <Text style={{ fontSize: 14, color: COLORS.blackLight, paddingBottom: 20 }}>{product.description}</Text>
                 <View style={GlobalStyleSheet.line} />
