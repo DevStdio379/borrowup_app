@@ -1,4 +1,5 @@
 // services/chatService.ts
+import { User } from "../context/UserContext";
 import { db, auth } from "./firebaseConfig";
 import {
   collection,
@@ -12,30 +13,28 @@ import {
 /**
  * Get or create a chat between the logged-in user and another user.
  */
-export const getOrCreateChat = async (otherUserId: string) => {
-  if (!auth.currentUser) return null;
+export const getOrCreateChat = async (user: User, otherUser: User) => {
 
-  const currentUserId = auth.currentUser.uid;
   const chatRef = collection(db, "chats");
 
   // Check if chat already exists
   const chatQuery = query(
     chatRef,
-    where("participants", "array-contains", currentUserId)
+    where("participants", "array-contains", user.uid)
   );
 
   try {
     const snapshot = await getDocs(chatQuery);
     for (const chat of snapshot.docs) {
       const data = chat.data();
-      if (data.participants.includes(otherUserId)) {
+      if (data.participants.includes(otherUser.uid)) {
         return chat.id; // Return existing chat ID
       }
     }
 
     // Create a new chat
     const newChatRef = await addDoc(chatRef, {
-      participants: [currentUserId, otherUserId],
+      participants: [user.uid, otherUser.uid],
       createdAt: serverTimestamp(),
       lastMessage: "",
     });

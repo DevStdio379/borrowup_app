@@ -3,7 +3,7 @@ import { auth, db } from '../../services/firebaseConfig';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { GiftedChat, IMessage } from 'react-native-gifted-chat';
-import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, updateDoc } from 'firebase/firestore';
 import { useUser } from '../../context/UserContext';
 
 type ChatScreenProps = StackScreenProps<RootStackParamList, 'Chat'>;
@@ -18,7 +18,7 @@ export const Chat = ({ route }: ChatScreenProps) => {
       collection(db, 'chats', chatId, 'messages'),
       orderBy('timestamp', 'desc')
     );
-    
+
     const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
       const fetchedMessages = snapshot.docs.map((doc) => {
         const data = doc.data();
@@ -49,6 +49,13 @@ export const Chat = ({ route }: ChatScreenProps) => {
       message: text,
       timestamp: serverTimestamp(),
     });
+
+    const chatDocRef = doc(db, 'chats', chatId);
+    
+    await updateDoc(chatDocRef, {
+      lastMessage: newMessages[0].text,
+    });
+
   }, [chatId]);
 
   return (
