@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, StyleSheet, Alert, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react';
-import { COLORS } from '../../constants/theme'
+import { COLORS, SIZES } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
 import { StackScreenProps } from '@react-navigation/stack'
@@ -59,8 +59,8 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
 
     return (
         <View>
-            <View style={[GlobalStyleSheet.container, { height: '100%', backgroundColor: COLORS.backgroundColor, paddingHorizontal: 30, justifyContent: 'center', alignItems: 'center' }]}>
-                <View>
+            <View style={[GlobalStyleSheet.container, {height: '100%', backgroundColor: COLORS.backgroundColor, paddingHorizontal: 30, justifyContent: 'center', alignItems: 'center' }]}>
+                <View style={{ width: '100%' }}>
                     <View style={{ paddingTop: 80, marginBottom: 30 }}>
                         <Text style={{ color: colors.title, fontWeight: 'bold', fontSize: 30, marginBottom: 5 }}>Welcome back! Glad to see you, Again!</Text>
                     </View>
@@ -117,20 +117,18 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
                         </View>
                         <View style={{ alignItems: 'center', marginTop: 30 }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                                <TouchableOpacity style={{ borderRadius: 12, padding: 15, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: 100, height: 60, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}>
+                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}>
                                     <Ionicons name='logo-facebook' size={24} color={COLORS.title} />
                                 </TouchableOpacity>
-
                                 <TouchableOpacity
-                                    style={{ borderRadius: 12, padding: 15, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: 100, height: 60, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                    style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
                                     onPress={() => {
                                         setEmail('afiq379@gmail.com');
                                         setPassword('12345678');
                                     }}>
                                     <Ionicons name='logo-google' size={24} color={COLORS.primary} />
                                 </TouchableOpacity>
-
-                                <TouchableOpacity style={{ borderRadius: 12, padding: 15, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: 100, height: 60, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}>
+                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}>
                                     <Ionicons name='logo-apple' size={24} color={COLORS.title} />
                                 </TouchableOpacity>
                             </View>

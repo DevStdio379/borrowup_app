@@ -3,10 +3,9 @@ import { COLORS, SIZES } from './theme';
 
 export const GlobalStyleSheet = StyleSheet.create({
     container: {
-        maxWidth: SIZES.container,
         marginLeft: 'auto',
         marginRight: 'auto',
-        width: '100%',
+        width: SIZES.width
     },
     mainContainer: {
         maxWidth: SIZES.container,
