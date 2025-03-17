@@ -109,7 +109,7 @@ export const fetchLendingsByUser = async (userID: string): Promise<Borrowing[]> 
     const snapshot = await getDocs(collection(db, 'borrowings')); // Fetch products from 'products' collection
     snapshot.forEach(doc => {
       const lendingData = doc.data();
-      if (lendingData.productOwnerId === userID) {  // Check if the product belongs to the user
+      if (lendingData.product.ownerID === userID) {  // Check if the product belongs to the user
         userMyLendingsList.push(mapBorrowingData(doc));  // Push the formatted product to the list
       }
     });
