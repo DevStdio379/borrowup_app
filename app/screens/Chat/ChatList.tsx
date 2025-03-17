@@ -39,9 +39,12 @@ export const ChatList = ({ navigation }: ChatListScreenProps) => {
             };
         });
 
-        const users = await fetchUsersByIds(chatList.map((chat) => chat.participants[1]));
+        if (!user) return;
+        const users = await fetchUsersByIds(chatList.map((chat) => chat.participants.find((uid: string) => uid !== user.uid)));
+        console.log('CHECK_USER: ', users.map((user) => user.userName));
         const chatListWithOtherUserDetails = chatList.map((chat) => {
-            const otherParticipantDetails = users.find((user) => user.uid === chat.participants[1]);
+            const otherParticipantId = chat.participants.find((uid: string) => uid !== user.uid);
+            const otherParticipantDetails = users.find((user) => user.uid === otherParticipantId);
             return {
             ...chat,
             otherParticipantDetails,
