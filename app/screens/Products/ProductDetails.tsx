@@ -18,12 +18,12 @@ import { getOrCreateChat } from '../../services/ChatServices';
 type ProductDetailsScreenProps = StackScreenProps<RootStackParamList, 'ProductDetails'>;
 const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const { user } = useUser();
-  const { product } = route.params;
   const mapRef = useRef<MapView | null>(null);
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
+  const [product, setProduct] = useState(route.params.product);
   const [productAddress, setProductAddress] = useState<Address>();
   const [addresses, setAddresses] = useState<{ [key: string]: any; id: string; }[]>([]);
   const [owner, setOwner] = useState<User>();
