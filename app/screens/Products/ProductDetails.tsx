@@ -40,7 +40,6 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     end: null,
   });
 
-  const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
   const [reviews, setReviews] = useState<any[]>([]);
   const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
@@ -293,7 +292,6 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   useEffect(() => {
     const fetchData = async () => {
       if (product) {
-        setCoordinates({ latitude: product.latitude, longitude: product.longitude });
         // fetch owner
         const fetchedOwner = await fetchSelectedUser(product.ownerID);
         if (fetchedOwner) {
@@ -666,11 +664,11 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                   <MapView
                     ref={mapRef}
                     style={{ height: '100%' }}
-                    initialRegion={{
-                      latitude: coordinates.latitude,
-                      longitude: coordinates.longitude,
-                      latitudeDelta: 0.0922,
-                      longitudeDelta: 0.0421,
+                    region={{
+                      latitude: product.latitude,
+                      longitude: product.longitude,
+                      latitudeDelta: 0.05, // Adjust zoom level
+                      longitudeDelta: 0.05,
                     }}
                     scrollEnabled={false}
                     zoomEnabled={false}
@@ -678,10 +676,12 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     pitchEnabled={false}
                     toolbarEnabled={false}
                   >
-                    <Marker
-                      coordinate={{ latitude: coordinates.latitude, longitude: coordinates.longitude }}
-                      title={product.title}
-                      description={product.address}
+                    <Circle
+                      center={{ latitude: product.latitude, longitude: product.longitude }}
+                      radius={1000} // Radius in meters (1000m = 1km)
+                      strokeWidth={2}
+                      strokeColor="rgba(0, 122, 255, 0.5)"
+                      fillColor="rgba(0, 122, 255, 0.2)" // Light blue transparent fill
                     />
                   </MapView>
                   <View style={GlobalStyleSheet.line} />
