@@ -20,13 +20,13 @@ type MyBorrowingDetailsScreenProps = StackScreenProps<RootStackParamList, 'MyBor
 const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps) => {
 
     const mapRef = useRef<MapView | null>(null);
-    const [ borrowing ] = useState<Borrowing>(route.params.borrowing);
+    const [ borrowing, setBorrowing ] = useState<Borrowing>(route.params.borrowing);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [owner, setOwner] = useState<User>();
     const [images, setImages] = useState<string[]>([]);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const [status, setStatus] = useState<number | null>(null);
+    const [status, setStatus] = useState<number>(borrowing.status);
 
     const CODE_LENGTH = 7;
     const [returnCode, setCollectionCode] = useState<string[]>(Array(CODE_LENGTH).fill(""));
@@ -53,7 +53,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
     };
 
     const validatePin = async (enteredPin: string) => {
-        const correctPin = borrowing?.returnCode; // Replace with actual validation logic
+        const correctPin = borrowing.returnCode; // Replace with actual validation logic
         if (enteredPin === correctPin) {
             await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1 });
             setStatus(status! + 1);
@@ -79,6 +79,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
             try {
                 const selectedBorrowing = await fetchSelectedBorrowing(borrowing.id || 'undefined');
                 if (selectedBorrowing) {
+                    setBorrowing(selectedBorrowing)
                     setStatus(selectedBorrowing.status);
 
                     const fetchedOwner = await fetchSelectedUser(selectedBorrowing.product.ownerID);
