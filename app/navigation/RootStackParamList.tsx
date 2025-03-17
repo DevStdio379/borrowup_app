@@ -35,7 +35,7 @@ export type RootStackParamList = {
 
     // Lender Profile
     MyCalendar: undefined;
-    LendingDetails: { lendingId: string };
+    LendingDetails: { lending: Borrowing };
     LenderAddReview: { reviewId: string, lending: Borrowing };
     Listings: undefined;
     AddListing: { listingId: string };
