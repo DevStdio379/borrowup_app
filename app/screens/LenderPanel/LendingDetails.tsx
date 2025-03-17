@@ -1,11 +1,8 @@
-import { useTheme } from '@react-navigation/native';
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { View, Text, Image, TouchableOpacity, StyleSheet, Platform, Alert, Animated, Easing, FlatList, Dimensions, ScrollView, RefreshControl, ActivityIndicator, TextInput } from 'react-native'
-import { IMAGES } from '../../constants/Images';
-import { COLORS, SIZES } from '../../constants/theme';
+import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { useDispatch } from 'react-redux';
 import MapView, { Marker } from 'react-native-maps';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
@@ -20,13 +17,10 @@ type LendingDetailsScreenProps = StackScreenProps<RootStackParamList, 'LendingDe
 const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
 
     const mapRef = useRef<MapView | null>(null);
-    const { user } = useUser();
-    const { lendingId } = route.params;
-    const [coordinates, setCoordinates] = useState({ latitude: 37.78825, longitude: -122.4324 });
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 
-    const [lending, setLending] = useState<Borrowing>();
+    const [lending, setLending] = useState<Borrowing>(route.params.lending);
     const [owner, setOwner] = useState<User>();
     const [images, setImages] = useState<string[]>([]);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -59,7 +53,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     const validatePin = async (enteredPin: string) => {
         const correctPin = lending?.collectionCode; // Replace with actual validation logic
         if (enteredPin === correctPin) {
-            await updateBorrowing(lendingId, { status: status! + 1 });
+            if (lending.id) {
+                await updateBorrowing(lending.id, { status: status! + 1 });
+            }
             setStatus(status! + 1);
             setCollectionCode(Array(CODE_LENGTH).fill("")); // Reset input
             inputs.current[0]?.focus(); // Focus back to first input
@@ -79,19 +75,19 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     };
 
     const fetchSelectedBorrowingData = async () => {
-        if (lendingId) {
+        if (lending.id) {
             try {
-                const selectedBorrowing = await fetchSelectedBorrowing(lendingId);
+                const selectedBorrowing = await fetchSelectedBorrowing(lending.id);
                 if (selectedBorrowing) {
                     setLending(selectedBorrowing);
                     setStatus(selectedBorrowing.status);
 
-                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.productOwnerId);
+                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.product.ownerID);
                     if (fetchedOwner) {
                         setOwner(fetchedOwner);
                     }
 
-                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.productId, lendingId);
+                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.product.id || '', lending.id || '');
                     if (fetchedReview && fetchedReview.id) {
                         setReview(fetchedReview);
                     }
@@ -104,14 +100,17 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     };
 
     useEffect(() => {
-        fetchSelectedBorrowingData();
-    }, [status, lendingId]);
-
-    useEffect(() => {
         if (lending) {
-            setImages(lending.productImageUrls);
-            setSelectedImage(lending.productImageUrls[0]);
+            setImages(lending.product.imageUrls);
+            setSelectedImage(lending.product.imageUrls[0]);
         }
+
+        fetchSelectedUser(lending.product.ownerID).then((user) => {
+            if (user) {
+                setOwner(user);
+            }
+        });
+        setLoading(false);
     }, [lending]);
 
     const onRefresh = useCallback(() => {
@@ -135,11 +134,11 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     };
 
     const steps = [
-        { label: "Rental\nCreated", date: `${formatDate(lending?.startDate)},\n${lending?.productCollectionTime}`, completed: (status ?? 0) >= 0 },
+        { label: "Rental\nCreated", date: `${formatDate(lending?.startDate)},\n${lending?.product.collectionTime}`, completed: (status ?? 0) >= 0 },
         { label: "Pickup\n", date: "Enter pickup\ncode", completed: (status ?? 0) > 2 },
         { label: "Active\nRental", date: "\n", completed: (status ?? 0) > 2 },
         { label: "Return\n", date: "Show return\ncode", completed: (status ?? 0) > 3 },
-        { label: "Rental\nCompleted", date: `${formatDate(lending?.endDate)},\n ${lending?.productReturnTime}`, completed: (status ?? 0) > 5 },
+        { label: "Rental\nCompleted", date: `${formatDate(lending?.endDate)},\n ${lending?.product.returnTime}`, completed: (status ?? 0) > 5 },
     ];
 
     const actions = [
@@ -223,7 +222,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                                 alignItems: 'center',
                                             }}
                                             onPress={async () => {
-                                                await updateBorrowing(lendingId, { status: status! + 1, collectionCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
+                                                if (lending.id) {
+                                                    await updateBorrowing(lending.id, { status: status! + 1, collectionCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
+                                                }
                                                 setStatus(status! + 1);
                                             }}
                                         >
@@ -238,7 +239,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                         {collectionCode.map((digit, index) => (
                                             <TextInput
                                                 key={index}
-                                                ref={(el) => (inputs.current[index] = el)}
+                                                ref={(el) => { inputs.current[index] = el; }}
                                                 style={{ width: 35, height: 50, borderWidth: 2, borderColor: COLORS.blackLight, textAlign: "center", fontSize: 20, borderRadius: 10 }}
                                                 keyboardType="numeric"
                                                 maxLength={1}
@@ -266,7 +267,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                             alignItems: 'center',
                                         }}
                                         onPress={async () => {
-                                            await updateBorrowing(lendingId, { status: status! + 1 });
+                                            if (lending.id) {
+                                                await updateBorrowing(lending.id, { status: status! + 1 });
+                                            }
                                             setStatus(status! + 1);
                                         }}
                                     >
@@ -289,7 +292,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                             alignItems: 'center',
                                         }}
                                         onPress={async () => {
-                                            await updateBorrowing(lendingId, { status: status! + 1, returnCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
+                                            if (lending.id) {
+                                                await updateBorrowing(lending.id, { status: status! + 1, returnCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
+                                            }
                                             setStatus(status! + 1);
                                         }}
                                     >
@@ -328,7 +333,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                                 alignItems: 'center',
                                             }}
                                             onPress={async () => {
-                                                await updateBorrowing(lendingId, { status: status! + 1 });
+                                                if (lending.id) {
+                                                    await updateBorrowing(lending.id, { status: status! + 1 });
+                                                }
                                                 setStatus(status! + 1);
                                             }}
                                         >
@@ -492,9 +499,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                     }
                                 </View>
                                 <View style={{ flex: 7, paddingLeft: 20 }}>
-                                    <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { productId: lending.productId })}>
+                                    <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { product: lending.product })}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{lending.productTitle}</Text>
+                                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{lending.product.title}</Text>
                                             <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />
                                         </View>
                                     </TouchableOpacity>
@@ -504,10 +511,10 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Borrowing Notes</Text>
                             <Text style={{ marginBottom: 30 }}>{greetings + '\n'}</Text>
-                            <Text style={{ marginBottom: 30 }}>{lending.productBorrowingNotes}</Text>
+                            <Text style={{ marginBottom: 30 }}>{lending.product.borrowingNotes}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Pickup Instructions</Text>
-                            <Text style={{ marginBottom: 30 }}>{lending.productPickupInstructions}</Text>
+                            <Text style={{ marginBottom: 30 }}>{lending.product.pickupInstructions}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20, marginBottom: 10 }}>Location</Text>
                             <View style={{ height: 200, borderRadius: 20, overflow: 'hidden', borderColor: COLORS.blackLight, borderWidth: 1, }}>
@@ -515,8 +522,8 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                     ref={mapRef}
                                     style={{ height: '100%' }}
                                     initialRegion={{
-                                        latitude: coordinates.latitude,
-                                        longitude: coordinates.longitude,
+                                        latitude: lending.product.latitude,
+                                        longitude: lending.product.longitude,
                                         latitudeDelta: 0.0005,
                                         longitudeDelta: 0.0005,
                                     }}
@@ -528,18 +535,18 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                 >
                                     <Marker
                                         coordinate={{
-                                            latitude: coordinates.latitude,
-                                            longitude: coordinates.longitude,
+                                            latitude: lending.product.latitude,
+                                            longitude: lending.product.longitude,
                                         }}
                                         title="Selected Location"
                                     />
                                 </MapView>
                                 <View style={GlobalStyleSheet.line} />
                             </View>
-                            <Text style={{ marginBottom: 30, marginTop: 5 }}>{lending.addressName}, {lending.address}</Text>
+                            <Text style={{ marginBottom: 30, marginTop: 5 }}>{lending.product.addressName}, {lending.product.address}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Return Instructions</Text>
-                            <Text style={{ marginBottom: 30 }}>{lending.productReturnInstructions}</Text>
+                            <Text style={{ marginBottom: 30 }}>{lending.product.returnInstructions}</Text>
                             <View style={GlobalStyleSheet.line} />
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Additional Information</Text>
                             <FlatList
