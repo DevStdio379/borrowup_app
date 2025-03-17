@@ -20,9 +20,7 @@ type MyBorrowingDetailsScreenProps = StackScreenProps<RootStackParamList, 'MyBor
 const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps) => {
 
     const mapRef = useRef<MapView | null>(null);
-    const { user } = useUser();
-    const { borrowing } = route.params;
-    const [coordinates, setCoordinates] = useState({ latitude: 37.78825, longitude: -122.4324 });
+    const [ borrowing ] = useState<Borrowing>(route.params.borrowing);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [owner, setOwner] = useState<User>();
@@ -204,8 +202,9 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                             alignItems: 'center',
                                         }}
                                         onPress={async () => {
-                                            await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1 });
-                                            setStatus(status! + 1);
+                                            console.log('LOG: ', borrowing.collectionCode);
+                                            // await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1 });
+                                            // setStatus(status! + 1);
                                         }}
                                     >
                                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Message lender</Text>
@@ -295,8 +294,8 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                             />
                                         ))}
                                     </View>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.status}</Text>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.returnCode}</Text>
+                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.status.toString()}</Text>
+                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.returnCode.toString()}</Text>
                                     <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10, color: COLORS.danger }}>{validationMessage}</Text>
                                 </View>
                             ) : status === 5 ? (
@@ -501,8 +500,8 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                     ref={mapRef}
                                     style={{ height: '100%' }}
                                     initialRegion={{
-                                        latitude: coordinates.latitude,
-                                        longitude: coordinates.longitude,
+                                        latitude: borrowing.product.latitude,
+                                        longitude: borrowing.product.longitude,
                                         latitudeDelta: 0.0005,
                                         longitudeDelta: 0.0005,
                                     }}
@@ -514,8 +513,8 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                 >
                                     <Marker
                                         coordinate={{
-                                            latitude: coordinates.latitude,
-                                            longitude: coordinates.longitude,
+                                            latitude: borrowing.product.latitude,
+                                            longitude: borrowing.product.longitude,
                                         }}
                                         title="Selected Location"
                                     />
