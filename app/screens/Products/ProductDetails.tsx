@@ -152,8 +152,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     setLoading(false);
   };
 
-  const handleChat = async (otherUserId: string) => {
-    const chatId = await getOrCreateChat(otherUserId);
+  const handleChat = async (user: User, otherUser: User) => {
+    const chatId = await getOrCreateChat(user, otherUser);
     if (chatId) {
       navigation.navigate("Chat", { chatId: chatId });
     }
@@ -270,6 +270,11 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const getBookedDates = async (productId: string) => {
     let markedDates: any = {};
 
+    const availableDays = getAvailableDays(new Date().getFullYear(), new Date().getMonth() + 1, product.availableDays);
+    Object.keys(availableDays).forEach((sunday) => {
+      markedDates[sunday] = { disabled: true, disableTouchEvent: true, textColor: "red" };
+    });
+
     const bookedDateRanges = await fetchBorrowingDates(productId);
 
     bookedDateRanges.forEach(({ startDate, endDate }) => {
@@ -341,7 +346,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     };
 
     fetchData();
-  }, [startDate, endDate, product]);
+    console.log('Check fetch')
+  },[]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -435,6 +441,23 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   const prevScreen = () =>
     setIndex((prev) => (prev - 1 + screens) % screens);
+
+  // Function to get available days dynamically based on product.availableDays
+  const getAvailableDays = (year: number, month: number, availableDays: string[]) => {
+    const availableDates: { [key: string]: { disabled: boolean } } = {};
+    const daysInMonth = new Date(year, month, 0).getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month - 1, day);
+      const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+      if (!availableDays.includes(dayName)) {
+        const formattedDate = date.toISOString().split('T')[0];
+        availableDates[formattedDate] = { disabled: true };
+      }
+    }
+    return availableDates;
+  };
+
 
   return (
     <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
@@ -624,7 +647,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     <Text style={{ fontSize: 14, color: COLORS.blackLight }}>by {owner?.firstName} {owner?.lastName} </Text>
                   </View>
                   <TouchableOpacity
-                    onPress={() => owner && handleChat(owner.uid)}
+                    onPress={() => { if (user && owner) handleChat(user, owner) }}
                     style={{
                       bottom: 10,
                       right: 10,
