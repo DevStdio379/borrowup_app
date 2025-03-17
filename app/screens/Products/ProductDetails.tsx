@@ -10,7 +10,7 @@ import { fetchBorrowingDates, fetchSelectedProduct } from '../../services/Produc
 import { Calendar, DateData } from 'react-native-calendars';
 import { format } from 'date-fns';
 import MapView, { Circle, Marker } from 'react-native-maps';
-import { Address, fetchProductAddress, fetchUserAddresses } from '../../services/AddressServices';
+import { Address, fetchUserAddresses } from '../../services/AddressServices';
 import { createBorrowing } from '../../services/BorrowingServices';
 import { getReviewsByProductId } from '../../services/ReviewServices';
 import { getOrCreateChat } from '../../services/ChatServices';
@@ -18,13 +18,13 @@ import { getOrCreateChat } from '../../services/ChatServices';
 type ProductDetailsScreenProps = StackScreenProps<RootStackParamList, 'ProductDetails'>;
 const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const { user } = useUser();
-  const mapRef = useRef<MapView | null>(null);
+  const mapRef = useRef<MapView>(null);
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
   const [product, setProduct] = useState(route.params.product);
-  const [productAddress, setProductAddress] = useState<Address>();
+  // const [productAddress, setProductAddress] = useState<Address>();
   const [addresses, setAddresses] = useState<{ [key: string]: any; id: string; }[]>([]);
   const [owner, setOwner] = useState<User>();
 
@@ -98,15 +98,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       try {
         const selectedProduct = await fetchSelectedProduct(product.id || 'undefined');
         if (selectedProduct) {
-          const selectedProductAddress = await fetchProductAddress(selectedProduct.ownerID, selectedProduct.addressID)
-          if (selectedProductAddress) {
-            setProductAddress(selectedProductAddress);
-            if (selectedProductAddress) {
-              console.log('Fetched langitude & longitude:', selectedProduct.latitude, selectedProductAddress.longitude);
-              setCoordinates({ latitude: selectedProduct.latitude, longitude: selectedProductAddress.longitude });
-            }
-          }
-
+          setProduct(selectedProduct);
           // fetch Owner details
           try {
             const fetchedOwner = await fetchSelectedUser(selectedProduct.ownerID);
@@ -301,6 +293,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   useEffect(() => {
     const fetchData = async () => {
       if (product) {
+        setCoordinates({ latitude: product.latitude, longitude: product.longitude });
         // fetch owner
         const fetchedOwner = await fetchSelectedUser(product.ownerID);
         if (fetchedOwner) {
@@ -327,12 +320,6 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
         );
         setReviews(reviewsWithUserDetails);
 
-        const selectedProductAddress = await fetchProductAddress(product.ownerID, product.addressID);
-        if (selectedProductAddress) {
-          setProductAddress(selectedProductAddress);
-          setCoordinates({ latitude: selectedProductAddress.latitude, longitude: selectedProductAddress.longitude });
-        }
-
         if (startDate && endDate) {
           const days = getDateRange(startDate, endDate).length;
           setNumberOfDays(days);
@@ -347,7 +334,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
     fetchData();
     console.log('Check fetch')
-  },[]);
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -370,10 +357,10 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       return;
     }
 
-    if (!productAddress) {
-      Alert.alert('Error', 'Product address not found.');
-      return;
-    }
+    // if (!productAddress) {
+    //   Alert.alert('Error', 'Product address not found.');
+    //   return;
+    // }
 
     const borrowingData = {
       userId: user?.uid || '',
@@ -407,11 +394,11 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       navigation.navigate('PaymentSuccess', {
         borrowingId: borrowingId,
         collectionCode: borrowingData.collectionCode,
-        latitude: productAddress.latitude,
-        longitude: productAddress.longitude,
-        addressName: productAddress.addressName,
-        address: productAddress.address,
-        postcode: productAddress.postcode
+        latitude: product.latitude,
+        longitude: product.longitude,
+        addressName: product.addressName,
+        address: product.address,
+        postcode: product.postcode
       });
     }
   };
@@ -660,7 +647,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                   </TouchableOpacity>
                 </View>
                 <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 10 }}>£ {product.lendingRate} / day</Text>
-                <Text style={{ fontSize: 18, fontWeight: 'semibold', color: COLORS.black }}>{productAddress?.address}</Text>
+                <Text style={{ fontSize: 18, fontWeight: 'semibold', color: COLORS.black }}>{product.address}</Text>
                 <Text style={{ fontSize: 14, color: COLORS.blackLight, paddingBottom: 20 }}>{product.description}</Text>
                 <View style={GlobalStyleSheet.line} />
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Available Slots</Text>
@@ -679,11 +666,11 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                   <MapView
                     ref={mapRef}
                     style={{ height: '100%' }}
-                    region={{
+                    initialRegion={{
                       latitude: coordinates.latitude,
                       longitude: coordinates.longitude,
-                      latitudeDelta: 0.05, // Adjust zoom level
-                      longitudeDelta: 0.05,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
                     }}
                     scrollEnabled={false}
                     zoomEnabled={false}
@@ -691,12 +678,10 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     pitchEnabled={false}
                     toolbarEnabled={false}
                   >
-                    <Circle
-                      center={coordinates}
-                      radius={1000} // Radius in meters (1000m = 1km)
-                      strokeWidth={2}
-                      strokeColor="rgba(0, 122, 255, 0.5)"
-                      fillColor="rgba(0, 122, 255, 0.2)" // Light blue transparent fill
+                    <Marker
+                      coordinate={{ latitude: coordinates.latitude, longitude: coordinates.longitude }}
+                      title={product.title}
+                      description={product.address}
                     />
                   </MapView>
                   <View style={GlobalStyleSheet.line} />
