@@ -231,3 +231,19 @@ export const fetchAllUsers = async (): Promise<User[]> => {
     throw error;
   }
 };
+
+export const fetchUsersByIds = async (userIds: string[]): Promise<User[]> => {
+  try {
+    const users: User[] = [];
+    for (const userId of userIds) {
+      const user = await fetchSelectedUser(userId);
+      if (user) {
+        users.push(user);
+      }
+    }
+    return users;
+  } catch (error) {
+    console.error("Error fetching users by IDs:", error);
+    throw error;
+  }
+};
