@@ -24,6 +24,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     const [owner, setOwner] = useState<User>();
     const [images, setImages] = useState<string[]>([]);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [status, setStatus] = useState<number>(lending.status);
     const [review, setReview] = useState<Review>();
 
     const CODE_LENGTH = 7;
@@ -53,8 +54,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
         const correctPin = lending?.collectionCode; // Replace with actual validation logic
         if (enteredPin === correctPin) {
             if (lending.id) {
-                await updateBorrowing(lending.id, { status: lending.status + 1 });
+                await updateBorrowing(lending.id, { status: status! + 1 });
             }
+            setStatus(status! + 1);
             setCollectionCode(Array(CODE_LENGTH).fill("")); // Reset input
             inputs.current[0]?.focus(); // Focus back to first input
             setValidationMessage("Success. PIN is correct!");
@@ -78,6 +80,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                 const selectedBorrowing = await fetchSelectedBorrowing(lending.id);
                 if (selectedBorrowing) {
                     setLending(selectedBorrowing);
+                    setStatus(selectedBorrowing.status);
 
                     const fetchedOwner = await fetchSelectedUser(selectedBorrowing.product.ownerID);
                     if (fetchedOwner) {
@@ -131,11 +134,11 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     };
 
     const steps = [
-        { label: "Rental\nCreated", date: `${formatDate(lending?.startDate)},\n${lending?.product.collectionTime}`, completed: (lending.status ?? 0) >= 0 },
-        { label: "Pickup\n", date: "Enter pickup\ncode", completed: (lending.status ?? 0) > 2 },
-        { label: "Active\nRental", date: "\n", completed: (lending.status ?? 0) > 2 },
-        { label: "Return\n", date: "Show return\ncode", completed: (lending.status ?? 0) > 3 },
-        { label: "Rental\nCompleted", date: `${formatDate(lending?.endDate)},\n ${lending?.product.returnTime}`, completed: (lending.status ?? 0) > 5 },
+        { label: "Rental\nCreated", date: `${formatDate(lending?.startDate)},\n${lending?.product.collectionTime}`, completed: (status ?? 0) >= 0 },
+        { label: "Pickup\n", date: "Enter pickup\ncode", completed: (status ?? 0) > 2 },
+        { label: "Active\nRental", date: "\n", completed: (status ?? 0) > 2 },
+        { label: "Return\n", date: "Show return\ncode", completed: (status ?? 0) > 3 },
+        { label: "Rental\nCompleted", date: `${formatDate(lending?.endDate)},\n ${lending?.product.returnTime}`, completed: (status ?? 0) > 5 },
     ];
 
     const actions = [
@@ -192,7 +195,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                         </View>
                         {/* Action Card */}
                         <View style={{ backgroundColor: "#f3f3f3", padding: 16, borderRadius: 12, alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, marginVertical: 20, marginHorizontal: 10 }}>
-                            {lending.status === 0 ? (
+                            {status === 0 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <Text style={{ fontWeight: 'bold' }}>Please confirm this lending?</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
@@ -220,15 +223,16 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                             }}
                                             onPress={async () => {
                                                 if (lending.id) {
-                                                    await updateBorrowing(lending.id, { status: lending.status + 1, collectionCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
+                                                    await updateBorrowing(lending.id, { status: status! + 1, collectionCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
                                                 }
+                                                setStatus(status! + 1);
                                             }}
                                         >
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>Yes</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                            ) : lending.status === 1 ? (
+                            ) : status === 1 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>Your Collection Code:</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
@@ -250,7 +254,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                     <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{lending.collectionCode}</Text>
                                     <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10, color: COLORS.danger }}>{validationMessage}</Text>
                                 </View>
-                            ) : lending.status === 2 ? (
+                            ) : status === 2 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4, textAlign: 'center' }}>Awaiting for borrower's pickup confirmation</Text>
                                     <TouchableOpacity
@@ -264,14 +268,15 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                         }}
                                         onPress={async () => {
                                             if (lending.id) {
-                                                await updateBorrowing(lending.id, { status: lending.status + 1 });
+                                                await updateBorrowing(lending.id, { status: status! + 1 });
                                             }
+                                            setStatus(status! + 1);
                                         }}
                                     >
                                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Message borrower</Text>
                                     </TouchableOpacity>
                                 </View>
-                            ) : lending.status === 3 ? (
+                            ) : status === 3 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>
                                         {lending?.endDate ? `${Math.ceil((new Date(lending.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left` : "N/A"}
@@ -288,19 +293,20 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                         }}
                                         onPress={async () => {
                                             if (lending.id) {
-                                                await updateBorrowing(lending.id, { status: lending.status + 1, returnCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
+                                                await updateBorrowing(lending.id, { status: status! + 1, returnCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
                                             }
+                                            setStatus(status! + 1);
                                         }}
                                     >
                                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Message Borrower</Text>
                                     </TouchableOpacity>
                                 </View>
-                            ) : lending.status === 4 ? (
+                            ) : status === 4 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Your return code is</Text>
                                     <Text style={{ fontSize: 24, fontWeight: "bold", color: "indigo" }}>{lending.returnCode}</Text>
                                 </View>
-                            ) : lending.status === 5 ? (
+                            ) : status === 5 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <Text style={{ fontWeight: 'bold' }}>Please confirm this return?</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
@@ -328,8 +334,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                             }}
                                             onPress={async () => {
                                                 if (lending.id) {
-                                                    await updateBorrowing(lending.id, { status: lending.status + 1 });
+                                                    await updateBorrowing(lending.id, { status: status! + 1 });
                                                 }
+                                                setStatus(status! + 1);
                                             }}
                                         >
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>Yes</Text>
