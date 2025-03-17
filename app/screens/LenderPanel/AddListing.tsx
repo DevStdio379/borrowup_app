@@ -14,14 +14,15 @@ import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom
 import { createProduct, fetchSelectedProduct, updateProduct } from '../../services/ProductServices';
 import { fetchUserAddresses } from '../../services/AddressServices';
 import { set } from 'date-fns';
+import { Borrowing } from '../../services/BorrowingServices';
 
 type AddListingScreenProps = StackScreenProps<RootStackParamList, 'AddListing'>;
 
 const AddListing = ({ navigation, route }: AddListingScreenProps) => {
 
     const { user } = useUser();
-    const { listingId } = route.params;
-    const [index, setIndex] = useState(listingId !== 'newListing' ? 1 : 0);
+    const [ listing ] = useState(route.params.listing);
+    const [index, setIndex] = useState(listing !== {} as Borrowing  ? 1 : 0);
 
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
@@ -82,10 +83,10 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
     };
 
     useEffect(() => {
-        if (listingId !== 'newListing') {
+        if (listing !== {} as Borrowing ) {
             const fetchListing = async () => {
                 try {
-                    const selectedProduct = await fetchSelectedProduct(listingId);
+                    const selectedProduct = await fetchSelectedProduct(listing.id || 'undefined');
                     if (selectedProduct) {
                         // Set the state with the fetched listing details
                         setImages(selectedProduct.imageUrls);
@@ -120,7 +121,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
             setIndex(1);
         }
         bottomSheetRef.current?.snapToIndex(-1);
-    }, [listingId]);
+    }, [listing]);
 
     const userId = user?.uid;
     useEffect(() => {
@@ -253,7 +254,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
 
         try {
             if (user?.uid) {
-                if (listingId === 'newListing') {
+                if (listing === {} as Borrowing ) {
                     await createProduct({
                         ownerID: user.uid,
                         imageUrls: images ? images : [''],
@@ -282,7 +283,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                     });
                     Alert.alert('Listing created successfully.');
                 } else {
-                    await updateProduct(listingId, {
+                    await updateProduct(listing.id || 'undefined', {
                         ownerID: user.uid,
                         imageUrls: images ? images : [''],
                         title: title || '',

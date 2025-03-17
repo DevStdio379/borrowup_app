@@ -9,10 +9,11 @@ import Header from '../../layout/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser } from '../../context/UserContext';
 import { fetchUserProductListings } from '../../services/ProductServices';
+import { Borrowing } from '../../services/BorrowingServices';
 
 type ListingsScreenProps = StackScreenProps<RootStackParamList, 'Listings'>;
 
-const Listings = ({ navigation }: ListingsScreenProps) => {
+const Listings = ({ navigation, route }: ListingsScreenProps) => {
     const { user } = useUser();
     const [activeListings, setActiveListings] = useState<any[]>([]);
     const [inactiveListings, setinActiveListings] = useState<any[]>([]);
@@ -79,7 +80,7 @@ const Listings = ({ navigation }: ListingsScreenProps) => {
                                     borderRadius: 50,
                                     padding: 10,
                                 }}
-                                onPress={() => navigation.navigate('AddListing', { listingId: 'newListing' })}
+                                onPress={() => navigation.navigate('AddListing', { listing: {} as Borrowing })}
                             >
                                 <Ionicons name="add-outline" size={20} color={COLORS.white} />
                             </TouchableOpacity>
@@ -92,7 +93,7 @@ const Listings = ({ navigation }: ListingsScreenProps) => {
                                 <View style={{ marginVertical: 5, height: 100 }} key={index}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        onPress={() => navigation.navigate('AddListing', { listingId: data.id })}
+                                        onPress={() => navigation.navigate('AddListing', { listing: data })}
                                         style={{
                                             borderRadius: 10,
                                             borderWidth: 1,
@@ -132,7 +133,7 @@ const Listings = ({ navigation }: ListingsScreenProps) => {
                                 <View style={{ marginVertical: 5, height: 100 }} key={index}>
                                     <TouchableOpacity
                                         activeOpacity={0.8}
-                                        onPress={() => navigation.navigate('AddListing', { listingId: data.id })}
+                                        onPress={() => navigation.navigate('AddListing', { listing: data })}
                                         style={{
                                             borderRadius: 10,
                                             borderWidth: 1,
