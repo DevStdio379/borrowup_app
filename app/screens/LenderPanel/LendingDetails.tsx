@@ -9,13 +9,14 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { fetchSelectedBorrowing, Borrowing, updateBorrowing } from '../../services/BorrowingServices';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { getReviewByBorrowingId, Review } from '../../services/ReviewServices';
+import { createReview, getReviewByBorrowingId, Review } from '../../services/ReviewServices';
 
 type LendingDetailsScreenProps = StackScreenProps<RootStackParamList, 'LendingDetails'>;
 
 
 const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
 
+    const { user } = useUser();
     const mapRef = useRef<MapView | null>(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -75,9 +76,9 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     };
 
     const fetchSelectedBorrowingData = async () => {
-        if (lending.id) {
+        if (lending) {
             try {
-                const selectedBorrowing = await fetchSelectedBorrowing(lending.id);
+                const selectedBorrowing = await fetchSelectedBorrowing(lending.id || 'undefined');
                 if (selectedBorrowing) {
                     setLending(selectedBorrowing);
                     setStatus(selectedBorrowing.status);
@@ -88,9 +89,14 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                     }
 
                     const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.product.id || '', lending.id || '');
-                    if (fetchedReview && fetchedReview.id) {
+                    if (fetchedReview) {
+                        Alert.alert('L Review found');
                         setReview(fetchedReview);
+                    } else {
+                        Alert.alert('L Review not found');
                     }
+                } else {
+                    Alert.alert('B Borrowing not found');
                 }
             } catch (error) {
                 console.error('Failed to fetch selected lending details:', error);
@@ -100,17 +106,28 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     };
 
     useEffect(() => {
-        if (lending) {
-            setImages(lending.product.imageUrls);
-            setSelectedImage(lending.product.imageUrls[0]);
-        }
+        const fetchData = async () => {
+            if (lending) {
+                setImages(lending.product.imageUrls);
+                setSelectedImage(lending.product.imageUrls[0]);
+                setLending(lending);
 
-        fetchSelectedUser(lending.product.ownerID).then((user) => {
-            if (user) {
-                setOwner(user);
+                const selectedBorrowing = await fetchSelectedBorrowing(lending.id || 'undefined');
+                if (selectedBorrowing) {
+                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.product.ownerID);
+                    if (fetchedOwner) {
+                        setOwner(fetchedOwner);
+                    }
+
+                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.product.id || 'undefined', selectedBorrowing.id || 'undefined');
+                    if (fetchedReview && fetchedReview.id) {
+                        setReview(fetchedReview);
+                    }
+                }
             }
-        });
-        setLoading(false);
+        }
+        fetchData();
+        setStatus(lending.status);
     }, [lending]);
 
     const onRefresh = useCallback(() => {
@@ -406,8 +423,34 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                                 alignItems: 'center',
                                             }}
                                             onPress={async () => {
+                                                const newReview = await createReview({
+                                                    borrowingId: lending.id || '',
+                                                    lenderReviewerId: user?.uid || '',
+                                                    lenderOverallRating: 0,
+
+                                                    lenderCollectionRating: 0,
+                                                    lenderCollectionFeedback: [''],
+                                                    lenderOtherCollectionReview: '',
+                                                    lenderReturnRating: 0,
+                                                    lenderReturnFeedback: [''],
+                                                    lenderOtherReturnReview: '',
+                                                    lenderGivenInstructionFollowed: '',
+                                                    lenderGivenInstructionFollowedFeedback: [''],
+                                                    lenderOtherGivenInstructionFollowedReview: '',
+                                                    lenderCommunicationRating: 0,
+                                                    lenderCommunicationFeedback: [''],
+                                                    lenderOtherCommunicationReview: '',
+                                                    lenderReturnedProductConditionRating: 0,
+                                                    lenderReturnedProductConditionFeedback: [''],
+                                                    lenderOtherReturnedProductConditionReview: '',
+                                                    lenderPublicReview: '',
+                                                    lenderPrivateNotesforLender: '',
+                                                    lenderUpdatedAt: new Date(),
+                                                    lenderCreateAt: new Date(),
+                                                    lenderStatus: 0,
+                                                }, lending.product.id || 'undefined');
                                                 console.log('Review not found');
-                                                navigation.navigate('LenderAddReview', { reviewId: 'newReview', lending: lending });
+                                                navigation.navigate('LenderAddReview', { reviewId: newReview, lending: lending });
                                             }}
                                         >
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>

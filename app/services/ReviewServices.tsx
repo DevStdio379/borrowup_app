@@ -77,12 +77,13 @@ export const getReviewByBorrowingId = async (productId: string ,borrowingId: str
 };
 
 // Function to save a product to Firestore
-export const createReview = async (review: Review, productId: string ) => {
+export const createReview = async (review: Review, productId: string) => {
   try {
-    const productRef = collection(db, 'products', productId, 'reviews' );
-    await addDoc(productRef, review);
+    const productRef = collection(db, 'products', productId, 'reviews');
+    const docRef = await addDoc(productRef, review);
 
-    console.log('Review saved successfully');
+    console.log('Review saved successfully with ID:', docRef.id);
+    return docRef.id;  // Return the ID of the newly created review
   } catch (error) {
     console.error('Error saving review: ', error);
     throw error;  // Throwing the error to handle it at the call site

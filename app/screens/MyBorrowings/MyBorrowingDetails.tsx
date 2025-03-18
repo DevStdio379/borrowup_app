@@ -12,15 +12,16 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { fetchSelectedBorrowing, Borrowing, updateBorrowing } from '../../services/BorrowingServices';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { getReviewByBorrowingId, Review } from '../../services/ReviewServices';
+import { createReview, getReviewByBorrowingId, Review } from '../../services/ReviewServices';
 
 type MyBorrowingDetailsScreenProps = StackScreenProps<RootStackParamList, 'MyBorrowingDetails'>;
 
 
 const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps) => {
 
+    const { user } = useUser();
     const mapRef = useRef<MapView | null>(null);
-    const [ borrowing, setBorrowing ] = useState<Borrowing>(route.params.borrowing);
+    const [borrowing, setBorrowing] = useState<Borrowing>(route.params.borrowing);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [owner, setOwner] = useState<User>();
@@ -76,6 +77,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
 
     const fetchSelectedBorrowingData = async () => {
         if (borrowing) {
+            Alert.alert('1 Borrowing found');
             try {
                 const selectedBorrowing = await fetchSelectedBorrowing(borrowing.id || 'undefined');
                 if (selectedBorrowing) {
@@ -88,13 +90,18 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                     }
 
                     const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.product.id || 'undefined', selectedBorrowing.id || 'unefined');
-                    if (fetchedReview && fetchedReview.id) {
+                    if (fetchedReview) {
+                        Alert.alert('B Review found');
                         setReview(fetchedReview);
+                    } else {
+                        Alert.alert('B Review not found');
                     }
                 }
             } catch (error) {
                 console.error('Failed to fetch selected borrowing details:', error);
             }
+        } else {
+            Alert.alert('B Borrowing not found');
         }
         setLoading(false);
     };
@@ -102,8 +109,10 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
     useEffect(() => {
         const fetchData = async () => {
             if (borrowing) {
+                Alert.alert('2 Borrowing found');
                 setImages(borrowing.product.imageUrls);
                 setSelectedImage(borrowing.product.imageUrls[0]);
+                setBorrowing(borrowing);
 
                 const selectedBorrowing = await fetchSelectedBorrowing(borrowing.id || 'undefined');
                 if (selectedBorrowing) {
@@ -112,11 +121,13 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                         setOwner(fetchedOwner);
                     }
 
-                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.id || 'undefined', selectedBorrowing.id || 'undefined');
+                    const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.product.id || 'undefined', selectedBorrowing.id || 'undefined');
                     if (fetchedReview && fetchedReview.id) {
                         setReview(fetchedReview);
                     }
                 }
+            } else {
+                Alert.alert('B Borrowing not found');
             }
         };
         setStatus(borrowing.status);
@@ -383,8 +394,34 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                                 alignItems: 'center',
                                             }}
                                             onPress={async () => {
+                                                const newReview = await createReview({
+                                                    borrowingId: borrowing.id || '',
+                                                    borrowerReviewerId: user?.uid || '',
+                                                    borrowerOverallRating: 0,
+                                                    borrowerCollectionRating: 0,
+                                                    borrowerCollectionFeedback: [''],
+                                                    borrowerOtherCollectionReview: '',
+                                                    borrowerReturnRating: 0,
+                                                    borrowerReturnFeedback:  [''],
+                                                    borrowerOtherReturnReview: '',
+                                                    borrowerListingMatch: '',
+                                                    borrowerListingMatchFeedback: [''],
+                                                    borrowerOtherListingMatchReview: '',
+                                                    borrowerCommunicationRating: 0,
+                                                    borrowerCommunicationFeedback: [''],
+                                                    borrowerOtherCommunicationReview: '',
+                                                    borrowerProductConditionRating: 0,
+                                                    borrowerProductConditionFeedback: [''],
+                                                    borrowerOtherProductConditionReview: '',
+                                                    borrowerPriceWorthyRating: 0,
+                                                    borrowerPublicReview: '',
+                                                    borrowerPrivateNotesforLender: '',
+                                                    borrowerUpdatedAt: new Date(),
+                                                    borrowerCreateAt: new Date(),
+                                                    borrowerStatus: 0,
+                                                }, borrowing.product.id || 'undefined');
                                                 console.log('Review not found');
-                                                navigation.navigate('BorrowerAddReview', { reviewId: 'newReview', borrowing: borrowing });
+                                                navigation.navigate('BorrowerAddReview', { reviewId: newReview, borrowing: borrowing });
                                             }}
                                         >
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>Review</Text>
@@ -478,7 +515,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                 <View style={{ flex: 7, paddingLeft: 20 }}>
                                     <TouchableOpacity
                                         // onPress={() => navigation.navigate('ProductDetails', { product: borrowing.product })}>
-                                        onPress={() => {} }>
+                                        onPress={() => { }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{borrowing.product.title}</Text>
                                             <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />

@@ -102,15 +102,11 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
     };
 
     useEffect(() => {
-        fetchBorrower();
-    }, []);
-
-    useEffect(() => {
         if (reviewId !== 'newReview') {
             const fetchReview = async () => {
                 try {
-                    if (lending.productId && lending.id) {
-                        const selectedProduct = await getReviewByBorrowingId(lending.productId, lending.id);
+                    if (lending.product.id && lending.id) {
+                        const selectedProduct = await getReviewByBorrowingId(lending.product.id, lending.id);
                         if (selectedProduct) {
                             setOverallRating(selectedProduct.lenderOverallRating || 0);
                             setCollectionRating(selectedProduct.lenderCollectionRating || 0);
@@ -138,7 +134,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                     console.error('Failed to fetch listing details:', error);
                 }
             };
-
+            fetchBorrower();
             fetchReview();
             setIndex(1);
         }
@@ -219,10 +215,10 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                         lenderUpdatedAt: new Date(),
                         lenderCreateAt: new Date(),
                         lenderStatus: status,
-                    }, lending.productId);
+                    }, lending.product.id || 'undefined');
                     Alert.alert('Review created successfully.');
                 } else {
-                    await updateReview(lending.productId, reviewId, {
+                    await updateReview(lending.product.id || 'undefined', reviewId, {
                         borrowingId: lending.id || '',
                         lenderReviewerId: user.uid,
                         lenderOverallRating: overallRating || 0,

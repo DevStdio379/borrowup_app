@@ -96,7 +96,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
     };
 
     const fetchOwner = async () => {
-        const fetchedOwner = await fetchSelectedUser(borrowing.productOwnerId);
+        const fetchedOwner = await fetchSelectedUser(borrowing.product.ownerID);
         if (fetchedOwner) {
             setOwner(fetchedOwner);
         }
@@ -111,8 +111,8 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
         if (reviewId !== 'newReview') {
             const fetchReview = async () => {
                 try {
-                    if (borrowing.productId && borrowing.id) {
-                        const selectedProduct = await getReviewByBorrowingId(borrowing.productId, borrowing.id);
+                    if (borrowing.product.id && borrowing.id) {
+                        const selectedProduct = await getReviewByBorrowingId(borrowing.product.id, borrowing.id);
                         if (selectedProduct) {
                             setOverallRating(selectedProduct.borrowerOverallRating ?? 0);
                             setCollectionRating(selectedProduct.borrowerCollectionRating ?? 0);
@@ -226,10 +226,10 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                         borrowerUpdatedAt: new Date(),
                         borrowerCreateAt: new Date(),
                         borrowerStatus: status,
-                    }, borrowing.productId);
+                    }, borrowing.product.id || 'undefined');
                     Alert.alert('Review created successfully.');
                 } else {
-                    await updateReview(borrowing.productId, reviewId, {
+                    await updateReview(borrowing.product.id || 'undefined', reviewId, {
                         borrowingId: borrowing.id || '',
                         borrowerReviewerId: user.uid,
                         borrowerOverallRating: overallRating || 0,
