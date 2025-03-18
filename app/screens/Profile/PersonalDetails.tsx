@@ -10,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { set } from 'date-fns';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 type PersonalDetailsScreenProps = StackScreenProps<RootStackParamList, 'PersonalDetails'>;
 
@@ -25,43 +26,51 @@ const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
     }, []);
 
     const selectImage = async () => {
-        // const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        // if (status !== 'granted') {
-        //     Alert.alert('Permission Required', 'You need to grant gallery access to select image.');
-        //     return;
-        // }
+        const options = {
+            mediaType: 'photo' as const,
+            includeBase64: false,
+            maxHeight: 2000,
+            maxWidth: 2000,
+        };
 
-        // const result = await ImagePicker.launchImageLibraryAsync({
-        //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        //     allowsMultipleSelection: false, // Set to false to allow only one image selection
-        //     quality: 1,
-        // });
-
-        // if (!result.canceled) {
-        //     const selectedImage = result.assets[0].uri; // Get the URI of the selected image
-        //     setSelectedImage(selectedImage); // Set the selected image as the main preview
-        //     if (user?.uid) {
-        //         await updateUserData(user.uid, { profileImageUrl: selectedImage }); // Update the user profile image
-        //     }
-        // }
+        launchImageLibrary(options, async (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.errorMessage) {
+                console.log('Image picker error: ', response.errorMessage);
+            } else {
+                let imageUri = response.assets?.[0]?.uri;
+                setSelectedImage(imageUri ?? null);
+                console.log('Image URI: ', imageUri);
+                if (user) {
+                    await updateUserData(user.uid, { profileImageUrl: imageUri || 'undefined' });
+                }
+            }
+        });
     };
 
     const takePhoto = async () => {
-        // const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        // if (status !== 'granted') {
-        //     Alert.alert('Permission Required', 'You need to grant camera access to take a photo.');
-        //     return;
-        // }
+        const options = {
+            mediaType: 'photo' as const,
+            includeBase64: false,
+            maxHeight: 2000,
+            maxWidth: 2000,
+        };
 
-        // const result = await ImagePicker.launchCameraAsync({
-        //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        //     quality: 1,
-        // });
-
-        // if (!result.canceled) {
-        //     const selectedImage = result.assets[0].uri; // Get the URI of the taken photo
-        //     setSelectedImage(selectedImage); // Set the taken photo as the main preview
-        // }
+        launchCamera(options, async (response: any) => {
+            if (response.didCancel) {
+                console.log('User cancelled camera');
+            } else if (response.errorCode) {
+                console.log('Camera Error: ', response.errorMessage);
+            } else {
+                let imageUri = response.assets?.[0]?.uri;
+                setSelectedImage(imageUri);
+                console.log('Image URI: ', imageUri);
+                if (user?.uid) {
+                    await updateUserData(user.uid, { profileImageUrl: imageUri || 'undefined' }); // Update the user profile image
+                }
+            }
+        });
     };
 
     const handleProfileAttributeClick = (profileAttribute: { attributeName: string }) => {
