@@ -22,8 +22,8 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
     const [isFocused, setisFocused] = useState(false);
     const [isFocused2, setisFocused2] = useState(false);
 
-    const [email, setEmail] = useState<string>('farizah@gmail.com');
-    const [password, setPassword] = useState<string>('12345678');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     const [loading, setLoading] = useState(false);
 
@@ -58,8 +58,8 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
     };
 
     return (
-        <View>
-            <View style={[GlobalStyleSheet.container, {height: '100%', backgroundColor: COLORS.backgroundColor, paddingHorizontal: 30, justifyContent: 'center', alignItems: 'center' }]}>
+        <ScrollView>
+            <View style={[GlobalStyleSheet.container, { height: '100%', backgroundColor: COLORS.backgroundColor, paddingHorizontal: 30, justifyContent: 'center', alignItems: 'center' }]}>
                 <View style={{ width: '100%' }}>
                     <View style={{ paddingTop: 80, marginBottom: 30 }}>
                         <Text style={{ color: colors.title, fontWeight: 'bold', fontSize: 30, marginBottom: 5 }}>Welcome back! Glad to see you, Again!</Text>
@@ -117,8 +117,13 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
                         </View>
                         <View style={{ alignItems: 'center', marginTop: 30 }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}>
-                                    <Ionicons name='logo-facebook' size={24} color={COLORS.title} />
+                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                    onPress={() => {
+                                        setEmail('ummi@gmail.com');
+                                        setPassword('12345678');
+                                    }}>
+                                    <Text>Ummi</Text>
+                                    {/* <Ionicons name='logo-apple' size={24} color={COLORS.title} /> */}
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
@@ -126,11 +131,75 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
                                         setEmail('afiq379@gmail.com');
                                         setPassword('12345678');
                                     }}>
-                                    <Ionicons name='logo-google' size={24} color={COLORS.primary} />
+                                    {/* <Ionicons name='logo-google' size={24} color={COLORS.primary} /> */}
+                                    <Text>Afiq</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}>
-                                    <Ionicons name='logo-apple' size={24} color={COLORS.title} />
+                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                    onPress={() => {
+                                        setEmail('farizah@gmail.com');
+                                        setPassword('12345678');
+                                    }}>
+                                    {/* <Ionicons name='logo-facebook' size={24} color={COLORS.title} /> */}
+                                    <Text>Farizah</Text>
                                 </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={{ alignItems: 'center', marginTop: 30 }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                    onPress={() => {
+                                        setEmail('kuhai@gmail.com');
+                                        setPassword('12345678');
+                                    }}>
+                                    {/* <Ionicons name='logo-facebook' size={24} color={COLORS.title} /> */}
+                                    <Text>Kuhai</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                    onPress={() => {
+                                        setEmail('dinie@gmail.com');
+                                        setPassword('12345678');
+                                    }}>
+                                    <Text>Dinie</Text>
+                                    {/* <Ionicons name='logo-google' size={24} color={COLORS.primary} /> */}
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                    onPress={() => {
+                                        setEmail('razzin@gmail.com');
+                                        setPassword('12345678');
+                                    }}>
+                                    <Text>Razzin</Text>
+                                    {/* <Ionicons name='logo-apple' size={24} color={COLORS.title} /> */}
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ alignItems: 'center', marginTop: 30 }}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                                    <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                        onPress={() => {
+                                            setEmail('liyana@gmail.com');
+                                            setPassword('12345678');
+                                        }}>
+                                        {/* <Ionicons name='logo-facebook' size={24} color={COLORS.title} /> */}
+                                        <Text>Liyana</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                        onPress={() => {
+                                            setEmail('maiqa@gmail.com');
+                                            setPassword('12345678');
+                                        }}>
+                                        <Text>Maiqa</Text>
+                                        {/* <Ionicons name='logo-google' size={24} color={COLORS.primary} /> */}
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                        onPress={() => {
+                                            setEmail('dena@gmail.com');
+                                            setPassword('12345678');
+                                        }}>
+                                        {/* <Ionicons name='logo-apple' size={24} color={COLORS.title} /> */}
+                                        <Text>Dena</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
                         <View style={{ marginBottom: 15, marginTop: 20, flexDirection: 'row', justifyContent: 'center' }}>
@@ -144,10 +213,10 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
             </View>
             {loading && (
                 <View style={GlobalStyleSheet.loadingOverlay}>
-                    <ActivityIndicator size="large" color={ COLORS.primary } />
+                    <ActivityIndicator size="large" color={COLORS.primary} />
                 </View>
             )}
-        </View>
+        </ScrollView>
     )
 }
 
