@@ -1,15 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Platform, TextInput, Alert } from 'react-native'
-import { useNavigation, useTheme } from '@react-navigation/native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native'
+import { useTheme } from '@react-navigation/native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
-import { IMAGES } from '../../constants/Images';
 import Input from '../../components/Input/Input';
-// import ImagePicker from 'react-native-image-crop-picker';
 import { COLORS, SIZES } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import MapView, { Marker } from 'react-native-maps';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -17,13 +14,11 @@ import { saveUserAddress } from '../../services/AddressServices';
 
 type AddAddressScreenProps = StackScreenProps<RootStackParamList, 'AddAddress'>;
 const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
-  const { address } = route.params
-  const theme = useTheme();
-  const { colors }: { colors: any } = theme;
+  const { latitude: lat, longitude: lng, addressName: addrName, address: addr, postcode: post } = route.params;
   const mapRef = useRef<MapView | null>(null);
   const { user } = useUser();
 
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>('house');
   const [isFocused1, setisFocused1] = useState(false)
   const [isFocused2, setisFocused2] = useState(false)
   const [isFocused3, setisFocused3] = useState(false)
@@ -37,31 +32,16 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
     { name: 'Other', icon: 'location' }
   ];
   const snapPoints = useMemo(() => ['25%', '50%', '100%'], []);
-  const [buildingType, setBuildingType] = useState('Select a building type');
+  const [buildingType, setBuildingType] = useState('house');
   const [additionalDetails, setAdditionalDetails] = useState<string | undefined>();
-  const [postcode, setPostcode] = useState<string | undefined>();
+  const [postcode, setPostcode] = useState<string | undefined>( post );
   const [addressLabel, setAddressLabel] = useState<string | undefined>();
   const [deliveryInstruction, setDeliveryInstruction] = useState<string | undefined>();
-  
-  useEffect(() => {
-    bottomSheetRef.current?.snapToIndex(-1);
-  }, []);
-
-  // Create a reference for the BottomSheet
-  const bottomSheetRef = useRef<BottomSheet>(null);
-
-  const handlePress = useCallback(() => {
-    bottomSheetRef.current?.snapToIndex(1);
-  }, []);
-
-  const selectOption = (option: string) => {
-    setSelectedOption(prevOption => (prevOption === option ? null : option));
-  };
 
   useEffect(() => {
     // Lock camera to maximum zoom level
     mapRef.current?.animateCamera({
-      center: { latitude: address.latitude, longitude: address.longitude },
+      center: { latitude: lat, longitude: lng },
       zoom: 18, // Max zoom level for react-native-maps
       heading: 0,
       pitch: 0,
@@ -71,10 +51,10 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
   const handleSaveAddress = async () => {
     const userId = user?.uid;
     const addressData = {
-      latitude: address.latitude,
-      longitude: address.longitude,
-      addressName: address.addressName,
-      address: address.address,
+      latitude: lat,
+      longitude: lng,
+      addressName: addrName,
+      address: addr,
       buildingType: buildingType || '',
       additionalDetails: additionalDetails || '',
       postcode: postcode || '',
@@ -87,13 +67,14 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
     if (userId && Object.values(addressData).every(val => val !== '')) {
       await saveUserAddress(userId, addressData); // Save address to Firestore
       Alert.alert('Success', 'Address saved successfully!');
+      navigation.navigate('AddressBook');
     } else {
       Alert.alert('Error', 'Please fill in all fields');
     }
   };
 
   return (
-    <View style={{ backgroundColor: colors.background, flex: 1 }}>
+    <View style={{ backgroundColor: COLORS.backgroundColor, flex: 1 }}>
       <Header
         title='Add Address'
         leftIcon='back'
@@ -106,8 +87,8 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
               ref={mapRef}
               style={styles.map}
               initialRegion={{
-                latitude: address.latitude,
-                longitude: address.longitude,
+                latitude: lat,
+                longitude: lng,
                 latitudeDelta: 0.0005,
                 longitudeDelta: 0.0005,
               }}
@@ -119,26 +100,27 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
             >
               <Marker
                 coordinate={{
-                  latitude: address.latitude,
-                  longitude: address.longitude,
+                  latitude: lat,
+                  longitude: lng,
                 }}
-                title="Selected Location"
+                title="house"
               />
 
             </MapView>
           </View>
           <TouchableOpacity
             style={{ position: 'absolute', borderRadius: 12, backgroundColor: COLORS.primary, padding: 10, elevation: 3, alignItems: 'center', right: SIZES.width * 0.4, top: SIZES.height * 0.15 }}
-            onPress={() => navigation.navigate('EditLocationPinPoint', { location: address })}
+            // onPress={() => navigation.navigate('EditLocationPinPoint', { location: address })}
+            onPress={() => {}}
           >
             <Text style={{ color: COLORS.white, fontWeight: 'bold' }}>Edit Pin</Text>
           </TouchableOpacity>
         </View>
-        <Text style={{ fontSize: 14, color: colors.title, marginBottom: 10 }}><Text style={{ fontSize: 14, color: colors.title, fontWeight: 'bold' }}>{address.addressName}, </Text>{address.address}</Text>
-        <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Building Type</Text>
+        {/* <Text style={{ fontSize: 14, color: COLORS.title, marginBottom: 10 }}><Text style={{ fontSize: 14, color: COLORS.title, fontWeight: 'bold' }}>{addrName}, </Text>{addr}, {post}</Text> */}
+        <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Building Type</Text>
 
         <TouchableOpacity
-          onPress={handlePress}
+          onPress={() => {}}
           activeOpacity={0.8}>
           <View style={[styles.inputBox, { flexDirection: 'row' }]}>
             <TextInput
@@ -148,60 +130,57 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
               style={{ width: SIZES.width * 0.8, paddingHorizontal: 20 }}
             />
             <View style={{ paddingTop: 10 }}>
-              <Ionicons name="chevron-down-outline" size={24} color={colors.title} />
+              <Ionicons name="chevron-down-outline" size={24} color={COLORS.title} />
             </View>
           </View>
         </TouchableOpacity>
-        <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Additional Details</Text>
+        <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Additional Details</Text>
         <Input
           onFocus={() => setisFocused1(true)}
           onBlur={() => setisFocused1(false)}
           isFocused={isFocused1}
           onChangeText={setAdditionalDetails}
-          backround={colors.card}
+          backround={COLORS.card}
           style={styles.inputBox}
-          inputicon
           placeholder='e.g. House number or name'
         />
-        <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Postcode</Text>
+        <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Postcode</Text>
         <Input
           onFocus={() => setisFocused2(true)}
           onBlur={() => setisFocused2(false)}
           isFocused={isFocused2}
           onChangeText={setPostcode}
-          backround={colors.card}
+          backround={COLORS.card}
           style={styles.inputBox}
-          inputicon
           placeholder='e.g. SW1 2AB'
+          value={postcode}
         />
-        <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Address Label</Text>
+        <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Address Label</Text>
         <Input
           onFocus={() => setisFocused3(true)}
           onBlur={() => setisFocused3(false)}
           isFocused={isFocused3}
           onChangeText={setAddressLabel}
-          backround={colors.card}
+          backround={COLORS.card}
           style={styles.inputBox}
-          inputicon
           placeholder='e.g. Home, Work'
         />
         <View style={[GlobalStyleSheet.line, { marginTop: 15, marginBottom: 5 }]} />
-        <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Instruction for delivery person</Text>
+        <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Instruction for delivery person</Text>
         <Input
           onFocus={() => setisFocused4(true)}
           onBlur={() => setisFocused4(false)}
           isFocused={isFocused4}
           onChangeText={setDeliveryInstruction}
-          backround={colors.card}
+          backround={COLORS.card}
           style={styles.longInputBox}
-          inputicon
           placeholder='e.g. Please knock instead of using the doorbell'
           multiline={true}  // Enable multi-line input
           numberOfLines={4} // Suggest the input area size
         />
         <View style={{ paddingVertical: 10, paddingHorizontal: 10 }}>
           <TouchableOpacity
-            onPress={handleSaveAddress}
+            onPress={() => handleSaveAddress()}
             style={{
               backgroundColor: COLORS.primary,
               borderRadius: 12,
@@ -213,54 +192,6 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <BottomSheet
-        ref={bottomSheetRef}
-        snapPoints={snapPoints}
-        enablePanDownToClose={true} // Allow swipe-down to close
-        index={-1} // Initial snap point
-        handleComponent={() => (
-          <View
-            style={{
-              padding: 10,
-              backgroundColor: COLORS.background,
-              borderTopLeftRadius: 22,
-              borderTopRightRadius: 22,
-            }}
-          >
-            <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>Choose building type</Text>
-            <Text style={{ textAlign: 'center', fontSize: 14 }}>Help to identify your location</Text>
-            <View style={[GlobalStyleSheet.line, { marginTop: 10 }]}></View>
-          </View>
-        )}
-        backdropComponent={(backdropProps) => (
-          <BottomSheetBackdrop {...backdropProps} enableTouchThrough={true} />
-        )}
-      >
-        <BottomSheetScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}>
-          <View style={[GlobalStyleSheet.container, { paddingHorizontal: 35, }]}>
-            {
-              options.map(option => (
-                <View>
-                  <TouchableOpacity
-                    key={option.name}
-                    style={styles.checkboxContainer}
-                    onPress={() => selectOption(option.name)}
-                  >
-                    <View style={{ flexDirection: 'row' }}>
-                      <Ionicons name={option.icon as any} size={30} color={COLORS.black} />
-                      <Text style={{ fontSize: 18, fontWeight: 'bold', paddingLeft: 10 }}>{option.name}</Text>
-                    </View>
-                    <View style={styles.checkbox}>
-                      {selectedOption === option.name && (
-                        <Ionicons name="checkmark" size={24} color={COLORS.black} />
-                      )}
-                    </View>
-                  </TouchableOpacity><View style={[GlobalStyleSheet.line, { width: '100%' }]}></View>
-                </View>
-              ))}
-          </View>
-        </BottomSheetScrollView>
-      </BottomSheet>
     </View>
   )
 }
