@@ -12,6 +12,7 @@ import LenderDashboard from '../screens/LenderPanel/LenderDashboard';
 import MyCalendarScreen from '../screens/LenderPanel/MyCalendar';
 import ListingsScreen from '../screens/LenderPanel/Listings';
 import HomeStack from './HomeStack';
+import ProfileStack from './ProfileStack';
 
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -51,7 +52,7 @@ const BottomNavigation = () => {
                 />
                 <Tab.Screen
                     name='Profile'
-                    component={ProfileScreen}
+                    component={ProfileStack}
                 />
             </Tab.Navigator>
         ) : (

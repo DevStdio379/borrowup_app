@@ -5,6 +5,8 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { GiftedChat, IMessage } from 'react-native-gifted-chat';
 import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, updateDoc } from 'firebase/firestore';
 import { useUser } from '../../context/UserContext';
+import { View } from 'react-native';
+import { COLORS } from '../../constants/theme';
 
 type ChatScreenProps = StackScreenProps<RootStackParamList, 'Chat'>;
 
@@ -59,14 +61,17 @@ export const Chat = ({ route }: ChatScreenProps) => {
   }, [chatId]);
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={(newMessages) => onSend(newMessages)}
-      user={{
-        _id: user?.uid || '',
-        name: auth.currentUser?.displayName || 'User',
-      }}
-    />
+    <View style={{ flex: 1, backgroundColor: COLORS.primaryLight }}>
+
+      <GiftedChat
+        messages={messages}
+        onSend={(newMessages) => onSend(newMessages)}
+        user={{
+          _id: user?.uid || '',
+          name: auth.currentUser?.displayName || 'User',
+        }}
+      />
+    </View>
   );
 };
 

@@ -26,21 +26,32 @@ const EditAttributes = ({ navigation, route }: EditAttributesScreenProps) => {
     const [attributeData, setAttributeData] = useState<string>('');
 
     // attribute name placeholder
-    const attribute =
-        profileAttribute.attributeName.toLowerCase() === 'username' ? 'Username' :
-            profileAttribute.attributeName.toLowerCase() === 'firstname' ? 'First Name' :
-                profileAttribute.attributeName.toLowerCase() === 'lastname' ? 'Last Name' :
-                    profileAttribute.attributeName.toLowerCase() === 'email' ? 'Email' :
-                        profileAttribute.attributeName.toLowerCase() === 'phonenumber' ? 'Phone Number' : '';
+    const attributeMap: { [key: string]: string } = {
+        username: 'Username',
+        firstname: 'First Name',
+        lastname: 'Last Name',
+        email: 'Email',
+        phonenumber: 'Phone Number'
+    };
 
+    const attribute = attributeMap[profileAttribute.attributeName.toLowerCase()] || '';
 
-    const initialAttribute = user?.isActive === true ?
-        profileAttribute.attributeName.toLowerCase() === 'username' ? `${user?.userName}` :
-            profileAttribute.attributeName.toLowerCase() === 'firstname' ? `${user?.firstName}` :
-                profileAttribute.attributeName.toLowerCase() === 'lastname' ? `${user?.lastName}` :
-                    profileAttribute.attributeName.toLowerCase() === 'email' ? `${user?.email}` :
-                        profileAttribute.attributeName.toLowerCase() === 'phonenumber' ? `${user?.phoneNumber}` : ''
-        : null;
+    const initialAttribute = user?.isActive ? (() => {
+        switch (profileAttribute.attributeName.toLowerCase()) {
+            case 'username':
+                return user?.userName || '';
+            case 'firstname':
+                return user?.firstName || '';
+            case 'lastname':
+                return user?.lastName || '';
+            case 'email':
+                return user?.email || '';
+            case 'phonenumber':
+                return user?.phoneNumber || '';
+            default:
+                return '';
+        }
+    })() : null;
 
     const handleUpdate = async () => {
         try {
