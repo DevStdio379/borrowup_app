@@ -15,14 +15,15 @@ import { createProduct, fetchSelectedProduct, updateProduct } from '../../servic
 import { fetchUserAddresses } from '../../services/AddressServices';
 import { set } from 'date-fns';
 import { Borrowing } from '../../services/BorrowingServices';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 type AddListingScreenProps = StackScreenProps<RootStackParamList, 'AddListing'>;
 
 const AddListing = ({ navigation, route }: AddListingScreenProps) => {
 
     const { user } = useUser();
-    const [ listing ] = useState(route.params.listing);
-    const [index, setIndex] = useState(listing !== {} as Borrowing  ? 1 : 0);
+    const [listing] = useState(route.params.listing);
+    const [index, setIndex] = useState(listing !== {} as Borrowing ? 1 : 0);
 
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
@@ -83,7 +84,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
     };
 
     useEffect(() => {
-        if (listing !== {} as Borrowing ) {
+        if (listing !== {} as Borrowing) {
             const fetchListing = async () => {
                 try {
                     const selectedProduct = await fetchSelectedProduct(listing.id || 'undefined');
@@ -142,48 +143,60 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
 
 
     const selectImages = async () => {
-        // const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        // if (status !== 'granted') {
-        //     Alert.alert('Permission Required', 'You need to grant gallery access to select images.');
-        //     return;
-        // }
+        const options = {
+            mediaType: 'photo' as const,
+            includeBase64: false,
+            maxHeight: 2000,
+            maxWidth: 2000,
+            selectionLimit: 5 - images.length, // Limit the selection to the remaining slots
+        };
 
-        // const result = await ImagePicker.launchImageLibraryAsync({
-        //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        //     allowsMultipleSelection: true,
-        //     selectionLimit: 5,
-        //     quality: 1,
-        // });
-
-        // if (!result.canceled) {
-        //     const selectedImages = result.assets.map((asset) => asset.uri);
-        //     setImages(selectedImages);
-        //     setSelectedImage(selectedImages[0]); // Set first image as the main preview
-        // }
+        launchImageLibrary(options, async (response) => {
+            if (response.didCancel) {
+            console.log('User cancelled image picker');
+            } else if (response.errorMessage) {
+            console.log('Image picker error: ', response.errorMessage);
+            } else {
+            const selectedImages = response.assets?.map(asset => asset.uri).filter(uri => uri !== undefined) as string[] || [];
+            setImages((prevImages) => {
+                const updatedImages = [...prevImages, ...selectedImages];
+                setSelectedImage(updatedImages[0]);
+                return updatedImages;
+            });
+            }
+        });
     };
 
     // Function to handle image selection (Gallery & Camera)
     const cameraImage = async () => {
-        // let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        const options = {
+            mediaType: 'photo' as const,
+            includeBase64: false,
+            maxHeight: 2000,
+            maxWidth: 2000,
+        };
 
-        // if (permissionResult.status !== 'granted') {
-        //     Alert.alert('Permission Required', 'You need to grant camera access.');
-        //     return;
-        // }
+        if (images.length >= 5) {
+            Alert.alert('You can only select up to 5 images.');
+            return;
+        }
 
-        // let result = await ImagePicker.launchCameraAsync({
-        //     quality: 1,
-        // });
-
-        // if (!result.canceled) {
-        //     const newImages = [result.assets[0].uri];
-
-        //     setImages((prev) => {
-        //         const updatedImages = [...prev, ...newImages].slice(0, 5); // Keep only 5 images max
-        //         setSelectedImage(updatedImages[0]); // Set first image as main preview
-        //         return updatedImages;
-        //     });
-        // }
+        launchCamera(options, async (response: any) => {
+            if (response.didCancel) {
+                console.log('User cancelled camera');
+            } else if (response.errorCode) {
+                console.log('Camera Error: ', response.errorMessage);
+            } else {
+                let newImageUri = response.assets?.[0]?.uri;
+                if (newImageUri) {
+                    setImages((prevImages) => {
+                        const updatedImages = [...prevImages, newImageUri];
+                        setSelectedImage(updatedImages[0]);
+                        return updatedImages;
+                    });
+                }
+            }
+        });
     };
 
     // Function to delete the selected image
@@ -254,7 +267,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
 
         try {
             if (user?.uid) {
-                if (listing === {} as Borrowing ) {
+                if (listing === {} as Borrowing) {
                     await createProduct({
                         ownerID: user.uid,
                         imageUrls: images ? images : [''],
@@ -446,7 +459,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                             <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                                 {/* Large Preview Image */}
                                 {selectedImage ? (
-                                    <View style={[GlobalStyleSheet.container, { flex: 1 }]}>
+                                    <View style={{ flex: 1, width: '100%', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                         <Image
                                             source={{ uri: selectedImage }}
                                             style={{
@@ -541,7 +554,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                         </View>
                     }
                     {index === 2 &&
-                        <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
+                        <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 100 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Provide photos of your lendable item</Text>
                             <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 10 }}>Try our AI assisted data entries to fill those entries for you or manually enter yours.</Text>
                             <View style={{ width: '100%', justifyContent: 'flex-end', alignItems: 'flex-end', paddingBottom: 10 }}>
