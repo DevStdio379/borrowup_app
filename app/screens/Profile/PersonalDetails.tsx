@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Platform, Alert } from 'react-native'
-import { useNavigation, useTheme } from '@react-navigation/native';
+import { View, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native'
+import { useTheme } from '@react-navigation/native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import * as ImagePicker from 'expo-image-picker';
-import { set } from 'date-fns';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -71,10 +69,6 @@ const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
                 }
             }
         });
-    };
-
-    const handleProfileAttributeClick = (profileAttribute: { attributeName: string }) => {
-        navigation.navigate('EditAttributes', { profileAttribute });
     };
 
     return (
