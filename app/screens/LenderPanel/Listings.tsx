@@ -8,7 +8,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser } from '../../context/UserContext';
-import { fetchUserProductListings } from '../../services/ProductServices';
+import { fetchUserProductListings, Product } from '../../services/ProductServices';
 import { Borrowing } from '../../services/BorrowingServices';
 
 type ListingsScreenProps = StackScreenProps<RootStackParamList, 'Listings'>;
@@ -80,7 +80,7 @@ const Listings = ({ navigation, route }: ListingsScreenProps) => {
                                     borderRadius: 50,
                                     padding: 10,
                                 }}
-                                onPress={() => navigation.navigate('AddListing', { listing: {} as Borrowing })}
+                                onPress={() => navigation.navigate('AddListing', { listing: null})}
                             >
                                 <Ionicons name="add-outline" size={20} color={COLORS.white} />
                             </TouchableOpacity>
