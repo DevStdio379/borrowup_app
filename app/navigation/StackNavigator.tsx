@@ -31,6 +31,7 @@ import Chat from '../screens/Chat/Chat';
 import ChatList from '../screens/Chat/ChatList';
 import NewChat from '../screens/Chat/NewChat';
 import PaymentSuccess from '../screens/Products/PaymentSuccess';
+import AddressMapView from '../screens/Profile/AddressMapView';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -64,6 +65,7 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="EditAttributes" component={EditAttributes} />
 				<StackComponent.Screen name="AddressBook" component={AddressBook} />
 				<StackComponent.Screen name="SearchAddress" component={SearchAddress} />
+				<StackComponent.Screen name="AddressMapView" component={AddressMapView} />
 				<StackComponent.Screen name="AddAddress" component={AddAddress} />
 				<StackComponent.Screen name="EditLocationPinPoint" component={EditLocationPinPoint} />
 				<StackComponent.Screen name="PaymentInformation" component={PaymentInformation} />

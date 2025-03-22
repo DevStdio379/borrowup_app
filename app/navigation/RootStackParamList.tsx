@@ -26,7 +26,8 @@ export type RootStackParamList = {
     EditAttributes: { profileAttribute: { attributeName: string } };
     AddressBook: undefined;
     SearchAddress: undefined;
-    AddAddress: { address: { latitude: any, longitude: any, addressName: string, address: string } }
+    AddressMapView: { latitude: number, longitude: number, addressName: string, address: string, postcode: string };
+    AddAddress: { latitude: any, longitude: any, addressName: string, address: string, postcode: string };
     EditLocationPinPoint: { location: { latitude: any, longitude: any, addressName: string, address: string } }
     PaymentInformation: undefined;
 
