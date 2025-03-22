@@ -22,19 +22,15 @@ export const saveUserAddress = async (userId: string, addressData: Address) => {
     const userAddressesRef = collection(db, 'users', userId, 'addresses'); // Create subcollection 'addresses' under each user
 
     // Save address to Firestore
+    const addressToSave = { ...addressData };
+    if (!addressToSave.id) {
+      delete addressToSave.id;
+    }
+
     await addDoc(userAddressesRef, {
-      id: addressData.id,
-      latitude: addressData.latitude,
-      longitude: addressData.longitude,
-      addressName: addressData.addressName,
-      address: addressData.address,
-      buildingType: addressData.buildingType,
-      additionalDetails: addressData.additionalDetails,
-      postcode: addressData.postcode,
-      addressLabel: addressData.addressLabel,
-      instruction: addressData.instruction,
-      createAt: addressData.createAt,
-      updatedAt: addressData.updatedAt
+      ...addressToSave,
+      createAt: addressData.createAt || serverTimestamp(),
+      updatedAt: addressData.updatedAt || serverTimestamp()
     });
 
     console.log('Address saved successfully!');
