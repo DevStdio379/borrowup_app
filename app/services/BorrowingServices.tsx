@@ -130,3 +130,24 @@ export const updateBorrowing = async (borrowingId: string, updatedData: Partial<
     throw error;  // Throwing the error to handle it at the call site
   }
 };
+
+export const countActivitiesByUser = async (userID: string): Promise<{ borrowingReviews: number, lendingReviews: number }> => {
+  try {
+    const reviewsRef = collection(db, 'borrowings');
+
+    // Count borrowing reviews
+    const borrowingQuery = query(reviewsRef, where('userId', '==', userID));
+    const borrowingSnapshot = await getDocs(borrowingQuery);
+    const borrowingReviews = borrowingSnapshot.size;
+
+    // Count lending reviews
+    const lendingQuery = query(reviewsRef, where('product.ownerID', '==', userID));
+    const lendingSnapshot = await getDocs(lendingQuery);
+    const lendingReviews = lendingSnapshot.size;
+
+    return { borrowingReviews, lendingReviews };
+  } catch (error) {
+    console.error('Error counting reviews: ', error);
+    throw error;  // Throwing the error to handle it at the call site
+  }
+};
