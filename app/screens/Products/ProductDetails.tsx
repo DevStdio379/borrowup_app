@@ -380,7 +380,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       deliveryMethod: deliveryMethod,
       paymentMethod: paymentMethod,
       //generate random collection and return codes
-      collectionCode: Math.floor(1000000 + Math.random() * 9000000).toString(),
+      collectionCode: '',
       returnCode: '',
       updatedAt: new Date(),
       createAt: new Date(),
