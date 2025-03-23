@@ -4,7 +4,6 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux'
 import store from './app/redux/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { COLORS } from './app/constants/theme';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { Alert, Platform } from 'react-native';
 import { useEffect } from 'react';
@@ -19,10 +18,10 @@ export default function App() {
       const requestResult = await request(permission);
       if (requestResult === RESULTS.GRANTED) {
       } else {
-        Alert.alert("Permission Denied", "Location permission is required to use this feature");
+        // Alert.alert("Permission Denied", "Location permission is required to use this feature");
       }
     } else if (result === RESULTS.GRANTED) {
-      Alert.alert("Permission Granted", "Location permission is already granted");
+      // Alert.alert("Permission Granted", "Location permission is already granted");
     }
   };
 
