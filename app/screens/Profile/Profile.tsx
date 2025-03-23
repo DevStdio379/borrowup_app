@@ -55,29 +55,66 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 title='Profile'
             />
             <ScrollView showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 50 }}>
-                <View style={[GlobalStyleSheet.container, { alignItems: 'center', marginTop: 50, padding: 0 }]}>
-                    <View
-                        style={{ height: 104,
-                            width: 104,
-                            borderRadius: 150,
-                            backgroundColor: COLORS.primary,
-                            overflow: 'hidden',
-                            marginBottom: 25
-                        }}
-                    >
+                <View style={{ flexDirection: 'row', width: '100%', paddingTop: 20 }}>
+                    <View style={{ width: '40%' }}>
+                        <View style={{ alignItems: 'center' }}>
+                            <View
+                                style={{
+                                    height: 80,
+                                    width: 80,
+                                    borderRadius: 150,
+                                    backgroundColor: COLORS.primary,
+                                    overflow: 'hidden',
+                                }}
+                            >
 
-                        {user?.profileImageUrl ? (
-                            <Image source={{ uri: user?.profileImageUrl }} style={{ height: '100%', width: '100%', borderRadius: 45 }} />
-                        ) : (
-                            <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background}} >
-                                <Ionicons name="person-outline" size={24} color={COLORS.black} />
+                                {user?.profileImageUrl ? (
+                                    <Image source={{ uri: user?.profileImageUrl }} style={{ height: '100%', width: '100%', borderRadius: 45 }} />
+                                ) : (
+                                    <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }} >
+                                        <Ionicons name="person-outline" size={24} color={COLORS.black} />
+                                    </View>
+                                )}
                             </View>
-                        )}
+                        </View>
                     </View>
-                    <Text style={{ fontSize: 28, color: colors.title }}>{user?.userName}</Text>
-                    <Text style={{ fontSize: 16, color: COLORS.blackLight }}>Sheffield, England</Text>
+                    <View style={{ width: '60%' }}>
+                        <Text style={{ fontSize: 24, color: colors.title }}>{user?.firstName} {user?.lastName}</Text>
+                        {/* add star rating here */}
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                            {[...Array(5)].map((_, index) => (
+                                <Ionicons
+                                    key={index}
+                                    name={index < user?.rating ? 'star' : 'star-outline'}
+                                    size={20}
+                                    color={COLORS.primary}
+                                    style={{ marginRight: 5 }}
+                                />
+                            ))}
+                            <Text style={{ fontSize: 16, color: COLORS.blackLight }}>4.8</Text>
+                        </View>
+                        {/* Right side content */}
+                    </View>
                 </View>
-                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 20 }]}>
+                <View style={{ marginHorizontal: 35, marginVertical: 10, paddingHorizontal: 20, borderRadius: 20, borderWidth: 1, borderColor: COLORS.blackLight }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 20 }}>
+                        <View style={{ alignItems: 'center', flex: 1 }}>
+                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{user?.borrowingsCount || 0}</Text>
+                            <Text style={{ fontSize: 14, color: colors.text }}>Borrowings</Text>
+                        </View>
+                        <View style={{ width: 2, backgroundColor: COLORS.blackLight, marginHorizontal: 10 }} />
+                        <View style={{ alignItems: 'center', flex: 1 }}>
+                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{user?.lendingsCount || 0}</Text>
+                            <Text style={{ fontSize: 14, color: colors.text }}>Lendings</Text>
+                        </View>
+                        <View style={{ width: 2, backgroundColor: COLORS.blackLight, marginHorizontal: 10 }} />
+                        <View style={{ alignItems: 'center', flex: 1 }}>
+                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{user?.reviewsCount || 0}</Text>
+                            <Text style={{ fontSize: 14, color: colors.text }}>Reviews</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 10 }]}>
                     <View style={[GlobalStyleSheet.line, { margin: 10 },]} />
                     <TouchableOpacity
                         activeOpacity={0.8}
