@@ -205,6 +205,8 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                         borrowingId: borrowing.id || '',
                         borrowerReviewerId: user.uid,
                         borrowerOverallRating: overallRating || 0,
+                        productId: borrowing.product.id || '',
+                        
                         borrowerCollectionRating: collectionRating || 0,
                         borrowerCollectionFeedback: collectionFeedback || [''],
                         borrowerOtherCollectionReview: otherCollectionReview,

@@ -135,14 +135,6 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
         fetchSelectedBorrowingData().then(() => setRefreshing(false));
     }, []);
 
-    if (loading) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color={COLORS.primary} />
-            </View>
-        );
-    }
-
     const formatDate = (dateString: string | undefined) => {
         if (!dateString) return "";
         const date = new Date(dateString);
@@ -427,6 +419,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                                     borrowingId: lending.id || '',
                                                     lenderReviewerId: user?.uid || '',
                                                     lenderOverallRating: 0,
+                                                    productId: lending.product.id || '',
 
                                                     lenderCollectionRating: 0,
                                                     lenderCollectionFeedback: [''],

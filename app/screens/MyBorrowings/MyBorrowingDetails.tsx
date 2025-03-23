@@ -398,6 +398,8 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                                     borrowingId: borrowing.id || '',
                                                     borrowerReviewerId: user?.uid || '',
                                                     borrowerOverallRating: 0,
+                                                    productId: borrowing.product.id || '',
+
                                                     borrowerCollectionRating: 0,
                                                     borrowerCollectionFeedback: [''],
                                                     borrowerOtherCollectionReview: '',

@@ -1,6 +1,7 @@
 import { db, storage } from './firebaseConfig';  // Import the Firestore instance
 import { collection, getDocs, addDoc, doc, updateDoc, getDoc } from 'firebase/firestore';  // Firestore functions
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';  // Import Firebase storage functions
+import { Borrowing } from './BorrowingServices';
 
 // Define the Review interface
 export interface Review {
@@ -8,6 +9,7 @@ export interface Review {
   borrowingId: string;
   borrowerReviewerId?: string;
   lenderReviewerId?: string;
+  productId: string;
 
   // borrowerReview
   borrowerOverallRating?: number;
@@ -60,7 +62,7 @@ export interface Review {
 // Function to fetch a review based on borrowingId
 export const getReviewByBorrowingId = async (productId: string ,borrowingId: string) => {
   try {
-    const reviewsRef = collection(db, 'products', productId, 'reviews');
+    const reviewsRef = collection(db, 'reviews');
     const querySnapshot = await getDocs(reviewsRef);
     const reviews = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Review[];
 
@@ -79,7 +81,7 @@ export const getReviewByBorrowingId = async (productId: string ,borrowingId: str
 // Function to save a product to Firestore
 export const createReview = async (review: Review, productId: string) => {
   try {
-    const productRef = collection(db, 'products', productId, 'reviews');
+    const productRef = collection(db, 'reviews');
     const docRef = await addDoc(productRef, review);
 
     console.log('Review saved successfully with ID:', docRef.id);
@@ -93,7 +95,7 @@ export const createReview = async (review: Review, productId: string) => {
 // Function to update a product in Firestore
 export const updateReview = async (productId: string, reviewId: string, updatedReview: Partial<Review>) => {
   try {
-    const productRef = doc(db, 'products', productId, 'reviews', reviewId);
+    const productRef = doc(db, 'reviews', reviewId);
     await updateDoc(productRef, updatedReview);
     console.log('Review updated successfully');
   } catch (error) {
@@ -106,18 +108,21 @@ export const updateReview = async (productId: string, reviewId: string, updatedR
 // Function to fetch reviews based on productId
 export const getReviewsByProductId = async (productId: string) => {
   try {
-    const reviewsRef = collection(db, 'products', productId, 'reviews');
+    const reviewsRef = collection(db, 'reviews');
     const querySnapshot = await getDocs(reviewsRef);
-    const reviews = querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        borrowerOverallRating: data.borrowerOverallRating,
-        borrowerPublicReview: data.borrowerPublicReview,
-        borrowerUpdatedAt: data.borrowerUpdatedAt.toDate(),  // Convert Firestore timestamp to JavaScript Date
-        borrowerReviewerId: data.borrowerReviewerId
-      };
-    });
+    const reviews = querySnapshot.docs
+      .map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          borrowerOverallRating: data.borrowerOverallRating,
+          borrowerPublicReview: data.borrowerPublicReview,
+          borrowerUpdatedAt: data.borrowerUpdatedAt.toDate(),  // Convert Firestore timestamp to JavaScript Date
+          borrowerReviewerId: data.borrowerReviewerId,
+          productId: data.productId
+        };
+      })
+      .filter(review => review.productId === productId);  // Filter reviews by productId
     return reviews;
   } catch (error) {
     console.error('Error fetching reviews: ', error);
