@@ -1,5 +1,5 @@
 import { db, storage } from './firebaseConfig';  // Import the Firestore instance
-import { collection, getDocs, addDoc, doc, updateDoc, getDoc } from 'firebase/firestore';  // Firestore functions
+import { collection, getDocs, addDoc, doc, updateDoc, getDoc, query, where } from 'firebase/firestore';  // Firestore functions
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';  // Import Firebase storage functions
 import { Borrowing } from './BorrowingServices';
 
@@ -126,6 +126,60 @@ export const getReviewsByProductId = async (productId: string) => {
     return reviews;
   } catch (error) {
     console.error('Error fetching reviews: ', error);
+    throw error;  // Throwing the error to handle it at the call site
+  }
+};
+
+
+export const calculateBorrowingRatingByUser = async (userID: string): Promise<number | null > => {
+  try {
+    const reviewsRef = collection(db, 'reviews');
+
+    // Count borrowing reviews
+    const borrowingQuery = query(reviewsRef, where('borrowerReviewerId', '==', userID));
+    const borrowingSnapshot = await getDocs(borrowingQuery);
+    const borrowingSize = borrowingSnapshot.size;
+
+    // Calculate average borrowing rating
+    let totalBorrowingRating = 0;
+    borrowingSnapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.lenderOverallRating) {
+        console.log('data.lenderOverallRating', data.lenderOverallRating);
+        totalBorrowingRating += data.lenderOverallRating;
+      }
+    });
+    const averageBorrowingRating = borrowingSize > 0 ? totalBorrowingRating / borrowingSize : null;
+
+    return averageBorrowingRating;
+  } catch (error) {
+    console.error('Error counting reviews: ', error);
+    throw error;  // Throwing the error to handle it at the call site
+  }
+};
+
+export const calculateLendingRatingByUser = async (userID: string): Promise< number | null > => {
+  try {
+    const reviewsRef = collection(db, 'reviews');
+
+    // Count borrowing reviews
+    const lendingQuery = query(reviewsRef, where('lenderReviewerId', '==', userID));
+    const lendingSnapshot = await getDocs(lendingQuery);
+    const lendingSize = lendingSnapshot.size;
+
+    // Calculate average borrowing rating
+    let totalLendingRating = 0;
+    lendingSnapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.borrowerOverallRating) {
+        totalLendingRating += data.borrowerOverallRating;
+      }
+    });
+    const averageLendingRating = lendingSize > 0 ? totalLendingRating / lendingSize : null;
+
+    return averageLendingRating;
+  } catch (error) {
+    console.error('Error counting reviews: ', error);
     throw error;  // Throwing the error to handle it at the call site
   }
 };
