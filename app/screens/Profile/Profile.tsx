@@ -1,8 +1,7 @@
 import { useTheme } from '@react-navigation/native';
-import React from 'react'
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native'
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
-import { IMAGES } from '../../constants/Images';
 import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
@@ -11,6 +10,8 @@ import { useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser, defaultUser } from '../../context/UserContext';
 import { openDrawer } from '../../redux/actions/drawerAction';
+import { countActivitiesByUser } from '../../services/BorrowingServices';
+import { calculateBorrowingRatingByUser, calculateLendingRatingByUser } from '../../services/ReviewServices';
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
 
@@ -20,6 +21,44 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
     const dispatch = useDispatch();
     const { user, updateUserData, setUser } = useUser();
     const { colors }: { colors: any } = theme;
+
+    const [borrowingCount, setBorrowingCount] = useState<number>(0);
+    const [lendingCount, setLendingCount] = useState<number>(0);
+    const [lendingRating, setLendingRating] = useState<number>(0);
+    const [borrowingRating, setBorrowingRating] = useState<number>(0);
+    const [overallRating, setOverallRating] = useState<number>(0);
+
+    const [refreshing, setRefreshing] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    const fetchData = async () => {
+        if (user?.uid) {
+            const count = await countActivitiesByUser(user.uid);
+            setBorrowingCount(count.borrowingReviews);
+            setLendingCount(count.lendingReviews);
+
+            const borrowingRating = await calculateBorrowingRatingByUser(user.uid);
+            setBorrowingRating(borrowingRating || 0);
+
+            const lendingRating = await calculateLendingRatingByUser(user.uid);
+            setLendingRating(lendingRating || 0);
+
+            const overallRating = ((borrowingRating || 0 * borrowingCount) + (lendingRating || 0 * lendingCount)) / (borrowingCount + lendingCount);
+            console.log('overallRating', overallRating);
+            setOverallRating(overallRating);
+
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchData().then(() => setRefreshing(false));
+    }, [user?.uid]);
 
     const handleSignOut = async () => {
         try {
@@ -48,13 +87,26 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
         }
     };
 
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+            </View>
+        );
+    }
+
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
             <Header
                 title='Profile'
             />
-            <ScrollView showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 50 }}>
+            <ScrollView
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 50 }}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }>
                 <View style={{ flexDirection: 'row', width: '100%', paddingTop: 20 }}>
                     <View style={{ width: '40%' }}>
                         <View style={{ alignItems: 'center' }}>
@@ -85,31 +137,33 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             {[...Array(5)].map((_, index) => (
                                 <Ionicons
                                     key={index}
-                                    name={index < user?.rating ? 'star' : 'star-outline'}
+                                    name={index < overallRating ? 'star' : 'star-outline'}
                                     size={20}
                                     color={COLORS.primary}
                                     style={{ marginRight: 5 }}
                                 />
                             ))}
-                            <Text style={{ fontSize: 16, color: COLORS.blackLight }}>4.8</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.blackLight }}>{overallRating}</Text>
                         </View>
                         {/* Right side content */}
                     </View>
                 </View>
-                <View style={{ marginHorizontal: 35, marginVertical: 10, paddingHorizontal: 20, borderRadius: 20, borderWidth: 1, borderColor: COLORS.blackLight }}>
+                <View style={{ marginHorizontal: 35, marginVertical: 15, paddingHorizontal: 20, borderRadius: 20, borderWidth: 1, borderColor: COLORS.blackLight }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 20 }}>
                         <View style={{ alignItems: 'center', flex: 1 }}>
-                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{user?.borrowingsCount || 0}</Text>
+                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{borrowingCount || 0}</Text>
                             <Text style={{ fontSize: 14, color: colors.text }}>Borrowings</Text>
+                            <Text style={{ fontSize: 14, color: colors.text }}>{borrowingRating}</Text>
                         </View>
-                        <View style={{ width: 2, backgroundColor: COLORS.blackLight, marginHorizontal: 10 }} />
+                        <View style={{ width: 2, backgroundColor: COLORS.blackLight, marginHorizontal: 5 }} />
                         <View style={{ alignItems: 'center', flex: 1 }}>
-                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{user?.lendingsCount || 0}</Text>
+                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{lendingCount || 0}</Text>
                             <Text style={{ fontSize: 14, color: colors.text }}>Lendings</Text>
+                            <Text style={{ fontSize: 14, color: colors.text }}>{lendingRating}</Text>
                         </View>
                         <View style={{ width: 2, backgroundColor: COLORS.blackLight, marginHorizontal: 10 }} />
                         <View style={{ alignItems: 'center', flex: 1 }}>
-                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{user?.reviewsCount || 0}</Text>
+                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{0}</Text>
                             <Text style={{ fontSize: 14, color: colors.text }}>Reviews</Text>
                         </View>
                     </View>
