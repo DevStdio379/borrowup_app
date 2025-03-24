@@ -13,7 +13,6 @@ export type RootStackParamList = {
     Products: undefined;
     ProductDetails: { product: Product };
     PaymentSuccess: { borrowingId: string, collectionCode: string, latitude: number, longitude: number, addressName: string, address: string, postcode: string };
-    Map: undefined;
     MyBorrowings: undefined;
     MyBorrowingDetails: { borrowing: Borrowing };
     BorrowerAddReview: { reviewId: string, borrowing: Borrowing };
@@ -44,5 +43,7 @@ export type RootStackParamList = {
     Messages: undefined;
 
     Temp: undefined;
+
+    FavouriteCollection: undefined;
 
 };

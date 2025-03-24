@@ -10,7 +10,7 @@ import Header from '../../layout/Header';
 import { useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser, defaultUser } from '../../context/UserContext';
-import { openDrawer } from '../../redux/actions/drawerAction';
+import { openDrawer } from '../../redux/actions/drawerActions';
 import CardInfoStyle from '../../components/Card/CardInfoStyle';
 import PillStyle from '../../components/Pills/PillStyle';
 

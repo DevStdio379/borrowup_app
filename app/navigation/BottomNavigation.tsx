@@ -4,7 +4,7 @@ import { BottomTabParamList } from './BottomTabParamList';
 import MyBorrowingScreen from '../screens/MyBorrowings/MyBorrowings';
 import ChatListScreen from '../screens/Chat/ChatList';
 import HomeScreen from '../screens/Home/Home';
-import MapScreen from '../screens/Map/Map';
+import MapScreen from '../screens/Favourite/FavouriteCollection';
 import ProfileScreen from '../screens/Profile/Profile';
 import BottomMenu from '../layout/BottomMenu';
 import { useUser } from '../context/UserContext';
@@ -13,6 +13,7 @@ import MyCalendarScreen from '../screens/LenderPanel/MyCalendar';
 import ListingsScreen from '../screens/LenderPanel/Listings';
 import HomeStack from './HomeStack';
 import ProfileStack from './ProfileStack';
+import FavouriteStack from './FavouriteStack';
 
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -35,8 +36,8 @@ const BottomNavigation = () => {
                 tabBar={(props: any) => <BottomMenu {...props} />}
             >
                 <Tab.Screen
-                    name='Map'
-                    component={MapScreen}
+                    name='FavouriteCollection'
+                    component={FavouriteStack}
                 />
                 <Tab.Screen
                     name='MyBorrowings'

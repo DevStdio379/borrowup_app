@@ -8,7 +8,7 @@
 
 
 import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from '../reducer';
+import rootReducer from '../reducers';
 
 const store = configureStore({ reducer: rootReducer })
 

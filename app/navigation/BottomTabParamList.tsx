@@ -1,5 +1,6 @@
 export type BottomTabParamList = {
-    Map: undefined;
+
+    FavouriteCollection: undefined;
     Home: undefined;
     MyBorrowings: undefined;
     ChatList: undefined;

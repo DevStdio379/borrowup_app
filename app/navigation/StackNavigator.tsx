@@ -40,7 +40,7 @@ const StackNavigator = () => {
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
 			<StackComponent.Navigator
-				initialRouteName='SignIn'
+				initialRouteName='DrawerNavigation'
 				screenOptions={{
 					headerShown: false,
 					cardStyle: { backgroundColor: "transparent" },

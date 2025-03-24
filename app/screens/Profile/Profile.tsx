@@ -9,7 +9,7 @@ import Header from '../../layout/Header';
 import { useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser, defaultUser } from '../../context/UserContext';
-import { openDrawer } from '../../redux/actions/drawerAction';
+import { openDrawer } from '../../redux/actions/drawerActions';
 import { countActivitiesByUser } from '../../services/BorrowingServices';
 import { calculateBorrowingRatingByUser, calculateLendingRatingByUser } from '../../services/ReviewServices';
 
@@ -275,7 +275,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 {user?.accountType === 'borrower' ? 'Switch to Lender Profile' : 'Switch to Borrower Profile'}
                             </Text>
                         </TouchableOpacity>
-                        {
+                        {/* {
                             user?.isActive === true && (
                                 <TouchableOpacity
                                     activeOpacity={0.8}
@@ -293,7 +293,22 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                     <Text style={{ fontSize: 18, color: COLORS.black, lineHeight: 21, fontWeight: 'bold', textDecorationLine: 'underline' }}>Sign Out</Text>
                                 </TouchableOpacity>
                             )
-                        }
+                        } */}
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={{
+                                padding: 10,
+                                paddingHorizontal: 20,
+                                borderRadius: 30,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 10
+                            }}
+                            onPress={() => handleSignOut()}
+                        >
+                            <Text style={{ fontSize: 18, color: COLORS.black, lineHeight: 21, fontWeight: 'bold', textDecorationLine: 'underline' }}>Sign Out</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </ScrollView>

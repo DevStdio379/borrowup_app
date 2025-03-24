@@ -100,9 +100,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const addItemToWishList = (data: any) => {
         dispatch(addTowishList({
             id: data.id,
-            image: data.imageUrl,
-            title: data.productName,
-            price: data.rate,
+            image: data.imageUrls[0],
+            title: data.title,
+            price: data.lendingRate,
             brand: data.ownerID,
         } as any));
     }
