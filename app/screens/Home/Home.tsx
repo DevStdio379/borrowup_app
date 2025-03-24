@@ -149,7 +149,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         scrollX={scrollX}
                     />
                 </View>
-                <View style={{ paddingHorizontal: 10, paddingBottom: 10 }}>
+                <View style={{ paddingHorizontal: 10, paddingBottom: 300 }}>
                     <ScrollView
                         ref={scrollViewHome}
                         horizontal
