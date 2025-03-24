@@ -92,7 +92,7 @@ export const ChatList = ({ navigation }: ChatListScreenProps) => {
                         {/* left header element */}
                     </View>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>My Borrowings</Text>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>Chat</Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-end' }}>
                         {/* right header element */}
@@ -118,7 +118,7 @@ export const ChatList = ({ navigation }: ChatListScreenProps) => {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             />
-            <Button title="Start New Chat" onPress={() => navigation.navigate("NewChat")} />
+            {/* <Button title="Start New Chat" onPress={() => navigation.navigate("NewChat")} /> */}
         </View>
     );
 };
