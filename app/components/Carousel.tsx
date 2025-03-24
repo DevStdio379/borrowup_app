@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, ScrollView, Dimensions, StyleSheet, Image, NativeSyntheticEvent, NativeScrollEvent, Pressable, Text } from 'react-native';
-
-const { width, height } = Dimensions.get('window');
+import { SIZES } from '../constants/theme';
 
 interface CarouselProps {
     data: { imageUrl: string; buttonText: string; }[];
@@ -24,13 +23,13 @@ const Carousel: React.FC<CarouselProps> = ({ data, autoScrollInterval = 3000 }) 
         const nextIndex = (currentIndex + 1) % data.length;
         setCurrentIndex(nextIndex);
         if (scrollViewRef.current) {
-            scrollViewRef.current.scrollTo({ x: nextIndex * width, animated: true });
+            scrollViewRef.current.scrollTo({ x: nextIndex * SIZES.width, animated: true });
         }
     };
 
     const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const contentOffsetX = event.nativeEvent.contentOffset.x;
-        const index = Math.round(contentOffsetX / width);
+        const index = Math.round(contentOffsetX / SIZES.width);
         setCurrentIndex(index);
     };
 
@@ -79,23 +78,21 @@ const Carousel: React.FC<CarouselProps> = ({ data, autoScrollInterval = 3000 }) 
 
 const styles = StyleSheet.create({
     imageContainer: {
-        width: width,
-        height: height / 3.5,
+        width: SIZES.width * 1,
+        height: SIZES.height * 0.3,
         position: 'relative',
         overflow: 'hidden', // Ensure child elements respect the border radius
-        borderRadius: 15, // Adjust this value for the desired border radius
         padding: 10,
     },
     image: {
         width: '100%',
         height: '100%',
         resizeMode: 'cover',
-        borderRadius: 25, // Apply border radius to the image itself
     },
     button: {
         position: 'absolute',
         bottom: 20,
-        left: width / 2.7,
+        left: SIZES.width / 2.7,
         backgroundColor: 'rgba(0,0,0,0.5)',
         paddingVertical: 10,
         paddingHorizontal: 20,
