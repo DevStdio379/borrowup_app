@@ -99,7 +99,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           uid: userData.uid || '',
           email: userData.email || '',
           userName: userData.userName || '',
-          isActive: true,
+          isActive: userData.isActive || false,
           firstName: userData.firstName || '',
           lastName: userData.lastName || '',
           phoneNumber: userData.phoneNumber || '',
