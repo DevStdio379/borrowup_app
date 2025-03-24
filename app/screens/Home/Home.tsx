@@ -14,6 +14,7 @@ import { fetchProducts, Product } from '../../services/ProductServices';
 import { Banner, fetchBanners } from '../../services/BannerServices';
 import TabButtonStyleHome from '../../components/Tabs/TabButtonStyleHome';
 import Carousel from '../../components/Carousel';
+import { auth } from '../../services/firebaseConfig';
 
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>
 
@@ -121,21 +122,26 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                 <ActivityIndicator size="large" color={COLORS.primary} />
             </View>
         ) : (
-            <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, padding: 0, paddingTop: 50, paddingBottom: 10 }]}>
-                    <View style={[GlobalStyleSheet.flex, { paddingBottom: 10 }]}>
-                        <View>
-                            <Text style={{ fontSize: 30, fontWeight: 'bold', color: colors.title }}>Hello {user?.userName}</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('Search')}
-                                activeOpacity={0.5}
-                                style={[GlobalStyleSheet.background3, {}]}
-                            >
-                                <Ionicons name='search' size={28} color={COLORS.black} />
-                            </TouchableOpacity>
-                        </View>
+            <View style={{ backgroundColor: COLORS.background }}>
+                <View style={{ paddingHorizontal: 30, paddingBottom: 10 }}>
+                    <View style={{ paddingTop: 50, paddingBottom: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+                        {user?.isActive ? (
+                            <View>
+                                <Text style={{ fontSize: 30, fontWeight: 'bold', color: COLORS.title }}>Hello {user.userName}</Text>
+                            </View>
+                        ) : (
+                            <View>
+                                <Text style={{ fontSize: 30, fontWeight: 'bold', color: COLORS.title }}>Welcome to Tags!</Text>
+                                <Text style={{ fontSize: 16, color: COLORS.title }}>Borrow & lend items around you.</Text>
+                            </View>
+                        )}
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('Search')}
+                            activeOpacity={0.5}
+                            style={{ justifyContent: 'center', alignItems: 'center' }}
+                        >
+                            <Ionicons name='search' size={28} color={COLORS.black} />
+                        </TouchableOpacity>
                     </View>
                     <TabButtonStyleHome
                         buttons={buttons}
@@ -143,10 +149,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                         scrollX={scrollX}
                     />
                 </View>
-                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 5, padding: 0, paddingTop: 0, paddingBottom: 10 }]}>
+                <View style={{ paddingHorizontal: 10, paddingBottom: 10 }}>
                     <ScrollView
                         ref={scrollViewHome}
-                        //ref={(e:any) => {console.log(e)}}
                         horizontal
                         pagingEnabled
                         scrollEventThrottle={16}
@@ -163,42 +168,38 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 return (
                                     <ScrollView
                                         showsVerticalScrollIndicator={false}
-                                        style={[styles.tabBody]}
+                                        style={{ width: SIZES.width }}
                                         key={index}
                                         refreshControl={
                                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                                         }
                                     >
-                                        <View style={[GlobalStyleSheet.container, { paddingHorizontal: 0, paddingTop: 30, paddingBottom: 10 }]}>
-                                            <View style={[GlobalStyleSheet.flex, { paddingHorizontal: 15 }]}>
-                                                <Text style={[styles.brandsubtitle3, { fontSize: 24, fontWeight: 'bold', color: colors.title }]}>What's new</Text>
-                                                <TouchableOpacity
-                                                // onPress={() => navigation.navigate('Products')}
-                                                >
-                                                    <Text style={[styles.brandsubtitle3, { fontSize: 16, color: COLORS.blackLight }]}>More</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
                                         <Carousel data={banners} />
-                                        <View style={[GlobalStyleSheet.container, { paddingHorizontal: 0, paddingTop: 0, paddingBottom: 0 }]}>
-                                            <View style={[GlobalStyleSheet.flex, { paddingHorizontal: 15 }]}>
-                                                <Text style={[styles.brandsubtitle3, { fontSize: 18, color: colors.title, fontWeight: 'bold' }]}>Neighborhood Offers</Text>
-                                                <TouchableOpacity
-                                                    onPress={() => navigation.navigate('Products')}
-                                                >
-                                                    <Text style={[styles.brandsubtitle3, { fontSize: 16, color: COLORS.blackLight }]}>More</Text>
-                                                </TouchableOpacity>
-                                            </View>
+                                        <View style={{ width: SIZES.width * 0.98, paddingHorizontal: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Text style={{ fontSize: 20, color: colors.title, fontWeight: 'bold' }}>Nearby Borrows</Text>
+                                            <TouchableOpacity
+                                                onPress={() => navigation.navigate('Products')}
+                                            >
+                                                <Text style={{ fontSize: 16, color: COLORS.blackLight }}>More</Text>
+                                            </TouchableOpacity>
                                         </View>
                                         <View style={[GlobalStyleSheet.container]}>
                                             <FlatList
-                                                data={products}
+                                                data={products.slice(0, 5)}
                                                 renderItem={renderItemHorizontal}
                                                 keyExtractor={(item) => item.id ? item.id.toString() : ''}
                                                 horizontal
                                                 showsHorizontalScrollIndicator={false}
                                                 contentContainerStyle={[{ paddingVertical: 16 }]}
                                             />
+                                        </View>
+                                        <View style={{ width: SIZES.width * 0.98, paddingHorizontal: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <Text style={{ fontSize: 20, color: colors.title, fontWeight: 'bold' }}>Explore More</Text>
+                                            <TouchableOpacity
+                                                onPress={() => navigation.navigate('Products')}
+                                            >
+                                                <Text style={{ fontSize: 16, color: COLORS.blackLight }}>More</Text>
+                                            </TouchableOpacity>
                                         </View>
                                         <View style={[GlobalStyleSheet.container, { paddingBottom: 20 }]}>
                                             <FlatList
@@ -219,7 +220,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                 return (
                                     <ScrollView
                                         showsVerticalScrollIndicator={false}
-                                        style={[styles.tabBody]}
+                                        style={{ width: SIZES.width }}
                                         key={index}
                                         refreshControl={
                                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -262,9 +263,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'center'
-    },
-    tabBody: {
-        width: SIZES.width,
     },
     TextInput: {
 
