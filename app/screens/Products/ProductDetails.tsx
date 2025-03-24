@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, RefreshControl, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, RefreshControl, Alert, BackHandler } from 'react-native'
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -142,6 +142,28 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      // Handle the back press with an alert, or simply do nothing
+      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "YES", onPress: () => navigation.goBack() }
+      ]);
+      return true; // This prevents the default back button behavior
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const handleChat = async (user: User, otherUser: User) => {
     const chatId = await getOrCreateChat(user, otherUser);
