@@ -9,7 +9,7 @@ import Header from '../../layout/Header';
 import { useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser, defaultUser } from '../../context/UserContext';
-import { openDrawer } from '../../redux/actions/drawerActions';
+import { openDrawer } from '../../redux/actions/drawerAction';
 import { countActivitiesByUser } from '../../services/BorrowingServices';
 import { calculateBorrowingRatingByUser, calculateLendingRatingByUser } from '../../services/ReviewServices';
 
@@ -78,7 +78,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
         try {
             if (user?.uid) {
                 await updateUserData(user.uid, { 'accountType': user.accountType === 'borrower' ? 'lender' : 'borrower' });
-                navigation.navigate('DrawerNavigation', { screen: 'Home' });
+                navigation.navigate('BottomNavigation', { screen: 'Home' });
             } else {
                 console.error("User ID is undefined");
             }
@@ -86,6 +86,35 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
             console.error("Error updating user:", error);
         }
     };
+
+
+    if (!user || !user.isActive) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ marginVertical: 10, fontSize: 14 }}>User is not active. Please sign in.</Text>
+                <TouchableOpacity
+                    style={{ padding: 10, paddingHorizontal: 30, backgroundColor: COLORS.primary, borderRadius: 20 }}
+                    onPress={() => navigation.navigate('SignIn')}
+                >
+                    <Text style={{ color: COLORS.white, fontSize: 16 }}>Sign In</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+    if (!user || !user.isActive) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ marginVertical: 10, fontSize: 14 }}>User is not active. Please sign in.</Text>
+                <TouchableOpacity
+                    style={{ padding: 10, paddingHorizontal: 30, backgroundColor: COLORS.primary, borderRadius: 20 }}
+                    onPress={() => navigation.navigate('SignIn')}
+                >
+                    <Text style={{ color: COLORS.white, fontSize: 16 }}>Sign In</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
     if (loading) {
         return (
