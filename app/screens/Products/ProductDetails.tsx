@@ -8,7 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import { fetchBorrowingDates, fetchSelectedProduct } from '../../services/ProductServices';
 import { Calendar, DateData } from 'react-native-calendars';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import { Address, fetchUserAddresses } from '../../services/AddressServices';
 import { createBorrowing } from '../../services/BorrowingServices';
@@ -110,7 +110,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
           // fetch Booked Dates on Calendar
           try {
             const fetchedDates = await getBookedDates(product.id || 'undefined');
-            setBookedDates(fetchedDates);
+            // setBookedDates(fetchedDates);
             setSelectedDates(fetchedDates);
           } catch (error) {
             Alert.alert("Error", "Failed to fetch booked dates.");
@@ -170,6 +170,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
         newRange = { start: newRange.end, end: newRange.start };
       }
 
+
       // Check if any booked dates exist in this range
       const conflictDates = getConflictDates(newRange.start!, newRange.end!);
 
@@ -181,6 +182,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
         return; // Stop further processing
       }
     }
+
     if (newRange.start && newRange.end) {
       setStartDate(newRange.start);
       setEndDate(newRange.end);
@@ -266,6 +268,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       markedDates[sunday] = { disabled: true, disableTouchEvent: true, textColor: "red" };
     });
 
+    console.log('Available days:', availableDays);
+
     const bookedDateRanges = await fetchBorrowingDates(productId);
 
     bookedDateRanges.forEach(({ startDate, endDate }) => {
@@ -290,20 +294,25 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchOwner = async () => {
       if (product) {
-        // fetch owner
         const fetchedOwner = await fetchSelectedUser(product.ownerID);
         if (fetchedOwner) {
           setOwner(fetchedOwner);
         }
+      }
+    };
 
-        // fetch bookedDates
+    const fetchBookedDates = async () => {
+      if (product) {
         const fetchedDates = await getBookedDates(product.id || 'undefined');
         setBookedDates(fetchedDates);
         setSelectedDates(fetchedDates);
+      }
+    };
 
-        // fetch reviews
+    const fetchReviews = async () => {
+      if (product) {
         const fetchedReviews = await getReviewsByProductId(product.id || 'undefined');
         const reviewsWithUserDetails = await Promise.all(
           fetchedReviews.map(async (review) => {
@@ -317,22 +326,30 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
           })
         );
         setReviews(reviewsWithUserDetails);
-
-        if (startDate && endDate) {
-          const days = getDateRange(startDate, endDate).length;
-          setNumberOfDays(days);
-          const totalAmount = Number(days * product.lendingRate) + Number(product.depositAmount);
-          setTotal(totalAmount);
-          setImages(product.imageUrls);
-          setSelectedImage(product.imageUrls[0]);
-          getAddresses();
-        }
       }
     };
 
-    fetchData();
-    console.log('Check fetch')
-  }, []);
+    fetchOwner();
+    fetchBookedDates();
+    fetchReviews();
+  }, [product]);
+
+  useEffect(() => {
+    if (startDate && endDate && product) {
+      const days = getDateRange(startDate, endDate).length;
+      setNumberOfDays(days);
+      const totalAmount = Number(days * product.lendingRate) + Number(product.depositAmount);
+      setTotal(totalAmount);
+    }
+  }, [startDate, endDate, product]);
+
+  useEffect(() => {
+    if (product) {
+      setImages(product.imageUrls);
+      setSelectedImage(product.imageUrls[0]);
+      getAddresses();
+    }
+  }, [product]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -429,6 +446,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   // Function to get available days dynamically based on product.availableDays
   const getAvailableDays = (year: number, month: number, availableDays: string[]) => {
+    console.log('Available days:', availableDays);
     const availableDates: { [key: string]: { disabled: boolean } } = {};
     const daysInMonth = new Date(year, month, 0).getDate();
 
@@ -449,25 +467,12 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       <View
         style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
         <View
-          style={[GlobalStyleSheet.container, {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingTop: 8,
-            paddingHorizontal: 10,
-          }]}>
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 10 }}>
           <View style={{ flex: 1, alignItems: 'flex-start' }}>
             {index === 0 ? (
               <TouchableOpacity
                 onPress={() => navigation.goBack()}
-                style={{
-                  height: 45,
-                  width: 45,
-                  borderColor: COLORS.blackLight,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                style={{ height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
                 }}
               >
                 <Ionicons size={30} color={COLORS.blackLight} name='close' />
@@ -475,14 +480,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             ) : (
               <TouchableOpacity
                 onPress={prevScreen}
-                style={{
-                  height: 45,
-                  width: 45,
-                  borderColor: COLORS.blackLight,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                style={{ height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
                 }}
               >
                 <Ionicons size={30} color={COLORS.blackLight} name='chevron-back-outline' />
@@ -531,7 +529,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
           {index === 0 && (
             <View style={{ width: '100%', gap: 10 }}>
               {selectedImage ? (
-                <View style={[GlobalStyleSheet.container, { flex: 1 }]}>
+                <View style={[]}>
                   <Image
                     source={{ uri: selectedImage }}
                     style={{
