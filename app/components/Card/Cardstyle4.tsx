@@ -7,6 +7,7 @@ import { useTheme } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeFromwishList } from '../../redux/reducer/wishListReducer'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import LikeBtn from '../LikeBtn'
 
 type Props = {
     id: string;
@@ -81,26 +82,11 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
                             top: 10,
                         }}
                     >
-                        <Pressable
-                            accessible={true}
-                            accessibilityLabel="Like Btn"
-                            accessibilityHint="Like this item"
-                            onPress={() => {}}
-                            style={{
-                                height: 30,
-                                width: 30,
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: COLORS.white,
-                                borderRadius: 15,
-                            }}
-                        >
-                            {inWishlist().includes(id) ?
-                                <Ionicons size={22} color={COLORS.black} name='heart-sharp' />
-                                :
-                                <Ionicons size={22} color={COLORS.black} name='heart-outline' />
-                            }
-                        </Pressable>
+                        <LikeBtn
+                            onPress={inWishlist().includes(id) ? removeItemFromWishList : onPress5}
+                            id={id}
+                            inWishlist={inWishlist}
+                        />
                     </View>
                 </View>
                 <View style={{ flex: 1, width: '100%' }}>
