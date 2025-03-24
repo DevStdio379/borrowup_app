@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { COLORS, SIZES } from '../../constants/theme';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 type Props = {
