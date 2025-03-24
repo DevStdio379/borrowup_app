@@ -56,7 +56,7 @@ const BottomNavigation = () => {
                     component={ProfileStack}
                 />
             </Tab.Navigator>
-        ) : (
+        ) : user.accountType === 'lender' && (
             <Tab.Navigator
                 initialRouteName='LenderDashboard'
                 screenOptions={{
