@@ -8,6 +8,7 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { auth, db } from '../../services/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { Avatar } from 'react-native-gifted-chat';
+import { COLORS } from '../../constants/theme';
 
 type ChatListScreenProps = StackScreenProps<RootStackParamList, 'ChatList'>
 
@@ -46,8 +47,8 @@ export const ChatList = ({ navigation }: ChatListScreenProps) => {
             const otherParticipantId = chat.participants.find((uid: string) => uid !== user.uid);
             const otherParticipantDetails = users.find((user) => user.uid === otherParticipantId);
             return {
-            ...chat,
-            otherParticipantDetails,
+                ...chat,
+                otherParticipantDetails,
             };
         });
         setChats(chatListWithOtherUserDetails);
@@ -57,13 +58,47 @@ export const ChatList = ({ navigation }: ChatListScreenProps) => {
         fetchChats();
     }, []);
 
+    if (!user || !user.isActive) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ marginVertical: 10, fontSize: 14 }}>User is not active. Please sign in.</Text>
+                <TouchableOpacity
+                    style={{ padding: 10, paddingHorizontal: 30, backgroundColor: COLORS.primary, borderRadius: 20 }}
+                    onPress={() => navigation.navigate('SignIn')}
+                >
+                    <Text style={{ color: COLORS.white, fontSize: 16 }}>Sign In</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchChats().then(() => setRefreshing(false));
     }, []);
 
     return (
-        <View style={{ flex: 1, padding: 16 }}>
+        <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
+            <View style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+                <View
+                    style={[GlobalStyleSheet.container, {
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingTop: 8,
+                        paddingHorizontal: 5,
+                    }]}>
+                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                        {/* left header element */}
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>My Borrowings</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        {/* right header element */}
+                    </View>
+                </View>
+            </View>
             <FlatList
                 data={chats}
                 keyExtractor={(item) => item.id}
@@ -74,8 +109,8 @@ export const ChatList = ({ navigation }: ChatListScreenProps) => {
                     >
                         <Image source={{ uri: item.otherParticipantDetails?.profileImageUrl }} style={{ height: 60, width: 60, borderRadius: 45 }} />
                         <View style={{ marginLeft: 16 }}>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{ item.otherParticipantDetails?.firstName } {item.otherParticipantDetails?.lastName }</Text>
-                            <Text style={{ color: '#888' }}>{ item.lastMessage || 'Last message preview...' }</Text>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{item.otherParticipantDetails?.firstName} {item.otherParticipantDetails?.lastName}</Text>
+                            <Text style={{ color: '#888' }}>{item.lastMessage || 'Last message preview...'}</Text>
                         </View>
                     </TouchableOpacity>
                 )}
