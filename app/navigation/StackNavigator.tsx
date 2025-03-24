@@ -6,7 +6,6 @@ import { View } from 'react-native';
 import OnBoarding from '../screens/Auth/Onboarding';
 import SignUp from '../screens/Auth/SignUp';
 import SignIn from '../screens/Auth/SignIn';
-import DrawerNavigation from './DrawerNavigation';
 import MyCalendar from '../screens/LenderPanel/MyCalendar';
 import LenderDashboard from '../screens/LenderPanel/LenderDashboard';
 import Listings from '../screens/LenderPanel/Listings';
@@ -32,6 +31,7 @@ import ChatList from '../screens/Chat/ChatList';
 import NewChat from '../screens/Chat/NewChat';
 import PaymentSuccess from '../screens/Products/PaymentSuccess';
 import AddressMapView from '../screens/Profile/AddressMapView';
+import BottomNavigation from './BottomNavigation';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -40,7 +40,7 @@ const StackNavigator = () => {
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
 			<StackComponent.Navigator
-				initialRouteName='DrawerNavigation'
+				initialRouteName='BottomNavigation'
 				screenOptions={{
 					headerShown: false,
 					cardStyle: { backgroundColor: "transparent" },
@@ -51,7 +51,7 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="SignUp" component={SignUp} />
 				<StackComponent.Screen name="SignIn" component={SignIn} />
 
-				<StackComponent.Screen name="DrawerNavigation" component={DrawerNavigation} />
+				<StackComponent.Screen name="BottomNavigation" component={BottomNavigation} />
 				<StackComponent.Screen name="Products" component={Products} />
 				<StackComponent.Screen name="ProductDetails" component={ProductDetails} />
 				<StackComponent.Screen name="MyBorrowings" component={MyBorrowings} />
