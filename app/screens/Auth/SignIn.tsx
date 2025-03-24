@@ -35,9 +35,18 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
 
             // Fetch user data and update global state
             await fetchUser(user.uid);
-            await updateUserData(user.uid, { 'isActive': true });
+            updateUserData(user.uid, { 'isActive': true });
+
+            if (!user) {
+                throw new Error("An error occurred. Please try again.");
+            } else {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'BottomNavigation', params: { screen: 'Home' } }],
+                });
+            }
+
             Alert.alert("Success!", "Signed in successfully.");
-            navigation.navigate('DrawerNavigation', { screen: 'Home' });
         } catch (error: any) {
             switch (error.code) {
                 case "auth/invalid-email":
