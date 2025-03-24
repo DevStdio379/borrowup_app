@@ -103,8 +103,8 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                         name={(() => {
                                             switch (label) {
                                                 // borrower
-                                                case 'Map':
-                                                    return 'compass';
+                                                case 'FavouriteCollection':
+                                                    return 'bookmarks';
                                                 case 'Home':
                                                     return 'home';
                                                 case 'MyBorrowings':
@@ -132,6 +132,8 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                     <Text style={[styles.navText, { color: isFocused ? COLORS.title : colors.blackLight }]}>
                                         {(() => {
                                             switch (label) {
+                                                case 'FavouriteCollection':
+                                                    return 'Saved';
                                                 case 'MyRental':
                                                     return 'My Rental';
                                                 case 'MyBorrowings':
