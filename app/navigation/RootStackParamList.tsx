@@ -4,7 +4,7 @@ import { Borrowing } from "../services/BorrowingServices";
 import { Product } from "../services/ProductServices";
 
 export type RootStackParamList = {
-    DrawerNavigation: NavigatorScreenParams<BottomTabParamList>;
+    BottomNavigation: NavigatorScreenParams<BottomTabParamList>;
     OnBoarding: undefined;
     SignUp: undefined;
     SignIn: undefined;
