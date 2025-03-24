@@ -47,6 +47,21 @@ const MyBorrowings = ({ navigation }: MyBorrowingsScreenProps) => {
         );
     }
 
+
+    if (!user || !user.isActive) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ marginVertical: 10, fontSize: 14 }}>User is not active. Please sign in.</Text>
+                <TouchableOpacity
+                    style={{ padding: 10, paddingHorizontal: 30, backgroundColor: COLORS.primary, borderRadius: 20 }}
+                    onPress={() => navigation.navigate('SignIn')}
+                >
+                    <Text style={{ color: COLORS.white, fontSize: 16 }}>Sign In</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
     return (
         <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
             <View style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
@@ -76,7 +91,7 @@ const MyBorrowings = ({ navigation }: MyBorrowingsScreenProps) => {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             >
-                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 40 }]}>
+                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 40, paddingTop: 10 }]}>
                     <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingBottom: 10 }}> Active Borrowings </Text>
                     <View>
                         {
