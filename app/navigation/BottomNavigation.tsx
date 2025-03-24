@@ -36,16 +36,16 @@ const BottomNavigation = () => {
                 tabBar={(props: any) => <BottomMenu {...props} />}
             >
                 <Tab.Screen
+                    name='Home'
+                    component={HomeStack}  // Use HomeStack here
+                />
+                <Tab.Screen
                     name='FavouriteCollection'
                     component={FavouriteStack}
                 />
                 <Tab.Screen
                     name='MyBorrowings'
                     component={MyBorrowingScreen}
-                />
-                <Tab.Screen
-                    name='Home'
-                    component={HomeStack}  // Use HomeStack here
                 />
                 <Tab.Screen
                     name='ChatList'
