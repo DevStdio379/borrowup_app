@@ -60,7 +60,7 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
         </View>
       </View>
       {wishList.length > 0 ? (
-        <View style={{ paddingTop: 10, alignItems: 'center' }}>
+        <View style={{ paddingTop: 10, paddingHorizontal: 20 }}>
           <FlatList
             data={wishList}
             refreshControl={
