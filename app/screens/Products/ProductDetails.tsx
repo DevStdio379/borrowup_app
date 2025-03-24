@@ -472,7 +472,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             {index === 0 ? (
               <TouchableOpacity
                 onPress={() => navigation.goBack()}
-                style={{ height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
+                style={{
+                  height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
                 }}
               >
                 <Ionicons size={30} color={COLORS.blackLight} name='close' />
@@ -480,7 +481,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             ) : (
               <TouchableOpacity
                 onPress={prevScreen}
-                style={{ height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
+                style={{
+                  height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
                 }}
               >
                 <Ionicons size={30} color={COLORS.blackLight} name='chevron-back-outline' />
@@ -652,6 +654,11 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                   markingType={'period'}
                   onDayPress={handleDayPress}
                   minDate={new Date().toISOString().split('T')[0]} // Disable past dates
+                  renderHeader={(date) => (
+                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.black }}>
+                      {format(new Date(date), 'MMMM yyyy')}
+                    </Text>
+                  )}
                 />
                 <View style={GlobalStyleSheet.line} />
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Borrowing Conditions</Text>
