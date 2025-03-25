@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { View, Text, TouchableOpacity, Image, ScrollView, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, Alert, BackHandler } from 'react-native'
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -102,6 +102,28 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
     };
 
     useEffect(() => {
+        const backAction = () => {
+            // Handle the back press with an alert, or simply do nothing
+            Alert.alert("Hold on!", "Are you sure you want to go back?", [
+                {
+                    text: "Cancel",
+                    onPress: () => null,
+                    style: "cancel"
+                },
+                { text: "YES", onPress: () => navigation.goBack() }
+            ]);
+            return true; // This prevents the default back button behavior
+        };
+
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            backAction
+        );
+
+        return () => backHandler.remove();
+    }, []);
+
+    useEffect(() => {
         if (reviewId !== 'newReview') {
             const fetchReview = async () => {
                 try {
@@ -194,6 +216,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                         borrowingId: lending.id || '',
                         lenderReviewerId: user.uid,
                         lenderOverallRating: overallRating || 0,
+                        productId: lending.product.id || '',
 
                         lenderCollectionRating: collectionRating || 0,
                         lenderCollectionFeedback: collectionFeedback || [''],
@@ -723,7 +746,10 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                             onPress={() => {
                                 Alert.alert('Listing Completed');
                                 handleReview(1);
-                                navigation.goBack();
+                                navigation.reset({
+                                    index: 0,
+                                    routes: [{ name: 'BottomNavigation', params: { screen: 'MyLendings' } }],
+                                });
                             }}
                         >
                             <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Submit</Text>
