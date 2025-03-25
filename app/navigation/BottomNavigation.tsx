@@ -1,19 +1,17 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomTabParamList } from './BottomTabParamList';
-import MyBorrowingScreen from '../screens/MyBorrowings/MyBorrowings';
 import ChatListScreen from '../screens/Chat/ChatList';
-import HomeScreen from '../screens/Home/Home';
-import MapScreen from '../screens/Favourite/FavouriteCollection';
 import ProfileScreen from '../screens/Profile/Profile';
 import BottomMenu from '../layout/BottomMenu';
 import { useUser } from '../context/UserContext';
 import LenderDashboard from '../screens/LenderPanel/LenderDashboard';
-import MyCalendarScreen from '../screens/LenderPanel/MyCalendar';
 import ListingsScreen from '../screens/LenderPanel/Listings';
 import HomeStack from './HomeStack';
 import ProfileStack from './ProfileStack';
 import FavouriteStack from './FavouriteStack';
+import MyLendingsStack from './MyLendingsStack';
+import MyBorrowingsStack from './MyBorrowingStack';
 
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -45,7 +43,7 @@ const BottomNavigation = () => {
                 />
                 <Tab.Screen
                     name='MyBorrowings'
-                    component={MyBorrowingScreen}
+                    component={MyBorrowingsStack}
                 />
                 <Tab.Screen
                     name='ChatList'
@@ -65,8 +63,8 @@ const BottomNavigation = () => {
                 tabBar={(props: any) => <BottomMenu {...props} />}
             >
                 <Tab.Screen
-                    name='MyCalendar'
-                    component={MyCalendarScreen}
+                    name='MyLendings'
+                    component={MyLendingsStack}
                 />
                 <Tab.Screen
                     name='Listings'
