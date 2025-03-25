@@ -1010,19 +1010,35 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
         </View>
       ) : (
         <View style={[GlobalStyleSheet.flex, { paddingVertical: 15, paddingHorizontal: 20, backgroundColor: COLORS.card, }]}>
-          <TouchableOpacity
-            style={{
+            {user?.isActive ? (
+            <TouchableOpacity
+              style={{
               backgroundColor: COLORS.primary,
               width: '100%',
               padding: 15,
               borderRadius: 10,
               alignItems: 'center',
               justifyContent: 'center',
-            }}
-            onPress={nextScreen}
-          >
-            <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>{index === 3 ? 'Pay & Borrow' : 'Next'}</Text>
-          </TouchableOpacity>
+              }}
+              onPress={nextScreen}
+            >
+              <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>{index === 3 ? 'Pay & Borrow' : 'Next'}</Text>
+            </TouchableOpacity>
+            ) : (
+            <TouchableOpacity
+              style={{
+              backgroundColor: COLORS.primary,
+              width: '100%',
+              padding: 15,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              }}
+              onPress={() => navigation.navigate('SignIn')}
+            >
+              <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>Sign In to Borrow</Text>
+            </TouchableOpacity>
+            )}
         </View>
       )}
     </View>
