@@ -185,7 +185,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                         </View>
                                         <View style={[GlobalStyleSheet.container]}>
                                             <FlatList
-                                                data={products.slice(0, 5)}
+                                                data={products.slice(-5)}
                                                 renderItem={renderItemHorizontal}
                                                 keyExtractor={(item) => item.id ? item.id.toString() : ''}
                                                 horizontal
