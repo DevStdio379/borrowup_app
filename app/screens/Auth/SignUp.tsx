@@ -1,6 +1,6 @@
 import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, Alert } from 'react-native'
 import React, { useState } from 'react'
-import { COLORS } from '../../constants/theme'
+import { COLORS, SIZES } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -53,7 +53,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
             await createUser(userData);
 
             Alert.alert("Success!", "Account created successfully.");
-            navigation.navigate('DrawerNavigation', { screen: 'Home' });
+            navigation.navigate('BottomNavigation', { screen: 'Home' });
         } catch (error: any) {
             Alert.alert("Error", error.message);
         }
@@ -144,67 +144,33 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                     </View>
                     <View style={{ alignItems: 'center', marginTop: 30 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                            <TouchableOpacity style={{
-                                borderRadius: 12,
-                                padding: 15,
-                                borderColor: COLORS.blackLight,
-                                borderWidth: 2,
-                                alignItems: 'center',
-                                width: 100,
-                                height: 60,
-                                justifyContent: 'center',
-                                shadowColor: '#000',
-                                shadowOpacity: 0.1,
-                                shadowRadius: 8,
-                                marginHorizontal: 10,
-                                backgroundColor: '#F6F6F6',
-                            }}>
-                                <Image
-                                    source={{ uri: 'https://cdn-icons-png.flaticon.com/512/124/124010.png' }}
-                                    style={{ width: 32, height: 32, resizeMode: 'contain' }}
-                                />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{
-                                borderRadius: 12,
-                                padding: 15,
-                                borderColor: COLORS.blackLight,
-                                borderWidth: 2,
-                                alignItems: 'center',
-                                width: 100,
-                                height: 60,
-                                justifyContent: 'center',
-                                shadowColor: '#000',
-                                shadowOpacity: 0.1,
-                                shadowRadius: 8,
-                                marginHorizontal: 10,
-                                backgroundColor: '#F6F6F6',
-                            }} onPress={() => { }}>
-                                <Image
-                                    source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png' }}
-                                    style={{ width: 32, height: 32, resizeMode: 'contain' }}
-                                />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{
-                                borderRadius: 12,
-                                padding: 15,
-                                borderColor: COLORS.blackLight,
-                                borderWidth: 2,
-                                alignItems: 'center',
-                                width: 100,
-                                height: 60,
-                                justifyContent: 'center',
-                                shadowColor: '#000',
-                                shadowOpacity: 0.1,
-                                shadowRadius: 8,
-                                marginHorizontal: 10,
-                                backgroundColor: '#F6F6F6',
-                            }}>
-                                <Image
-                                    source={{ uri: 'https://cdn-icons-png.flaticon.com/512/831/831276.png' }}
-                                    style={{ width: 32, height: 32, resizeMode: 'contain' }}
-                                />
-                            </TouchableOpacity>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                    onPress={() => {
+                                        // setEmail('kuhai@gmail.com');
+                                        // setPassword('12345678');
+                                    }}>
+                                    <Ionicons name='logo-facebook' size={24} color={COLORS.title} />
+                                    {/* <Text>Kuhai</Text> */}
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                    onPress={() => {
+                                        // setEmail('dinie@gmail.com');
+                                        // setPassword('12345678');
+                                    }}>
+                                    {/* <Text>Dinie</Text> */}
+                                    <Ionicons name='logo-google' size={24} color={COLORS.title} />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                    onPress={() => {
+                                        // setEmail('razzin@gmail.com');
+                                        // setPassword('12345678');
+                                    }}>
+                                    {/* <Text>Razzin</Text> */}
+                                    <Ionicons name='logo-apple' size={24} color={COLORS.title} />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </View>
