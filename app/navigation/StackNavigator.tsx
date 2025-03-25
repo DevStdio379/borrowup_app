@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import OnBoarding from '../screens/Auth/Onboarding';
 import SignUp from '../screens/Auth/SignUp';
 import SignIn from '../screens/Auth/SignIn';
-import MyCalendar from '../screens/LenderPanel/MyCalendar';
+import MyCalendar from '../screens/LenderPanel/MyLendings';
 import LenderDashboard from '../screens/LenderPanel/LenderDashboard';
 import Listings from '../screens/LenderPanel/Listings';
 import AddListing from '../screens/LenderPanel/AddListing';
@@ -74,7 +74,6 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="LenderDashboard" component={LenderDashboard} />
 				<StackComponent.Screen name="Listings" component={Listings} />
 				<StackComponent.Screen name="AddListing" component={AddListing} />
-				<StackComponent.Screen name="MyCalendar" component={MyCalendar} />
 				<StackComponent.Screen name="LendingDetails" component={LendingDetails} />
 				<StackComponent.Screen name="LenderAddReview" component={LenderAddReview} />
 
