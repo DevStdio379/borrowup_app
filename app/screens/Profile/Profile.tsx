@@ -34,18 +34,21 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
     const fetchData = async () => {
         if (user?.uid) {
             const count = await countActivitiesByUser(user.uid);
-            setBorrowingCount(count.borrowingReviews);
-            setLendingCount(count.lendingReviews);
+            setBorrowingCount(count.borrowingReviews ?? 0);
+            setLendingCount(count.lendingReviews ?? 0);
 
             const borrowingRating = await calculateBorrowingRatingByUser(user.uid);
-            setBorrowingRating(borrowingRating || 0);
+            setBorrowingRating(borrowingRating ?? 0);
 
             const lendingRating = await calculateLendingRatingByUser(user.uid);
-            setLendingRating(lendingRating || 0);
+            setLendingRating(lendingRating ?? 0);
 
             const overallRating = ((borrowingRating || 0 * borrowingCount) + (lendingRating || 0 * lendingCount)) / (borrowingCount + lendingCount);
-            console.log('overallRating', overallRating);
-            setOverallRating(overallRating);
+            if (!isNaN(overallRating)) {
+                setOverallRating(overallRating);
+            } else {
+                setOverallRating(0);
+            }
 
         }
         setLoading(false);
@@ -102,20 +105,6 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
         );
     }
 
-    if (!user || !user.isActive) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ marginVertical: 10, fontSize: 14 }}>User is not active. Please sign in.</Text>
-                <TouchableOpacity
-                    style={{ padding: 10, paddingHorizontal: 30, backgroundColor: COLORS.primary, borderRadius: 20 }}
-                    onPress={() => navigation.navigate('SignIn')}
-                >
-                    <Text style={{ color: COLORS.white, fontSize: 16 }}>Sign In</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
-
     if (loading) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -123,7 +112,6 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
             </View>
         );
     }
-
 
     return (
         <View style={{ backgroundColor: colors.card, flex: 1 }}>
@@ -160,7 +148,9 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         </View>
                     </View>
                     <View style={{ width: '60%' }}>
-                        <Text style={{ fontSize: 24, color: colors.title }}>{user?.firstName} {user?.lastName}</Text>
+                        <Text style={{ fontSize: 24, color: colors.title }}>
+                            {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.userName}
+                        </Text>
                         {/* add star rating here */}
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                             {[...Array(5)].map((_, index) => (

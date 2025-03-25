@@ -149,7 +149,8 @@ export const calculateBorrowingRatingByUser = async (userID: string): Promise<nu
         totalBorrowingRating += data.lenderOverallRating;
       }
     });
-    const averageBorrowingRating = borrowingSize > 0 ? totalBorrowingRating / borrowingSize : null;
+    const averageBorrowingRating = borrowingSize > 0 ? totalBorrowingRating / borrowingSize : 0;
+    console.log('averageBorrowingRating', averageBorrowingRating);
 
     return averageBorrowingRating;
   } catch (error) {
@@ -175,7 +176,8 @@ export const calculateLendingRatingByUser = async (userID: string): Promise< num
         totalLendingRating += data.borrowerOverallRating;
       }
     });
-    const averageLendingRating = lendingSize > 0 ? totalLendingRating / lendingSize : null;
+    const averageLendingRating = lendingSize > 0 ? totalLendingRating / lendingSize : 0;
+    console.log('averageLendingRating', averageLendingRating);
 
     return averageLendingRating;
   } catch (error) {
