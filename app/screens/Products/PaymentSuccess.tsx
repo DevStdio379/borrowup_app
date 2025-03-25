@@ -46,14 +46,10 @@ const PaymentSuccessScreen = ({ navigation, route }: PaymentSuccessScreenProps) 
                     <Text style={styles.subtitle}>Open in Google Maps</Text>
                     <View style={{ backgroundColor: COLORS.blackLight, height: 1, margin: 10, width: '90%', alignSelf: 'center', }} />
                     <Text style={styles.subtitle}>Remember to treat people kindly upon meetup</Text>
-                    {/* Text */}
-
-                    <Text style={styles.title}>Your Collection Code:</Text>
-                    <Text style={{ fontSize: 17, paddingBottom: 30 }}>{collectionCode}</Text>
 
                     {/* Button */}
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('DrawerNavigation', { screen: 'MyBorrowings' })}
+                        onPress={() => navigation.navigate('BottomNavigation', { screen: 'MyBorrowings' })}
                         style={{ width: SIZES.width * 0.8, backgroundColor: COLORS.primary, borderRadius: 12, padding: 15 }}>
                         <Text style={{ color: COLORS.white, textAlign: 'center', fontWeight: 'bold', fontSize: 16 }}>Go to My Borrowing</Text>
                     </TouchableOpacity>
