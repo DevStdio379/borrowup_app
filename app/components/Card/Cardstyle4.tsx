@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity, TouchableNativeFeedback, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { COLORS } from '../../constants/theme'
 import { IMAGES } from '../../constants/Images'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { removeFromwishList } from '../../redux/reducer/wishListReducer'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LikeBtn from '../LikeBtn'
+import { useUser } from '../../context/UserContext'
+import { deleteDoc, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { db } from '../../services/firebaseConfig'
 
 type Props = {
     id: string;
@@ -51,6 +54,43 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
     const removeItemFromWishList = () => {
         dispatch(removeFromwishList(id as any));
     }
+    const { user } = useUser();
+    const [isFavourited, setIsFavourited] = useState(false);
+
+    const favDocId = user ? `${user.uid}_${id}` : '';
+
+    useEffect(() => {
+        const checkFavourite = async () => {
+          if (!user) return;
+          const favRef = doc(db, 'favorites', favDocId);
+          const favSnap = await getDoc(favRef);
+          setIsFavourited(favSnap.exists());
+        };
+    
+        checkFavourite();
+      }, [user, id]);
+    
+    const toggleFavourite = async () => {
+        if (!user) return;
+    
+        const favRef = doc(db, 'favorites', favDocId);
+    
+        try {
+          if (isFavourited) {
+            await deleteDoc(favRef);
+            setIsFavourited(false);
+          } else {
+            await setDoc(favRef, {
+              userId: user.uid,
+              productId: id,
+              createdAt: serverTimestamp(),
+            });
+            setIsFavourited(true);
+          }
+        } catch (err) {
+          console.error('Error toggling favorite:', err);
+        }
+      };
 
     return (
         <TouchableOpacity
@@ -82,11 +122,18 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
                             top: 10,
                         }}
                     >
-                        <LikeBtn
-                            onPress={inWishlist().includes(id) ? removeItemFromWishList : onPress5}
-                            id={id}
-                            inWishlist={inWishlist}
-                        />
+                        <TouchableOpacity
+                            onPress={toggleFavourite}
+                            style={{
+                                padding: 10,
+                                borderRadius: 8,
+                                backgroundColor: isFavourited ? 'tomato' : '#ccc',
+                            }}
+                        >
+                            <Text style={{ color: 'white' }}>
+                                {isFavourited ? '❤️ Favourited' : '🤍 Add to Favorites'}
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={{ flex: 1, width: '100%' }}>
