@@ -10,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../services/firebaseConfig';
 import { useUser } from '../../context/UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type SignInScreenProps = StackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -40,6 +41,7 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
             if (!user) {
                 throw new Error("An error occurred. Please try again.");
             } else {
+                await AsyncStorage.setItem('userUID', user.uid);
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'BottomNavigation', params: { screen: 'Home' } }],

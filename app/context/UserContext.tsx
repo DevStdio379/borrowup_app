@@ -1,7 +1,8 @@
 import { collection, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
-import React, { createContext, useState, ReactNode, useContext } from "react";
+import React, { createContext, useState, ReactNode, useContext, useEffect } from "react";
 import { db, storage } from "../services/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface User {
   uid: string;
@@ -77,6 +78,25 @@ export const uploadImage = async (imageName: string, imageUrl: string) => {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+
+  useEffect(() => {
+    const loadUserFromStorage = async () => {
+      try {
+        const uid = await AsyncStorage.getItem('userUID');
+        if (uid) {
+          await fetchUser(uid);
+          await updateUserData(uid, { isActive: true });
+        } else {
+          console.log("No userUID in storage.");
+        }
+      } catch (err) {
+        console.error("Error restoring user session:", err);
+      }
+    };
+  
+    loadUserFromStorage();
+  }, []);
+  
   const [user, setUser] = useState<User | null>(defaultUser);
 
   const updateUserData = async (uid: string, updatedData: Partial<User>) => {

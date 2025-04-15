@@ -5,11 +5,15 @@ import { Provider } from 'react-redux'
 import store from './app/redux/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { Alert, Platform } from 'react-native';
-import { useEffect } from 'react';
+import { Alert, LogBox, Platform } from 'react-native';
+import { useEffect, useState } from 'react';
+import { UserProvider } from './app/context/UserContext';
+
+LogBox.ignoreLogs([
+  'Auth state will default to memory persistence',
+]);
 
 export default function App() {
-
   const requestLocationPermission = async () => {
     const permission = Platform.OS === 'ios' ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
 
@@ -28,13 +32,15 @@ export default function App() {
   useEffect(() => {
     requestLocationPermission();
   }, []);
-  
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <SafeAreaView style={{ flex: 1 }}>
           <Provider store={store}>
-            <Route />
+            <UserProvider>
+              <Route />
+            </UserProvider>
           </Provider>
         </SafeAreaView>
       </SafeAreaProvider>

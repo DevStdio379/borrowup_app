@@ -12,6 +12,7 @@ import { useUser, defaultUser } from '../../context/UserContext';
 import { openDrawer } from '../../redux/actions/drawerAction';
 import { countActivitiesByUser } from '../../services/BorrowingServices';
 import { calculateBorrowingRatingByUser, calculateLendingRatingByUser } from '../../services/ReviewServices';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
 
@@ -78,6 +79,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 await updateUserData(user.uid, { 'isActive': false });
                 navigation.navigate('SignIn')
                 setUser(defaultUser)
+                await AsyncStorage.removeItem('userUID');
             } else {
                 console.error("User ID is undefined");
             }
