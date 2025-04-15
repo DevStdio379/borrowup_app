@@ -14,22 +14,23 @@ import { fetchProducts, Product } from '../../services/ProductServices';
 import { Banner, fetchBanners } from '../../services/BannerServices';
 import TabButtonStyleHome from '../../components/Tabs/TabButtonStyleHome';
 import Carousel from '../../components/Carousel';
-import { auth } from '../../services/firebaseConfig';
+import { auth, db } from '../../services/firebaseConfig';
+import { arrayRemove, arrayUnion, deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>
 
 export const Home = ({ navigation }: HomeScreenProps) => {
 
     const [products, setProducts] = useState<Product[]>([]);
-    const [banners, setBanners] = useState<Banner[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [refreshing, setRefreshing] = useState(false);
+
+    const { user } = useUser();
 
     const dispatch = useDispatch();
 
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
-    const { user } = useUser();
 
     const renderItem = ({ item }: { item: any }) => {
         if (item.empty) {
@@ -48,7 +49,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     location={item.location}
                     title={item.title}
                     onPress={() => navigation.navigate('ProductDetails', { product: item })}
-                    onPress5={() => addItemToWishList(item)}
                     product={true}
                     reviewCount={item.reviewCount}
                 />
@@ -81,7 +81,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         try {
             const [productList, bannerList] = await Promise.all([fetchProducts(), fetchBanners()]);
             setProducts(productList);
-            setBanners(bannerList);
         } catch (error) {
             console.error('Error fetching data: ', error);
         } finally {

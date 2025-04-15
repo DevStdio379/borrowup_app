@@ -92,7 +92,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
         try {
             if (user?.uid) {
                 await updateUserData(user.uid, { 'accountType': user.accountType === 'borrower' ? 'lender' : 'borrower' });
-                navigation.navigate('BottomNavigation', { screen: 'Home' });
+                navigation.navigate('BottomNavigation', { screen: 'HomeStack' });
             } else {
                 console.error("User ID is undefined");
             }
