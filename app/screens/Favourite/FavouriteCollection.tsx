@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Cardstyle4 from '../../components/Card/Cardstyle4';
 import { Product } from '../../services/ProductServices';
 import { addTowishList } from '../../redux/reducer/wishListReducer';
-import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { useUser } from '../../context/UserContext';
+import { addFavouriteToFirestore, removeFavouriteFromFirestore } from '../../services/FavouriteServices';
 
 type FavouriteCollectionScreenProps = StackScreenProps<RootStackParamList, 'FavouriteCollection'>
 
@@ -17,14 +17,20 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
   const wishList = useSelector((state: any) => state.wishList.wishList);
   const dispatch = useDispatch();
 
-  const addItemToWishList = (data: any) => {
-    dispatch(addTowishList({
-      id: data.id,
-      image: data.imageUrls[0],
-      title: data.title,
-      price: data.lendingRate,
-      brand: data.ownerID,
-    } as any));
+  const addItemToWishList = async (data: any) => {
+    if (!user) return;
+
+    const existingItem = wishList.find((item: any) => item.id === data.id);
+    
+    if (existingItem) {
+      console.log('Item already in wishlist:', data);
+      dispatch(addTowishList({ ...data, quantity: existingItem.quantity + 1 }));
+      await removeFavouriteFromFirestore(user.uid, data.id);
+    } else {
+      dispatch(addTowishList(data));
+      console.log('Adding to wishlist:', data);
+      await addFavouriteToFirestore(user.uid, data.id);
+    }
   }
 
   const { user } = useUser();
