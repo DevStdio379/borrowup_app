@@ -27,14 +27,14 @@ const BottomNavigation = () => {
     return (
         user.accountType === 'borrower' ? (
             <Tab.Navigator
-                initialRouteName='Home'
+                initialRouteName='HomeStack'
                 screenOptions={{
                     headerShown: false
                 }}
                 tabBar={(props: any) => <BottomMenu {...props} />}
             >
                 <Tab.Screen
-                    name='Home'
+                    name='HomeStack'
                     component={HomeStack}  // Use HomeStack here
                 />
                 <Tab.Screen

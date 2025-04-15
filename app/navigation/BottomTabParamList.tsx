@@ -3,7 +3,7 @@ import { Borrowing } from "../services/BorrowingServices";
 export type BottomTabParamList = {
 
     FavouriteCollection: undefined;
-    Home: undefined;
+    HomeStack: undefined;
     MyBorrowings: undefined;
     MyBorrowingDetails: { borrowing: Borrowing };
     ChatList: undefined;
