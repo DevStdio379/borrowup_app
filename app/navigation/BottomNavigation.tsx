@@ -38,7 +38,7 @@ const BottomNavigation = () => {
                     component={HomeStack}  // Use HomeStack here
                 />
                 <Tab.Screen
-                    name='FavouriteCollection'
+                    name='FavouriteStack'
                     component={FavouriteStack}
                 />
                 <Tab.Screen
