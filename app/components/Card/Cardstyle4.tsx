@@ -90,8 +90,8 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
                     </View>
                 </View>
                 <View style={{ flex: 1, width: '100%' }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 18, color: colors.title }}>£{price} / day</Text>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={ { fontSize: 16, color: COLORS.black }}>{title}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 16, color: COLORS.black }}>{title}</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 16, color: colors.title }}>£{price} / day</Text>
                     <Text style={{ fontSize: 12, color: COLORS.black }}>Deposit required</Text>
                     {MyOrder ? completed ?
                         <TouchableOpacity
@@ -128,7 +128,7 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
                             <Text style={{ fontSize: 14, color: COLORS.card, lineHeight: 21 }}>{btntitle}</Text>
                         </TouchableOpacity>
                         :
-                        <Text style={{ fontSize: 12, color: COLORS.blackLight }}>{reviewCount && reviewCount > 0 ? `${reviewCount} review` : 'No review' }</Text>
+                        <Text style={{ fontSize: 12, color: COLORS.blackLight }}>{reviewCount && reviewCount > 0 ? `${reviewCount} review` : 'No review'}</Text>
                     }
                 </View>
             </View>

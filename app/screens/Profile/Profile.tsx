@@ -43,7 +43,16 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
             const lendingRating = await calculateLendingRatingByUser(user.uid);
             setLendingRating(lendingRating ?? 0);
 
-            const overallRating = ((borrowingRating || 0 * borrowingCount) + (lendingRating || 0 * lendingCount)) / (borrowingCount + lendingCount);
+            setBorrowingCount(count.borrowingReviews ?? 0);
+            setLendingCount(count.lendingReviews ?? 0);
+
+            const updatedBorrowingCount = count.borrowingReviews ?? 0;
+            const updatedLendingCount = count.lendingReviews ?? 0;
+
+            const overallRating = (updatedBorrowingCount + updatedLendingCount) > 0 
+                ? ((borrowingRating ?? 0) * updatedBorrowingCount + (lendingRating ?? 0) * updatedLendingCount) / (updatedBorrowingCount + updatedLendingCount)
+                : 0;
+            console.log('overallRating: ', overallRating);
             if (!isNaN(overallRating)) {
                 setOverallRating(overallRating);
             } else {

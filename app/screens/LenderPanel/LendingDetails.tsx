@@ -90,13 +90,13 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
 
                     const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.product.id || '', lending.id || '');
                     if (fetchedReview) {
-                        Alert.alert('L Review found');
+                        // Alert.alert('L Review found');
                         setReview(fetchedReview);
                     } else {
-                        Alert.alert('L Review not found');
+                        // Alert.alert('L Review not found');
                     }
                 } else {
-                    Alert.alert('B Borrowing not found');
+                    // Alert.alert('B Borrowing not found');
                 }
             } catch (error) {
                 console.error('Failed to fetch selected lending details:', error);

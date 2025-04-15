@@ -77,7 +77,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
 
     const fetchSelectedBorrowingData = async () => {
         if (borrowing) {
-            Alert.alert('1 Borrowing found');
+            // Alert.alert('1 Borrowing found');
             try {
                 const selectedBorrowing = await fetchSelectedBorrowing(borrowing.id || 'undefined');
                 if (selectedBorrowing) {
@@ -91,17 +91,17 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
 
                     const fetchedReview = await getReviewByBorrowingId(selectedBorrowing.product.id || 'undefined', selectedBorrowing.id || 'unefined');
                     if (fetchedReview) {
-                        Alert.alert('B Review found');
+                        // Alert.alert('B Review found');
                         setReview(fetchedReview);
                     } else {
-                        Alert.alert('B Review not found');
+                        // Alert.alert('B Review not found');
                     }
                 }
             } catch (error) {
                 console.error('Failed to fetch selected borrowing details:', error);
             }
         } else {
-            Alert.alert('B Borrowing not found');
+            // Alert.alert('B Borrowing not found');
         }
         setLoading(false);
     };
@@ -109,7 +109,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
     useEffect(() => {
         const fetchData = async () => {
             if (borrowing) {
-                Alert.alert('2 Borrowing found');
+                // Alert.alert('2 Borrowing found');
                 setImages(borrowing.product.imageUrls);
                 setSelectedImage(borrowing.product.imageUrls[0]);
                 setBorrowing(borrowing);
@@ -127,7 +127,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                     }
                 }
             } else {
-                Alert.alert('B Borrowing not found');
+                // Alert.alert('B Borrowing not found');
             }
         };
         setStatus(borrowing.status);

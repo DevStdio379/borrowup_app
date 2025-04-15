@@ -131,7 +131,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                             </View>
                         ) : (
                             <View>
-                                <Text style={{ fontSize: 30, fontWeight: 'bold', color: COLORS.title }}>Welcome to Tags!</Text>
+                                <Text style={{ fontSize: 30, fontWeight: 'bold', color: COLORS.title }}>BorrowNest</Text>
                                 <Text style={{ fontSize: 16, color: COLORS.title }}>Borrow & lend items around you.</Text>
                             </View>
                         )}
@@ -174,8 +174,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                                         }
                                     >
-                                        <Carousel data={banners} />
-                                        <View style={{ width: SIZES.width * 0.98, paddingHorizontal: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        {/* <Carousel data={banners} /> */}
+                                        {/* <View style={{ width: SIZES.width * 0.98, paddingHorizontal: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={{ fontSize: 20, color: colors.title, fontWeight: 'bold' }}>Nearby Borrows</Text>
                                             <TouchableOpacity
                                                 onPress={() => navigation.navigate('Products')}
@@ -192,15 +192,15 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                                                 showsHorizontalScrollIndicator={false}
                                                 contentContainerStyle={[{ paddingVertical: 16 }]}
                                             />
-                                        </View>
-                                        <View style={{ width: SIZES.width * 0.98, paddingHorizontal: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        </View> */}
+                                        {/* <View style={{ width: SIZES.width * 0.98, paddingHorizontal: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Text style={{ fontSize: 20, color: colors.title, fontWeight: 'bold' }}>Explore More</Text>
                                             <TouchableOpacity
                                                 onPress={() => navigation.navigate('Products')}
                                             >
                                                 <Text style={{ fontSize: 16, color: COLORS.blackLight }}>More</Text>
                                             </TouchableOpacity>
-                                        </View>
+                                        </View> */}
                                         <View style={[GlobalStyleSheet.container, { paddingBottom: 20 }]}>
                                             <FlatList
                                                 data={products}

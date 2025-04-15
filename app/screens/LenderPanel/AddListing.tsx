@@ -404,8 +404,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 70, alignItems: 'flex-start' }}>
                     {index === 0 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 30, paddingBottom: 50 }}>Start earning by listing
-                                your items! </Text>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 30, paddingBottom: 50 }}>Let's Share Your Idle Items</Text>
                             <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 20 }}>
                                 <View style={{ width: '10%', alignItems: 'center' }}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>1.</Text>

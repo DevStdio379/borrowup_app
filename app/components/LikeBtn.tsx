@@ -14,19 +14,22 @@ const LikeBtn = ({wishlist,onPress,inWishlist,id}: any) => {
             accessible={true}
             accessibilityLabel="Like Btn"
             accessibilityHint="Like this item"
-            onPress={() =>  onPress ? onPress() : ""}
+            onPress={() => onPress ? onPress() : ""}
             style={{
-                height: 30,
-                width: 30,
-                alignItems: 'center',
-                justifyContent: 'center',
+            height: 30,
+            width: 30,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: wishlist ? COLORS.primary : COLORS.placeholder,
+            opacity: 0.8,
+            borderRadius: 15,
             }}
         >
-            {inWishlist().includes(id) ?
-                <Ionicons size={22} color={wishlist ? COLORS.white : COLORS.primary } name="heart" />
-                :
-                <Ionicons size={22} color={wishlist ? COLORS.primary : COLORS.white } name="heart" />
-            }
+            {inWishlist().includes(id) ? (
+            <Ionicons size={22} color={COLORS.black} name="bookmark" />
+            ) : (
+            <Ionicons size={22} color={COLORS.white} name="bookmark-outline" />
+            )}
         </Pressable>
     );
 }
