@@ -53,11 +53,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     price={item.lendingRate.toString()}
                     ownerID={item.ownerID}
                     description={item.description}
-                    location={item.location}
+                    location={item.address}
+                    deposit={item.depositAmount}
                     title={item.title}
                     onPress={() => navigation.navigate('ProductDetails', { product: item })}
                     product={true}
                     averageRating={item.averageRating}
+                    ratingCount={item.ratingCount}
                 />
             </View>
         );
@@ -77,7 +79,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     onPress={() => navigation.navigate('ProductDetails', { product: item })}
                     onPress5={() => addItemToWishList(item)}
                     product={true}
+                    deposit={item.depositAmount}
                     averageRating={item.averageRating}
+                    ratingCount={item.ratingCount}
                 />
             </View>
         );
