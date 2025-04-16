@@ -48,7 +48,7 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
 
     const handleToggle = () => {
         if (!user) return;
-        dispatch(toggleFavorite({ userId: user?.uid, productId: id}));
+        dispatch(toggleFavorite({ userId: user?.uid, productId: id }));
     };
 
     return (
@@ -83,11 +83,21 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
                     >
                         <TouchableOpacity
                             onPress={handleToggle}
-                            style={[styles.button, isFavorite ? { backgroundColor: '#F44336'} : { backgroundColor: '#4CAF50' }]}
+                            style={{
+                                height: 30,
+                                width: 30,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: COLORS.placeholder,
+                                opacity: 0.8,
+                                borderRadius: 15,
+                            }}
                         >
-                            <Text style={{ color: 'white', textAlign: 'center' }}>
-                                {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
-                            </Text>
+                            {isFavorite ? (
+                                <Ionicons size={22} color={COLORS.black} name="bookmark" />
+                            ) : (
+                                <Ionicons size={22} color={COLORS.white} name="bookmark-outline" />
+                            )}
                         </TouchableOpacity>
                     </View>
                 </View>

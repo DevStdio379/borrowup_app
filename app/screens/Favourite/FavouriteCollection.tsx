@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
 import { fetchFavorites } from '../../redux/favoriteSlice';
 import { fetchSelectedProduct, Product } from '../../services/ProductServices';
+import Cardstyle4 from '../../components/Card/Cardstyle4';
 
 type FavouriteCollectionScreenProps = StackScreenProps<RootStackParamList, 'FavouriteCollection'>
 
@@ -41,10 +42,6 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
     if (favoriteIds.length) loadProducts();
   }, [favoriteIds]);
 
-  if (!favoriteIds.length) {
-    return <Text style={{ textAlign: 'center', marginTop: 50, fontStyle: 'italic' }}>No favorite items yet.</Text>;
-  }
-
   if (!user || !user.isActive) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -75,33 +72,46 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
           </View>
         </View>
       </View>
-      <FlatList
-        data={favoriteIds}
-        keyExtractor={(id) => id}
-        renderItem={({ item: productId }) => {
-          const product = products[productId];
+      {favoriteIds.length === 0 ? (
+        <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+          <Text>No product saved</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={favoriteIds}
+          keyExtractor={(id) => id}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          renderItem={({ item: productId }) => {
+            const product = products[productId];
 
-          if (!product) {
+            if (!product) {
+              return (
+                <View style={styles.card}>
+                  <ActivityIndicator size="small" color="#888" />
+                </View>
+              );
+            }
+
             return (
-              <View style={styles.card}>
-                <ActivityIndicator size="small" color="#888" />
+              <View style={{ flex: 1, margin: 5 }}>
+                <Cardstyle4
+                  id={productId }
+                  imageUrl={product.imageUrls[0]}
+                  price={product.lendingRate}
+                  ownerID={product.ownerID}
+                  description={product.description}
+                  location={product.address}
+                  title={product.title}
+                  onPress={() => navigation.navigate('ProductDetails', { product: product })}
+                  product={true}
+                  reviewCount={product.reviewCount}
+                />
               </View>
             );
-          }
-
-          return (
-            <View style={styles.card}>
-              {product.imageUrls && (
-                <Image source={{ uri: product.imageUrls[0] }} style={styles.image} />
-              )}
-              <Text style={styles.title}>{product.title}</Text>
-              {product.description && (
-                <Text style={styles.description}>{product.description}</Text>
-              )}
-            </View>
-          );
-        }}
-      />
+          }}
+        />
+      )}
     </View>
   );
 };
