@@ -19,7 +19,7 @@ export interface Product {
   pickupInstructions: string;
   returnInstructions: string;
 
-  reviewCount?: number;
+  ratingCount?: number;
   averageRating?: number;  // Add an optional overallRating field
 
   // address 
@@ -58,6 +58,7 @@ const mapDocToProduct = (doc: any): Product => {
 
     // added data
     averageRating: productData.averageRating,
+    ratingCount: productData.ratingCount,
 
     // address 
     addressID: productData.addressID,
@@ -255,7 +256,7 @@ export const searchProducts = async (queryStr: string): Promise<Product[]> => {
     await Promise.all(filteredProducts.map(async product => {
       if (product.id) {
         const reviewsSnapshot = await getDocs(collection(db, "products", product.id, "reviews"));
-        productList.push({ ...product, reviewCount: reviewsSnapshot.size });
+        productList.push({ ...product, ratingCount: reviewsSnapshot.size });
       }
     }));
 
