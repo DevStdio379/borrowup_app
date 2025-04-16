@@ -2,6 +2,7 @@ import { db, storage } from './firebaseConfig';  // Import the Firestore instanc
 import { collection, getDocs, addDoc, doc, updateDoc, getDoc, query, where } from 'firebase/firestore';  // Firestore functions
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage';  // Import Firebase storage functions
 import { Borrowing } from './BorrowingServices';
+import { Alert } from 'react-native';
 
 // Define the Review interface
 export interface Review {
@@ -130,6 +131,34 @@ export const getReviewsByProductId = async (productId: string) => {
   }
 };
 
+
+export const getReviewAverageRatingByProductId = async (productId: string): Promise<number> => {
+  try {
+    const reviewsRef = collection(db, 'reviews');
+    const productQuery = query(reviewsRef, where('productId', '==', productId));
+    const querySnapshot = await getDocs(productQuery);
+
+    const count = querySnapshot.size; // Count of reviews for the product
+
+    // Calculate the average borrowerOverallRating
+    let totalRating = 0;
+    let ratingCount = 0;
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.borrowerOverallRating) {
+        totalRating += data.borrowerOverallRating;
+        ratingCount++;
+      }
+    });
+    const averageRating = ratingCount > 0 ? totalRating / ratingCount : 0; // Avoid division by zero
+    return averageRating ;
+    
+  } catch (error) {
+    console.error('Error fetching review count and average rating: ', error);
+    throw error; // Throwing the error to handle it at the call site
+  }
+};
 
 export const calculateBorrowingRatingByUser = async (userID: string): Promise<number | null > => {
   try {
