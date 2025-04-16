@@ -8,9 +8,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import Input from '../../components/Input/Input';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { createReview, getReviewByBorrowingId, updateReview } from '../../services/ReviewServices';
-import { set } from 'date-fns';
-import MyBorrowings from '../MyBorrowings/MyBorrowings';
+import { createReview, getReviewAverageRatingByProductId, getReviewByBorrowingId, updateReview } from '../../services/ReviewServices';
+import { updateProduct } from '../../services/ProductServices';
 
 type BorrowerAddReviewScreenProps = StackScreenProps<RootStackParamList, 'BorrowerAddReview'>;
 
@@ -279,6 +278,8 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                         borrowerStatus: status,
                     });
                     Alert.alert(`Review updated successfully. Status: ${status}`);
+                    const averageRating = await getReviewAverageRatingByProductId(borrowing.product.id || 'undefined');
+                    await updateProduct(borrowing.product.id || 'undefined', {averageRating: averageRating})
                 }
             } else {
                 Alert.alert('User ID is missing.');
