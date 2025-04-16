@@ -26,7 +26,7 @@ type Props = {
     product?: any;
     MyOrder?: any;
     completed?: any;
-    reviewCount?: number;
+    averageRating?: number;
     onPress?: (e: any) => void,
     onPress2?: any,
     onPress3?: (e: any) => void,
@@ -34,7 +34,7 @@ type Props = {
     onPress5?: (e: any) => void,
 }
 
-const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPress, ownerID, product, onPress2, MyOrder, btntitle, completed, location, onPress5, onPress3, onPress4 }: Props) => {
+const Cardstyle4 = ({ id, title, imageUrl, description, averageRating, price, onPress, ownerID, product, onPress2, MyOrder, btntitle, completed, location, onPress5, onPress3, onPress4 }: Props) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
@@ -140,7 +140,9 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
                             <Text style={{ fontSize: 14, color: COLORS.card, lineHeight: 21 }}>{btntitle}</Text>
                         </TouchableOpacity>
                         :
-                        <Text style={{ fontSize: 12, color: COLORS.blackLight }}>{reviewCount && reviewCount > 0 ? `${reviewCount} review` : 'No review'}</Text>
+                        <Text style={{ fontSize: 12, color: COLORS.blackLight }}>
+                            {averageRating && averageRating > 0 ? `${averageRating.toFixed(1)} ★` : 'No rating'}
+                        </Text>
                     }
                 </View>
             </View>
