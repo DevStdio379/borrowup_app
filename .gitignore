@@ -93,3 +93,20 @@ ios/build/
 .vscode/
 .idea/
 *.iml
+
+
+# CocoaPods
+Pods/
+Podfile.lock # optional to track, depending on your team policy
+
+# Xcode build
+DerivedData/
+build/
+
+# Xcode user-specific data
+*.xcuserstate
+*.xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Workspace auto-generated
+xcshareddata/WorkspaceSettings.xcsettings
