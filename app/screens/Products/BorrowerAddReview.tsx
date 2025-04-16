@@ -278,8 +278,8 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                         borrowerStatus: status,
                     });
                     Alert.alert(`Review updated successfully. Status: ${status}`);
-                    const averageRating = await getReviewAverageRatingByProductId(borrowing.product.id || 'undefined');
-                    await updateProduct(borrowing.product.id || 'undefined', {averageRating: averageRating})
+                    const latestRating = await getReviewAverageRatingByProductId(borrowing.product.id || 'undefined');
+                    await updateProduct(borrowing.product.id || 'undefined', {averageRating: latestRating.averageRating, ratingCount: latestRating.ratingCount});
                 }
             } else {
                 Alert.alert('User ID is missing.');
