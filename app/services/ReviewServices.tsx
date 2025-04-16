@@ -132,13 +132,11 @@ export const getReviewsByProductId = async (productId: string) => {
 };
 
 
-export const getReviewAverageRatingByProductId = async (productId: string): Promise<number> => {
+export const getReviewAverageRatingByProductId = async (productId: string): Promise<{ averageRating: number; ratingCount: number }> => {
   try {
     const reviewsRef = collection(db, 'reviews');
     const productQuery = query(reviewsRef, where('productId', '==', productId));
     const querySnapshot = await getDocs(productQuery);
-
-    const count = querySnapshot.size; // Count of reviews for the product
 
     // Calculate the average borrowerOverallRating
     let totalRating = 0;
@@ -152,8 +150,7 @@ export const getReviewAverageRatingByProductId = async (productId: string): Prom
       }
     });
     const averageRating = ratingCount > 0 ? totalRating / ratingCount : 0; // Avoid division by zero
-    return averageRating ;
-    
+    return { averageRating, ratingCount };
   } catch (error) {
     console.error('Error fetching review count and average rating: ', error);
     throw error; // Throwing the error to handle it at the call site
