@@ -4,10 +4,8 @@ import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, SIZES } from '../../constants/theme';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useDispatch } from 'react-redux';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { addTowishList } from '../../redux/reducer/wishListReducer';
 import Cardstyle4 from '../../components/Card/Cardstyle4';
 import { useUser } from '../../context/UserContext';
 import { fetchProducts, Product } from '../../services/ProductServices';
@@ -27,7 +25,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
     const { user } = useUser();
 
-    const dispatch = useDispatch();
 
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
@@ -98,13 +95,13 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     }, []);
 
     const addItemToWishList = (data: any) => {
-        dispatch(addTowishList({
-            id: data.id,
-            image: data.imageUrls[0],
-            title: data.title,
-            price: data.lendingRate,
-            brand: data.ownerID,
-        } as any));
+        // dispatch(addTowishList({
+        //     id: data.id,
+        //     image: data.imageUrls[0],
+        //     title: data.title,
+        //     price: data.lendingRate,
+        //     brand: data.ownerID,
+        // } as any));
     }
 
     const scrollViewHome = useRef<any>(null);

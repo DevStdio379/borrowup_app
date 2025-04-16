@@ -5,7 +5,6 @@ import { IMAGES } from '../../constants/Images';
 import { COLORS, SIZES } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { useDispatch } from 'react-redux';
 import MapView, { Marker } from 'react-native-maps';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';

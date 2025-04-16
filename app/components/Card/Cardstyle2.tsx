@@ -3,8 +3,6 @@ import React from 'react'
 import { COLORS } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
-import { useDispatch, useSelector } from 'react-redux'
-import { removeFromwishList } from '../../redux/reducer/wishListReducer'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
@@ -25,22 +23,6 @@ const Cardstyle2 = ({ id, title, description, image, countnumber, price, onPress
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
-
-    const dispatch = useDispatch();
-
-    const wishList = useSelector((state: any) => state.wishList.wishList);
-
-    const inWishlist = () => {
-        var temp = [] as any;
-        wishList.forEach((data: any) => {
-            temp.push(data.id);
-        });
-        return temp;
-    }
-
-    const removeItemFromWishList = () => {
-        dispatch(removeFromwishList(id as any));
-    }
 
     return (
         <TouchableOpacity

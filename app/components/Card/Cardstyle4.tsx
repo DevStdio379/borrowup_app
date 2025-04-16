@@ -4,8 +4,6 @@ import { COLORS } from '../../constants/theme'
 import { IMAGES } from '../../constants/Images'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
 import { useTheme } from '@react-navigation/native'
-import { useDispatch, useSelector } from 'react-redux'
-import { removeFromwishList } from '../../redux/reducer/wishListReducer'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LikeBtn from '../LikeBtn'
 import { useUser } from '../../context/UserContext'
@@ -37,23 +35,7 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
 
-    const [show, setshow] = useState(false)
 
-    const dispatch = useDispatch();
-
-    const wishList = useSelector((state: any) => state.wishList.wishList);
-
-    const inWishlist = () => {
-        var temp = [] as any;
-        wishList.forEach((data: any) => {
-            temp.push(data.id);
-        });
-        return temp;
-    }
-
-    const removeItemFromWishList = () => {
-        dispatch(removeFromwishList(id as any));
-    }
     const { user } = useUser();
     const [isFavourited, setIsFavourited] = useState(false);
 

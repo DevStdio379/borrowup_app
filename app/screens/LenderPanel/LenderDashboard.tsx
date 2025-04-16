@@ -7,10 +7,8 @@ import { COLORS, SIZES } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
-import { useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser, defaultUser } from '../../context/UserContext';
-import { openDrawer } from '../../redux/actions/drawerActions';
 import CardInfoStyle from '../../components/Card/CardInfoStyle';
 import PillStyle from '../../components/Pills/PillStyle';
 
@@ -19,7 +17,6 @@ type LenderDashboardScreenProps = StackScreenProps<RootStackParamList, 'LenderDa
 const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
 
     const theme = useTheme();
-    const dispatch = useDispatch();
     const { user, updateUserData, setUser } = useUser();
     const { colors }: { colors: any } = theme;
 

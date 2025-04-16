@@ -1,8 +1,6 @@
 import 'react-native-gesture-handler';
 import Route from './app/navigation/Route';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Provider } from 'react-redux'
-import store from './app/redux/store';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { Alert, LogBox, Platform } from 'react-native';
@@ -37,11 +35,9 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <SafeAreaView style={{ flex: 1 }}>
-          <Provider store={store}>
-            <UserProvider>
-              <Route />
-            </UserProvider>
-          </Provider>
+          <UserProvider>
+            <Route />
+          </UserProvider>
         </SafeAreaView>
       </SafeAreaProvider>
     </GestureHandlerRootView>

@@ -6,10 +6,8 @@ import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
-import { useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser, defaultUser } from '../../context/UserContext';
-import { openDrawer } from '../../redux/actions/drawerAction';
 import { countActivitiesByUser } from '../../services/BorrowingServices';
 import { calculateBorrowingRatingByUser, calculateLendingRatingByUser } from '../../services/ReviewServices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,7 +17,6 @@ type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Profile'>;
 const Profile = ({ navigation }: ProfileScreenProps) => {
 
     const theme = useTheme();
-    const dispatch = useDispatch();
     const { user, updateUserData, setUser } = useUser();
     const { colors }: { colors: any } = theme;
 
@@ -267,7 +264,8 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     </View>
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        onPress={() => dispatch(openDrawer())}
+                        // onPress={() => dispatch(openDrawer())}
+                        onPress={() => {}}
                     >
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
                             <View style={[styles.cardimg, { backgroundColor: colors.card }]} >

@@ -3,19 +3,15 @@ import { View, Text, FlatList, ScrollView, RefreshControl, Touchable, TouchableO
 import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import { useDispatch, useSelector } from 'react-redux';
 import Cardstyle4 from '../../components/Card/Cardstyle4';
 import { Product } from '../../services/ProductServices';
-import { addTowishList } from '../../redux/reducer/wishListReducer';
 import { useUser } from '../../context/UserContext';
-import { addFavouriteToFirestore, removeFavouriteFromFirestore } from '../../services/FavouriteServices';
 
 type FavouriteCollectionScreenProps = StackScreenProps<RootStackParamList, 'FavouriteCollection'>
 
 const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
 
   const wishList = useSelector((state: any) => state.wishList.wishList);
-  const dispatch = useDispatch();
 
   const addItemToWishList = async (data: any) => {
     if (!user) return;
@@ -24,12 +20,12 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
     
     if (existingItem) {
       console.log('Item already in wishlist:', data);
-      dispatch(addTowishList({ ...data, quantity: existingItem.quantity + 1 }));
-      await removeFavouriteFromFirestore(user.uid, data.id);
+      // dispatch(addTowishList({ ...data, quantity: existingItem.quantity + 1 }));
+      // await removeFavouriteFromFirestore(user.uid, data.id);
     } else {
-      dispatch(addTowishList(data));
+      // dispatch(addTowishList(data));
       console.log('Adding to wishlist:', data);
-      await addFavouriteToFirestore(user.uid, data.id);
+      // await addFavouriteToFirestore(user.uid, data.id);
     }
   }
 
