@@ -116,7 +116,7 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
             <Text style={{ color: COLORS.white, fontWeight: 'bold' }}>Edit Pin</Text>
           </TouchableOpacity>
         </View>
-        {/* <Text style={{ fontSize: 14, color: COLORS.title, marginBottom: 10 }}><Text style={{ fontSize: 14, color: COLORS.title, fontWeight: 'bold' }}>{addrName}, </Text>{addr}, {post}</Text> */}
+        <Text style={{ fontSize: 14, color: COLORS.title, marginBottom: 10 }}><Text style={{ fontSize: 14, color: COLORS.title, fontWeight: 'bold' }}>{addrName}, </Text>{addr}, {post}</Text>
         <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Building Type</Text>
 
         <TouchableOpacity
