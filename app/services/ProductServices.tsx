@@ -20,6 +20,7 @@ export interface Product {
   returnInstructions: string;
 
   reviewCount?: number;
+  averageRating?: number;  // Add an optional overallRating field
 
   // address 
   addressID: string;
@@ -55,6 +56,9 @@ const mapDocToProduct = (doc: any): Product => {
     pickupInstructions: productData.pickupInstructions,
     returnInstructions: productData.returnInstructions,
 
+    // added data
+    averageRating: productData.averageRating,
+
     // address 
     addressID: productData.addressID,
     latitude: productData.latitude,
@@ -80,12 +84,8 @@ export const fetchProducts = async (): Promise<Product[]> => {
     for (const doc of snapshot.docs) {
       const product = mapDocToProduct(doc);
       if (product.isActive) {  // Check if the product is active
-        // Fetch the count of reviews for the product
-        const reviewsSnapshot = await getDocs(collection(db, 'products', doc.id, 'reviews'));
-        const reviewCount = reviewsSnapshot.size;
-
         // Add the review count to the product object
-        productList.push({ ...product, reviewCount });  // Push the formatted product to the list
+        productList.push({ ...product});  // Push the formatted product to the list
       }
     }
     return productList;
