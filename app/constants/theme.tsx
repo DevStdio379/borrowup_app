@@ -15,6 +15,7 @@ export const COLORS = {
 	label: "#8A8A8A",
 	backgroundColor: "#ffffff",
 	black: "#000",
+	blackLight2: "#7D7F99",
 	blackLight: "#B0B5B9",
 	placeholder:"#D9D9D9",
 	inputBackground:"#868D94",
