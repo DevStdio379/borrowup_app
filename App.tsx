@@ -6,10 +6,22 @@ import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { Alert, LogBox, Platform } from 'react-native';
 import { useEffect, useState } from 'react';
 import { UserProvider } from './app/context/UserContext';
+import { Provider } from 'react-redux';
+import { store } from './app/redux/store';
 
-LogBox.ignoreLogs([
-  'Auth state will default to memory persistence',
-]);
+const originalWarn = console.warn;
+
+console.warn = (...args) => {
+  if (
+    typeof args[0] === 'string' &&
+    args[0].includes('@firebase/auth: Auth') &&
+    args[0].includes('without providing AsyncStorage')
+  ) {
+    return;
+  }
+
+  originalWarn(...args);
+};
 
 export default function App() {
   const requestLocationPermission = async () => {
@@ -35,9 +47,11 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <SafeAreaView style={{ flex: 1 }}>
-          <UserProvider>
-            <Route />
-          </UserProvider>
+          <Provider store={store}>
+            <UserProvider>
+              <Route />
+            </UserProvider>
+          </Provider>
         </SafeAreaView>
       </SafeAreaProvider>
     </GestureHandlerRootView>

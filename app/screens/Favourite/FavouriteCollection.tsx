@@ -1,35 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, FlatList, ScrollView, RefreshControl, Touchable, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Cardstyle4 from '../../components/Card/Cardstyle4';
-import { Product } from '../../services/ProductServices';
 import { useUser } from '../../context/UserContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../redux/store';
+import { fetchFavorites } from '../../redux/favoriteSlice';
 
 type FavouriteCollectionScreenProps = StackScreenProps<RootStackParamList, 'FavouriteCollection'>
 
 const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
 
-  const wishList = useSelector((state: any) => state.wishList.wishList);
-
-  const addItemToWishList = async (data: any) => {
-    if (!user) return;
-
-    const existingItem = wishList.find((item: any) => item.id === data.id);
-    
-    if (existingItem) {
-      console.log('Item already in wishlist:', data);
-      // dispatch(addTowishList({ ...data, quantity: existingItem.quantity + 1 }));
-      // await removeFavouriteFromFirestore(user.uid, data.id);
-    } else {
-      // dispatch(addTowishList(data));
-      console.log('Adding to wishlist:', data);
-      // await addFavouriteToFirestore(user.uid, data.id);
-    }
-  }
-
   const { user } = useUser();
+  const dispatch = useDispatch<AppDispatch>();
+  const { favorites, loading } = useSelector((state: RootState) => state.favorites);
+
+  useEffect(() => {
+    dispatch(fetchFavorites(user?.uid || ''));
+  }, [dispatch, user?.uid]);
+
+  if (loading) return <Text style={{ textAlign: 'center', marginTop: 50 }}>Loading...</Text>;
+
+  if (!favorites.length) return <Text style={{ textAlign: 'center', marginTop: 50, fontStyle: 'italic' }}>No favorite items yet.</Text>;
 
   if (!user || !user.isActive) {
     return (
@@ -61,37 +55,15 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
           </View>
         </View>
       </View>
-      {wishList.length > 0 ? (
-        <View style={{ paddingTop: 10, paddingHorizontal: 20 }}>
-          <FlatList
-            data={wishList}
-            refreshControl={
-              <RefreshControl
-                refreshing={false}
-                onRefresh={() => {
-                  // Handle refresh logic here
-                }}
-              />
-            }
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            columnWrapperStyle={{ justifyContent: 'flex-start', marginBottom: 10, gap: 10 }}
-            renderItem={({ item }) => (
-              <Cardstyle4
-                id={item.id}
-                imageUrl={item.image}
-                price={item.price}
-                title={item.title}
-                onPress5={() => addItemToWishList(item)}
-              />
-            )}
-          />
-        </View>
-      ) : (
-        <View style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-          <Text>No product saved</Text>
-        </View>
-      )}
+      <FlatList
+        data={favorites}
+        keyExtractor={(item) => item}
+        renderItem={({ item }) => (
+          <View style={{ padding: 16, marginVertical: 8, marginHorizontal: 16, backgroundColor: '#eee', borderRadius: 8 }}>
+            <Text style={{ fontSize: 16 }}>Product ID: {item}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 };

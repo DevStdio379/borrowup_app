@@ -9,6 +9,10 @@ import LikeBtn from '../LikeBtn'
 import { useUser } from '../../context/UserContext'
 import { deleteDoc, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { db } from '../../services/firebaseConfig'
+import FavoriteButton from '../FavoriteButton'
+import { AppDispatch, RootState } from '../../redux/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { toggleFavorite } from '../../redux/favoriteSlice'
 
 type Props = {
     id: string;
@@ -37,42 +41,15 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
 
 
     const { user } = useUser();
-    const [isFavourited, setIsFavourited] = useState(false);
+    const dispatch = useDispatch<AppDispatch>();
+    const isFavorite = useSelector((state: RootState) =>
+        (state.favorites as { favorites: string[] }).favorites.includes(id)
+    );
 
-    const favDocId = user ? `${user.uid}_${id}` : '';
-
-    useEffect(() => {
-        const checkFavourite = async () => {
-          if (!user) return;
-          const favRef = doc(db, 'favorites', favDocId);
-          const favSnap = await getDoc(favRef);
-          setIsFavourited(favSnap.exists());
-        };
-    
-        checkFavourite();
-      }, [user, id]);
-    
-    const toggleFavourite = async () => {
+    const handleToggle = () => {
         if (!user) return;
-    
-        const favRef = doc(db, 'favorites', favDocId);
-    
-        try {
-          if (isFavourited) {
-            await deleteDoc(favRef);
-            setIsFavourited(false);
-          } else {
-            await setDoc(favRef, {
-              userId: user.uid,
-              productId: id,
-              createdAt: serverTimestamp(),
-            });
-            setIsFavourited(true);
-          }
-        } catch (err) {
-          console.error('Error toggling favorite:', err);
-        }
-      };
+        dispatch(toggleFavorite({ userId: user?.uid, productId: id}));
+    };
 
     return (
         <TouchableOpacity
@@ -105,15 +82,11 @@ const Cardstyle4 = ({ id, title, imageUrl, description, reviewCount, price, onPr
                         }}
                     >
                         <TouchableOpacity
-                            onPress={toggleFavourite}
-                            style={{
-                                padding: 10,
-                                borderRadius: 8,
-                                backgroundColor: isFavourited ? 'tomato' : '#ccc',
-                            }}
+                            onPress={handleToggle}
+                            style={[styles.button, isFavorite ? { backgroundColor: '#F44336'} : { backgroundColor: '#4CAF50' }]}
                         >
-                            <Text style={{ color: 'white' }}>
-                                {isFavourited ? '❤️ Favourited' : '🤍 Add to Favorites'}
+                            <Text style={{ color: 'white', textAlign: 'center' }}>
+                                {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
                             </Text>
                         </TouchableOpacity>
                     </View>

@@ -14,6 +14,10 @@ import TabButtonStyleHome from '../../components/Tabs/TabButtonStyleHome';
 import Carousel from '../../components/Carousel';
 import { auth, db } from '../../services/firebaseConfig';
 import { arrayRemove, arrayUnion, deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../redux/store';
+import { fetchFavorites } from '../../redux/favoriteSlice';
+import FavoriteButton from '../../components/FavoriteButton';
 
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>
 
@@ -25,6 +29,12 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
     const { user } = useUser();
 
+    const userId = 'user123'; // replace with actual auth user id
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        dispatch(fetchFavorites(userId));
+    }, []);
 
     const theme = useTheme();
     const { colors }: { colors: any; } = theme;
