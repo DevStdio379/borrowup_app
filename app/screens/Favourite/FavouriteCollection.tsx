@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import { View, Text, FlatList, ScrollView, RefreshControl, Touchable, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, ScrollView, RefreshControl, Touchable, TouchableOpacity, ActivityIndicator, StyleSheet, Image } from 'react-native';
 import { COLORS } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
-import Cardstyle4 from '../../components/Card/Cardstyle4';
 import { useUser } from '../../context/UserContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../redux/store';
 import { fetchFavorites } from '../../redux/favoriteSlice';
+import { fetchSelectedProduct, Product } from '../../services/ProductServices';
 
 type FavouriteCollectionScreenProps = StackScreenProps<RootStackParamList, 'FavouriteCollection'>
 
@@ -15,15 +15,35 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
 
   const { user } = useUser();
   const dispatch = useDispatch<AppDispatch>();
-  const { favorites, loading } = useSelector((state: RootState) => state.favorites);
+  const favoriteIds = useSelector((state: RootState) => state.favorites.favorites);
+  const [products, setProducts] = useState<Record<string, Product | null>>({});
 
   useEffect(() => {
     dispatch(fetchFavorites(user?.uid || ''));
   }, [dispatch, user?.uid]);
 
-  if (loading) return <Text style={{ textAlign: 'center', marginTop: 50 }}>Loading...</Text>;
+  useEffect(() => {
+    const loadProducts = async () => {
+      const updates: Record<string, Product | null> = {};
+      for (const id of favoriteIds) {
+        if (!products[id]) {
+          try {
+            const product = await fetchSelectedProduct(id);
+            updates[id] = product;
+          } catch (err) {
+            updates[id] = null; // handle deleted product
+          }
+        }
+      }
+      setProducts((prev) => ({ ...prev, ...updates }));
+    };
 
-  if (!favorites.length) return <Text style={{ textAlign: 'center', marginTop: 50, fontStyle: 'italic' }}>No favorite items yet.</Text>;
+    if (favoriteIds.length) loadProducts();
+  }, [favoriteIds]);
+
+  if (!favoriteIds.length) {
+    return <Text style={{ textAlign: 'center', marginTop: 50, fontStyle: 'italic' }}>No favorite items yet.</Text>;
+  }
 
   if (!user || !user.isActive) {
     return (
@@ -56,15 +76,69 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
         </View>
       </View>
       <FlatList
-        data={favorites}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <View style={{ padding: 16, marginVertical: 8, marginHorizontal: 16, backgroundColor: '#eee', borderRadius: 8 }}>
-            <Text style={{ fontSize: 16 }}>Product ID: {item}</Text>
-          </View>
-        )}
+        data={favoriteIds}
+        keyExtractor={(id) => id}
+        renderItem={({ item: productId }) => {
+          const product = products[productId];
+
+          if (!product) {
+            return (
+              <View style={styles.card}>
+                <ActivityIndicator size="small" color="#888" />
+              </View>
+            );
+          }
+
+          return (
+            <View style={styles.card}>
+              {product.imageUrls && (
+                <Image source={{ uri: product.imageUrls[0] }} style={styles.image} />
+              )}
+              <Text style={styles.title}>{product.title}</Text>
+              {product.description && (
+                <Text style={styles.description}>{product.description}</Text>
+              )}
+            </View>
+          );
+        }}
       />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  empty: {
+    textAlign: 'center',
+    marginTop: 50,
+    fontStyle: 'italic',
+  },
+  card: {
+    padding: 16,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  image: {
+    width: '100%',
+    height: 180,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  description: {
+    fontSize: 14,
+    marginTop: 4,
+    color: '#666',
+  },
+});
+
+
 export default Map;
