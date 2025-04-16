@@ -57,7 +57,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     title={item.title}
                     onPress={() => navigation.navigate('ProductDetails', { product: item })}
                     product={true}
-                    reviewCount={item.reviewCount}
+                    averageRating={item.averageRating}
                 />
             </View>
         );
@@ -77,7 +77,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     onPress={() => navigation.navigate('ProductDetails', { product: item })}
                     onPress5={() => addItemToWishList(item)}
                     product={true}
-                    reviewCount={item.reviewCount}
+                    averageRating={item.averageRating}
                 />
             </View>
         );
