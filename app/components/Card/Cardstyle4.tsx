@@ -22,11 +22,13 @@ type Props = {
     ownerID?: string;
     description?: string;
     location?: string;
+    deposit: number;
     imageUrl?: any;
     product?: any;
     MyOrder?: any;
     completed?: any;
     averageRating?: number;
+    ratingCount?: number;
     onPress?: (e: any) => void,
     onPress2?: any,
     onPress3?: (e: any) => void,
@@ -34,7 +36,7 @@ type Props = {
     onPress5?: (e: any) => void,
 }
 
-const Cardstyle4 = ({ id, title, imageUrl, description, averageRating, price, onPress, ownerID, product, onPress2, MyOrder, btntitle, completed, location, onPress5, onPress3, onPress4 }: Props) => {
+const Cardstyle4 = ({ id, title, imageUrl, description, deposit, averageRating, ratingCount, price, onPress, ownerID, product, onPress2, MyOrder, btntitle, completed, location, onPress5, onPress3, onPress4 }: Props) => {
 
     const theme = useTheme();
     const { colors }: { colors: any } = theme;
@@ -103,8 +105,12 @@ const Cardstyle4 = ({ id, title, imageUrl, description, averageRating, price, on
                 </View>
                 <View style={{ flex: 1, width: '100%' }}>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 16, color: COLORS.black }}>{title}</Text>
-                    <Text style={{ fontWeight: 'bold', fontSize: 16, color: colors.title }}>£{price} / day</Text>
-                    <Text style={{ fontSize: 12, color: COLORS.black }}>Deposit required</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={{ fontSize: 13, color: COLORS.black }}>{location?.split(',').slice(0, 2).join(',')}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', width: '100%' }}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 14, color: colors.title }}>£{price}/day</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 14, color: COLORS.placeholder }}> • </Text>
+                        <Text style={{ fontSize: 13, color: COLORS.blackLight2, textDecorationLine: 'underline' }}>£{Number(deposit) + Number(price)} total</Text>
+                    </View>
                     {MyOrder ? completed ?
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -141,7 +147,7 @@ const Cardstyle4 = ({ id, title, imageUrl, description, averageRating, price, on
                         </TouchableOpacity>
                         :
                         <Text style={{ fontSize: 12, color: COLORS.blackLight }}>
-                            {averageRating && averageRating > 0 ? `${averageRating.toFixed(1)} ★` : 'No rating'}
+                            {averageRating && averageRating > 0 ? `★ ${averageRating.toFixed(1)} (${ratingCount})` : 'No rating'}
                         </Text>
                     }
                 </View>
