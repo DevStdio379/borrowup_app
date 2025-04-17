@@ -19,9 +19,6 @@ type ProductDetailsScreenProps = StackScreenProps<RootStackParamList, 'ProductDe
 const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const { user } = useUser();
   const mapRef = useRef<MapView>(null);
-  const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(today.getDate() + 1);
 
   const [product, setProduct] = useState(route.params.product);
   // const [productAddress, setProductAddress] = useState<Address>();
@@ -41,8 +38,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   });
 
   const [reviews, setReviews] = useState<any[]>([]);
-  const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]);
-  const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
+  const [startDate, setStartDate] = useState(selectedDates.start || null);
+  const [endDate, setEndDate] = useState(selectedDates.end || null);
   const [index, setIndex] = useState(0);
   const [accordionOpen, setAccordionOpen] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState<string | null>(null);
@@ -92,6 +89,21 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     return range;
   };
 
+  const findNextAvailableDate = (dateStr: string, markedDates: any) => {
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    let date = new Date(dateStr);
+
+    for (let i = 1; i <= 365; i++) {
+      const nextDate = new Date(date.getTime() + i * ONE_DAY);
+      const formatted = nextDate.toISOString().split('T')[0];
+      if (!markedDates[formatted]) {
+        return formatted;
+      }
+    }
+
+    return null; // No available date found
+  };
+
   const fetchSelectedProductData = async () => {
     if (product) {
       try {
@@ -112,6 +124,10 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             const fetchedDates = await getBookedDates(product.id || 'undefined');
             // setBookedDates(fetchedDates);
             setSelectedDates(fetchedDates);
+            const nextAvailable = findNextAvailableDate('2025-04-16', fetchedDates);
+            console.log('Next available date:', nextAvailable);
+            setStartDate(nextAvailable);
+            setEndDate(nextAvailable);
           } catch (error) {
             Alert.alert("Error", "Failed to fetch booked dates.");
           }
@@ -285,12 +301,31 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const getBookedDates = async (productId: string) => {
     let markedDates: any = {};
 
-    const availableDays = getAvailableDays(new Date().getFullYear(), new Date().getMonth() + 1, product.availableDays);
-    Object.keys(availableDays).forEach((sunday) => {
-      markedDates[sunday] = { disabled: true, disableTouchEvent: true, textColor: "red" };
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
+
+    const unavailableDaysCurrentMonth = getAvailableDays(currentYear, currentMonth, product.availableDays);
+    const unavailableDaysNextMonth = getAvailableDays(
+      currentMonth === 12 ? currentYear + 1 : currentYear,
+      currentMonth === 12 ? 1 : currentMonth + 1,
+      product.availableDays
+    );
+    const unavailableDaysMonthAfterNext = getAvailableDays(
+      currentMonth >= 11 ? currentYear + 1 : currentYear,
+      currentMonth >= 11 ? currentMonth - 10 : currentMonth + 2,
+      product.availableDays
+    );
+
+    const unavailableDays = {
+      ...unavailableDaysCurrentMonth,
+      ...unavailableDaysNextMonth,
+      ...unavailableDaysMonthAfterNext,
+    };
+    Object.keys(unavailableDays).forEach((sunday) => {
+      markedDates[sunday] = { disabled: true, disableTouchEvent: true, textColor: COLORS.blackLight };
     });
 
-    console.log('Available days:', availableDays);
+    console.log('Unavailable days:', unavailableDays);
 
     const bookedDateRanges = await fetchBorrowingDates(productId);
 
@@ -299,12 +334,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       while (date <= new Date(endDate)) {
         const dateString = date.toISOString().split("T")[0];
 
-        markedDates[dateString] = {
-          disabled: true,
-          disableTouchEvent: true,
-          color: COLORS.blackLight,
-          textColor: "white",
-        };
+        markedDates[dateString] = { disabled: true, disableTouchEvent: true, textColor: COLORS.blackLight };
 
         date.setDate(date.getDate() + 1);
       }
@@ -328,8 +358,31 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     const fetchBookedDates = async () => {
       if (product) {
         const fetchedDates = await getBookedDates(product.id || 'undefined');
+        const nextAvailable = findNextAvailableDate('2025-04-16', fetchedDates);
+        console.log('Next available date:', nextAvailable);
+        setStartDate(nextAvailable);
+        setEndDate(nextAvailable);
+        if (nextAvailable) {
+          const initialDateData: DateData = {
+            dateString: nextAvailable,
+            day: new Date(nextAvailable).getDate(),
+            month: new Date(nextAvailable).getMonth() + 1,
+            year: new Date(nextAvailable).getFullYear(),
+            timestamp: new Date(nextAvailable).getTime(),
+          };
+          handleDayPress(initialDateData);
+          setSelectedDates({
+            ...fetchedDates,
+            ...bookedDates,
+            [nextAvailable]: {
+              selected: true,
+              startingDay: true,
+              color: COLORS.primary,
+              textColor: "white",
+            },
+          });
+        }
         setBookedDates(fetchedDates);
-        setSelectedDates(fetchedDates);
       }
     };
 
@@ -466,16 +519,16 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const prevScreen = () =>
     setIndex((prev) => (prev - 1 + screens) % screens);
 
-  // Function to get available days dynamically based on product.availableDays
-  const getAvailableDays = (year: number, month: number, availableDays: string[]) => {
-    console.log('Available days:', availableDays);
+  // Function to get available days dynamically based on product.unavailableDays
+  const getAvailableDays = (year: number, month: number, unavailableDays: string[]) => {
+    console.log('Unavailable days:', unavailableDays);
     const availableDates: { [key: string]: { disabled: boolean } } = {};
     const daysInMonth = new Date(year, month, 0).getDate();
 
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month - 1, day);
       const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-      if (!availableDays.includes(dayName)) {
+      if (!unavailableDays.includes(dayName)) {
         const formattedDate = date.toISOString().split('T')[0];
         availableDates[formattedDate] = { disabled: true };
       }
@@ -672,12 +725,13 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                 <View style={GlobalStyleSheet.line} />
                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Available Slots</Text>
                 <Calendar
+                  enableSwipeMonths={true}
                   markedDates={selectedDates}
                   markingType={'period'}
                   onDayPress={handleDayPress}
                   minDate={new Date().toISOString().split('T')[0]} // Disable past dates
                   renderHeader={(date) => (
-                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.black }}>
+                    <Text style={{ fontSize: 17, fontWeight: 'bold', color: COLORS.black }}>
                       {format(new Date(date), 'MMMM yyyy')}
                     </Text>
                   )}
@@ -1010,35 +1064,35 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
         </View>
       ) : (
         <View style={[GlobalStyleSheet.flex, { paddingVertical: 15, paddingHorizontal: 20, backgroundColor: COLORS.card, }]}>
-            {user?.isActive ? (
+          {user?.isActive ? (
             <TouchableOpacity
               style={{
-              backgroundColor: COLORS.primary,
-              width: '100%',
-              padding: 15,
-              borderRadius: 10,
-              alignItems: 'center',
-              justifyContent: 'center',
+                backgroundColor: COLORS.primary,
+                width: '100%',
+                padding: 15,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
               onPress={nextScreen}
             >
               <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>{index === 3 ? 'Pay & Borrow' : 'Next'}</Text>
             </TouchableOpacity>
-            ) : (
+          ) : (
             <TouchableOpacity
               style={{
-              backgroundColor: COLORS.primary,
-              width: '100%',
-              padding: 15,
-              borderRadius: 10,
-              alignItems: 'center',
-              justifyContent: 'center',
+                backgroundColor: COLORS.primary,
+                width: '100%',
+                padding: 15,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
               onPress={() => navigation.navigate('SignIn')}
             >
               <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>Sign In to Borrow</Text>
             </TouchableOpacity>
-            )}
+          )}
         </View>
       )}
     </View>
