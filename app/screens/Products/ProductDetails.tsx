@@ -553,76 +553,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   return (
     <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-      <View>
-        <View style={{ zIndex: 1, height: 60, backgroundColor: COLORS.background, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
-          <View style={{ height: '100%', backgroundColor: COLORS.background, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 10 }}>
-            <View style={{ flex: 1, alignItems: 'flex-start' }}>
-              {index === 0 ? (
-                <TouchableOpacity
-                  onPress={() => navigation.goBack()}
-                  style={{
-                    height: 40,
-                    width: 40,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={prevScreen}
-                  style={{
-                    height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
-                  }}
-                >
-                  <Ionicons size={30} color={COLORS.blackLight} name='chevron-back-outline' />
-                </TouchableOpacity>
-              )}
-            </View>
-            <View style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
-                {[
-                  `${product?.title}`,
-                  'Select Dates',
-                  'Delivery Method',
-                  'Payment Method',
-                  'Checkout'][index] || ''}
-              </Text>
-            </View>
-            <View style={{ flex: 1, alignItems: 'flex-end' }}>
-              {index === 0 ? (
-                <TouchableOpacity
-                  onPress={() => navigation.goBack()}
-                  style={{
-                    height: 40,
-                    width: 40,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Ionicons size={25} color={COLORS.black} name='bookmark-outline' />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => navigation.goBack()}
-                  style={{
-                    height: 45,
-                    width: 45,
-                    borderColor: COLORS.blackLight,
-                    borderWidth: 1,
-                    borderRadius: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Ionicons size={25} color={COLORS.blackLight} name='close' />
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-        </View>
-      </View>
+     
       {product ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
