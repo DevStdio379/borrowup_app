@@ -170,7 +170,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                     style={{ marginRight: 5 }}
                                 />
                             ))}
-                            <Text style={{ fontSize: 16, color: COLORS.blackLight }}>{overallRating}</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.blackLight }}>{overallRating.toFixed(2)}</Text>
                         </View>
                         {/* Right side content */}
                     </View>
@@ -243,12 +243,6 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Settings</Text>
                     </View>
                     <View style={[GlobalStyleSheet.line, { margin: 10 },]} />
-                    <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
-                            <Ionicons name='heart' size={30} color={colors.title} />
-                        </View>
-                        <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Favorites</Text>
-                    </View>
                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
                         <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
                             <Ionicons name='clipboard' size={30} color={colors.title} />
