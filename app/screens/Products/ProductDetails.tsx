@@ -60,29 +60,15 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   const paymentMethods = [
     {
-      image: "wallet",
+      image: "cash",
       title: "Cash on Pickup",
       text: 'Renter directly pays the owner upon pickup meetup',
     },
     {
-      image: "card",
+      label: 'Recommended',
+      image: "card-outline",
       title: "Credit / Debit Card",
-      text: "Card not supported. Will available in the future release.",
-    },
-    {
-      image: "logo-apple",
-      title: "Apple Pay",
-      text: "Apple Pay not supported. Will available in the future release.",
-    },
-    {
-      image: "logo-google",
-      title: "Google Pay",
-      text: "Google Pay not supported. Will available in the future release.",
-    },
-    {
-      image: "wallet",
-      title: "Wallet",
-      text: "Balance: £50.00",
+      text: "Stripe handles all payments securely. Sign-in",
     },
   ]
 
@@ -523,9 +509,16 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       return;
     }
     if (index === 4) {
-      handleCheckout();
-      Alert.alert('order created')
-      return;
+      if (paymentMethod === 'card') {
+        // Handle Stripe payment here
+      } else if (paymentMethod === 'cash') {
+        handleCheckout();
+        Alert.alert('order created');
+        return;
+      } else {
+        Alert.alert('Please select a payment method');
+        return;
+      }
     }
     setIndex((prev) => (prev + 1) % screens);
   }
@@ -553,7 +546,74 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   return (
     <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-     
+      <View>
+        <View style={{ zIndex: 1, height: 60, backgroundColor: COLORS.background, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+          <View style={{ height: '100%', backgroundColor: COLORS.background, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 10 }}>
+            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+              {index === 0 ? (
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{
+                    height: 40,
+                    width: 40,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={prevScreen}
+                  style={{
+                    height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                </TouchableOpacity>
+              )}
+            </View>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
+                {[
+                  `${product?.title}`,
+                  'Select Dates',
+                  'Delivery Method',
+                  'Payment Method',
+                  'Checkout'
+                ][index] || ''}
+              </Text>
+            </View>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              {index === 0 ? (
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{
+                    height: 40,
+                    width: 40,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons size={25} color={COLORS.black} name='bookmark-outline' />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{
+                    height: 45,
+                    width: 45,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons size={30} color={COLORS.black} name='close' />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </View>
+      </View>
       {product ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -1007,30 +1067,85 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
           {index === 3 && (
             <View style={{ width: '100%', paddingTop: 60, paddingHorizontal: 15, gap: 10 }}>
               {paymentMethods.map((method, index) => (
-                <TouchableOpacity
-                  key={index}
-                  activeOpacity={0.8}
-                  style={{
-                    padding: 15,
-                    borderColor: paymentMethod === method.title ? COLORS.primary : COLORS.blackLight,
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  onPress={() => setPaymentMethod(method.title)}
-                >
-                  <Ionicons name={'logo-apple'} size={30} color={COLORS.blackLight} style={{ margin: 5 }} />
-                  <View style={{ flex: 1, paddingLeft: 10 }}>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                      {method.title}
-                    </Text>
-                    <Text style={{ fontSize: 13, color: COLORS.black }}>
-                      {method.text}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                <View key={index}>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={{
+                      padding: 15,
+                      borderColor: paymentMethod === method.title ? COLORS.primary : COLORS.blackLight,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() => setPaymentMethod(paymentMethod === method.title ? null : method.title)}
+                  >
+                    <Ionicons name={method.image} size={30} color={COLORS.black} style={{ margin: 5 }} />
+                    <View style={{ flex: 1, paddingLeft: 10 }}>
+                      <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                        {method.title}
+                      </Text>
+                      <Text style={{ fontSize: 13, color: COLORS.black }}>
+                        {method.text}
+                      </Text>
+                    </View>
+                    {method.label && (
+                      <View
+                        style={{
+                          backgroundColor: COLORS.primary,
+                          paddingHorizontal: 8,
+                          paddingVertical: 4,
+                          borderRadius: 5,
+                          marginLeft: 10,
+                        }}
+                      >
+                        <Text style={{ fontSize: 12, color: COLORS.white, fontWeight: 'bold' }}>
+                          {method.label}
+                        </Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                  {paymentMethod === method.title && (
+                    <View style={{ padding: 10, marginTop: 10, backgroundColor: COLORS.primaryLight, borderRadius: 10 }}>
+                      {method.title === "Cash on Pickup" && (
+                        <>
+                          <Text style={{ fontSize: 14, color: COLORS.warning, fontWeight: "bold" }}>
+                            Note:
+                          </Text>
+                          <Text style={{ fontSize: 14, color: COLORS.black, marginTop: 5 }}>
+                            By selecting "Cash on Pickup", you are responsible for handling the payment directly with the owner during the pickup.
+                            Please ensure to verify the product condition before completing the transaction.
+                          </Text>
+                          <Text style={{ fontSize: 14, color: COLORS.black, marginTop: 5 }}>
+                            We won't be able to assist with any disputes or issues arising from transactions outside the app.
+                          </Text>
+                          <TouchableOpacity onPress={() => { }}>
+                            <Text style={{ fontSize: 14, color: COLORS.primary, marginTop: 5, textDecorationLine: 'underline' }}>
+                              Read more here
+                            </Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
+                      {method.title === "Credit / Debit Card" && (
+                        <>
+                          <Text style={{ fontSize: 14, color: COLORS.success, fontWeight: "bold" }}>
+                            Why Stripe?
+                          </Text>
+                          <Text style={{ fontSize: 14, color: COLORS.black, marginTop: 5 }}>
+                            Stripe ensures secure and encrypted transactions, providing peace of mind for both renters and owners.
+                            Your payment details are never shared with the owner.
+                          </Text>
+                          <TouchableOpacity onPress={() => { }}>
+                            <Text style={{ fontSize: 14, color: COLORS.primary, marginTop: 5, textDecorationLine: 'underline' }}>
+                              Learn more about Stripe
+                            </Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
+                    </View>
+                  )}
+                </View>
               ))}
             </View>
           )}
