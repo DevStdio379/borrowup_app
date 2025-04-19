@@ -6,6 +6,7 @@ import SearchAddress from "../screens/Profile/SearchAddress";
 import PersonalDetails from "../screens/Profile/PersonalDetails";
 import EditAttributes from "../screens/Profile/EditAttributes";
 import AddAddress from "../screens/Profile/AddAddress";
+import PaymentInformation from "../screens/Profile/PaymentInformation";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -20,6 +21,8 @@ const ProfileStack = () => (
         {/* Address Book */}
         <Stack.Screen name="AddressBook" component={AddressBook} />
         <Stack.Screen name="SearchAddress" component={SearchAddress} />
+
+        <Stack.Screen name="PaymentInformation" component={PaymentInformation} />
     </Stack.Navigator>
 );
 
