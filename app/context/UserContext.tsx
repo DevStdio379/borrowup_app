@@ -3,6 +3,8 @@ import React, { createContext, useState, ReactNode, useContext, useEffect } from
 import { db, storage } from "../services/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { format, formatDistanceToNow } from "date-fns";
+import { Alert } from "react-native";
 
 export interface User {
   uid: string;
@@ -16,6 +18,7 @@ export interface User {
   profileImageUrl?: string;
   createAt: any;
   updatedAt: any;
+  memberFor: string;
 }
 
 export interface UserContextType {
@@ -36,7 +39,8 @@ export const defaultUser: User = {
   phoneNumber: "1234567890",
   accountType: "borrower",
   createAt: "Feb 6, 2025, 12:24:09 PM",
-  updatedAt: "Feb 6, 2025, 12:24:09 PM"
+  updatedAt: "Feb 6, 2025, 12:24:09 PM",
+  memberFor: "1 year",
 };
 
 // Function to upload a single image to Firebase Storage
@@ -93,10 +97,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         console.error("Error restoring user session:", err);
       }
     };
-  
+
     loadUserFromStorage();
   }, []);
-  
+
   const [user, setUser] = useState<User | null>(defaultUser);
 
   const updateUserData = async (uid: string, updatedData: Partial<User>) => {
@@ -126,7 +130,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           accountType: userData.accountType || '',
           profileImageUrl: userData.profileImageUrl || '',
           createAt: userData.createAt || '',
-          updatedAt: userData.updatedAt || ''
+          updatedAt: userData.updatedAt || '',
+          memberFor: formatDistanceToNow(userData.createdAt.toDate(), { addSuffix: false })
         };
         setUser(updatedUser);
         console.log("User updated in context:", updatedUser);
@@ -167,6 +172,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           profileImageUrl: userData.profileImageUrl || '',
           createAt: userData.createAt || '',
           updatedAt: userData.updatedAt || '',
+          memberFor: formatDistanceToNow(userData.createdAt.toDate(), { addSuffix: false }),
         };
         setUser(userInfo);
         console.log("User fetched and context updated:", userInfo);
@@ -213,6 +219,7 @@ export const fetchSelectedUser = async (userId: string): Promise<User | null> =>
         profileImageUrl: userData.profileImageUrl || '',
         createAt: userData.createAt || '',
         updatedAt: userData.updatedAt || '',
+        memberFor: formatDistanceToNow(userData.createdAt.toDate(), { addSuffix: false }),
       };
       return userInfo;
     } else {
@@ -243,6 +250,7 @@ export const fetchAllUsers = async (): Promise<User[]> => {
         profileImageUrl: userData.profileImageUrl || '',
         createAt: userData.createAt || '',
         updatedAt: userData.updatedAt || '',
+        memberFor: formatDistanceToNow(userData.createdAt.toDate(), { addSuffix: false }),
       };
     });
     return usersList;
