@@ -898,76 +898,74 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     </ScrollView>
                   ))}
                 </ScrollView>
-                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}> Top Reviews</Text>
-              </View>
-              <View>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ paddingBottom: 10 }}
-                >
-                  {reviews.map((review, index) => (
-                    <TouchableOpacity key={index} onPress={() => { /* Handle review card press */ }}>
-                      <View
-                        style={{
-                          backgroundColor: COLORS.card,
-                          borderRadius: 10,
-                          padding: 15,
-                          marginRight: 10,
-                          width: 250,
-                        }}
-                      >
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                          <Image
-                            source={{ uri: review.borrowerProfilePicture }}
-                            style={{ width: 60, height: 60, borderRadius: 60, marginRight: 10 }}
-                          />
-                          <View>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                              {`${review.borrowerFirstName} ${review.borrowerLastName}`}
-                            </Text>
-                            <Text style={{ fontSize: 14, color: COLORS.blackLight }}>
-                              {new Date(review.borrowerUpdatedAt).toLocaleDateString()}
+                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Top Reviews</Text>
+                <View>
+                  <ScrollView
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 10 }}
+                  >
+                    {reviews.map((review, index) => (
+                      <TouchableOpacity key={index} style={{ paddingVertical: 5 }} onPress={() => { /* Handle review card press */ }}>
+                        <View
+                          style={{
+                            backgroundColor: COLORS.card,
+                            borderRadius: 10,
+                            padding: 15,
+                            width: '100%',
+                          }}
+                        >
+                          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Image
+                              source={{ uri: review.borrowerProfilePicture }}
+                              style={{ width: 60, height: 60, borderRadius: 60, marginRight: 10 }}
+                            />
+                            <View>
+                              <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                {`${review.borrowerFirstName} ${review.borrowerLastName}`}
+                              </Text>
+                              <Text style={{ fontSize: 14, color: COLORS.blackLight }}>
+                                {new Date(review.borrowerUpdatedAt).toLocaleDateString()}
+                              </Text>
+                            </View>
+                          </View>
+                          <Text style={{ fontSize: 14, color: COLORS.black, marginVertical: 10 }}>
+                            {review.borrowerPublicReview}
+                          </Text>
+                          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <Ionicons
+                                key={i}
+                                name="star"
+                                size={16}
+                                color={i < review.borrowerOverallRating ? COLORS.primary : COLORS.blackLight}
+                              />
+                            ))}
+                            <Text style={{ fontSize: 14, color: COLORS.black, marginLeft: 5 }}>
+                              {review.borrowerOverallRating}
                             </Text>
                           </View>
                         </View>
-                        <Text style={{ fontSize: 14, color: COLORS.black, marginVertical: 10 }}>
-                          {review.borrowerPublicReview}
-                        </Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                          {Array.from({ length: 5 }, (_, i) => (
-                            <Ionicons
-                              key={i}
-                              name="star"
-                              size={16}
-                              color={i < review.borrowerOverallRating ? COLORS.primary : COLORS.blackLight}
-                            />
-                          ))}
-                          <Text style={{ fontSize: 14, color: COLORS.black, marginLeft: 5 }}>
-                            {review.borrowerOverallRating}
-                          </Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
               </View>
             </View>
           )}
           {index === 1 && (
             <View style={{ width: '100%', paddingTop: 60, gap: 10 }}>
-                <View style={{ alignItems: 'center', marginVertical: 10 }}>
-                  <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.title }}>
+              <View style={{ alignItems: 'center', marginVertical: 10 }}>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.title }}>
                   {startDate && endDate
                     ? `Your Borrowing Period`
                     : 'Select a Date Range'}
-                  </Text>
-                  {startDate && endDate && (
+                </Text>
+                {startDate && endDate && (
                   <Text style={{ fontSize: 16, color: COLORS.blackLight, marginTop: 5 }}>
                     {`From ${format(new Date(startDate), 'dd MMM yyyy')} to ${format(new Date(endDate), 'dd MMM yyyy')}`}
                   </Text>
-                  )}
-                </View>
+                )}
+              </View>
               <Calendar
                 enableSwipeMonths={true}
                 markedDates={selectedDates}
@@ -1220,7 +1218,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>{[
               `Pick Dates`,
               'Delivery Method',
-              ][index] || ''}</Text>
+            ][index] || ''}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -1238,10 +1236,10 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
               onPress={nextScreen}
             >
               <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>{index === 4 ? 'Pay & Borrow' : [
-              `Pick Dates`,
-              'Delivery Method',
-              'Payment Method',
-              'Checkout'][index] || ''}</Text>
+                `Pick Dates`,
+                'Delivery Method',
+                'Payment Method',
+                'Checkout'][index] || ''}</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
