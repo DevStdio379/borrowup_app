@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native'
-import { useNavigation, useTheme } from '@react-navigation/native';
-import Header from '../../layout/Header';
+import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Platform, Linking } from 'react-native'
+import { useTheme } from '@react-navigation/native';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
-import { IMAGES } from '../../constants/Images';
 import { COLORS, SIZES } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -46,52 +44,27 @@ const PaymentInformation = ({ navigation }: PaymentInformationScreenProps) => {
             </View>
             <ScrollView contentContainerStyle={{ width: SIZES.width, marginBottom: 50, }}>
                 <View style={{ marginTop: 50, paddingHorizontal: 15 }}>
-                    <View style={{ marginBottom: 15 }}>
+                    <View style={{ marginBottom: 20 }}>
+                        <Text style={{ fontSize: 14, color: COLORS.text, textAlign: 'center', marginBottom: 10 }}>
+                            For your security, we do not store card details in the app. All payment information is securely managed by Stripe.
+                        </Text>
                         <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => { }}>
-                            <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
-                                    <Ionicons name="card" size={24} color={COLORS.title} />
-                                    <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Credit or Debit Card</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? 'disabled' : 'Add or Update Card'}</Text>
-                                    <Ionicons name="chevron-forward-outline" size={24} color={user?.isActive ? COLORS.title : COLORS.blackLight} />
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ marginBottom: 15 }}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => { }}>
-                            <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Ionicons name="logo-apple" size={24} color={colors.title} />
-                                    <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Apple Pay</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? 'disabled' : 'Activate Now'}</Text>
-                                    <Ionicons name="chevron-forward-outline" size={24} color={colors.title} />
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ marginBottom: 15 }}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => { }}>
-                            <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Ionicons name="logo-google" size={24} color={colors.title} />
-                                    <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Google Pay</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? 'disabled' : 'Activate Now'}</Text>
-                                    <Ionicons name="chevron-forward-outline" size={24} color={colors.title} />
-                                </View>
-                            </View>
+                            style={{
+                                backgroundColor: COLORS.primary,
+                                paddingVertical: 10,
+                                paddingHorizontal: 20,
+                                borderRadius: 8,
+                                alignSelf: 'center',
+                            }}
+                            onPress={() => {
+                                // Replace with your Stripe link
+                                const stripeLink = 'https://dashboard.stripe.com/';
+                                Linking.openURL(stripeLink);
+                            }}
+                        >
+                            <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>
+                                Manage Cards on Stripe
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
