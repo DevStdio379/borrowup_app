@@ -1,19 +1,21 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, RefreshControl, Alert, BackHandler } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, RefreshControl, Alert, BackHandler, Platform, Animated, FlatList } from 'react-native'
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
-import { COLORS } from '../../constants/theme';
+import { COLORS, SIZES } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import { fetchBorrowingDates, fetchSelectedProduct } from '../../services/ProductServices';
 import { Calendar, DateData } from 'react-native-calendars';
-import { format, set } from 'date-fns';
+import { format, formatDistanceToNow, set } from 'date-fns';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import { Address, fetchUserAddresses } from '../../services/AddressServices';
 import { createBorrowing } from '../../services/BorrowingServices';
 import { getReviewsByProductId } from '../../services/ReviewServices';
 import { getOrCreateChat } from '../../services/ChatServices';
+import Swiper from 'react-native-swiper';
+import TabButtonStyleHome from '../../components/Tabs/TabButtonStyleHome';
 
 type ProductDetailsScreenProps = StackScreenProps<RootStackParamList, 'ProductDetails'>;
 const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
@@ -41,12 +43,20 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const [startDate, setStartDate] = useState(selectedDates.start || null);
   const [endDate, setEndDate] = useState(selectedDates.end || null);
   const [index, setIndex] = useState(0);
-  const [accordionOpen, setAccordionOpen] = useState(false);
+  const [accordionOpen, setAccordionOpen] = useState<{ [key: string]: boolean }>({});
+  const [scrollY, setScrollY] = useState(0);
   const [deliveryMethod, setDeliveryMethod] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<{ [key: string]: any; id: string; address: string } | null>(null);
   const [numberOfDays, setNumberOfDays] = useState<number>();
   const [total, setTotal] = useState<number>();
+
+  // tabview
+  const scrollViewHome = useRef<any>(null);
+  const buttons = ['Details', 'What\'s Included', 'Before You Borrow'];
+
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const onCLick = (i: any) => scrollViewHome.current.scrollTo({ x: i * SIZES.width });
 
   const paymentMethods = [
     {
@@ -493,22 +503,26 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     }
   };
 
-  const screens = 4;
+  const screens = 5;
 
   const nextScreen = async () => {
     if (index === 0 && (!startDate || !endDate)) {
       Alert.alert('Please set start date and end date');
       return;
     }
-    if (index === 1 && !deliveryMethod) {
+    if (index === 1 && (!startDate || !endDate)) {
       Alert.alert('Please select a delivery method');
       return;
     }
-    if (index === 2 && !paymentMethod) {
+    if (index === 2 && !deliveryMethod) {
+      Alert.alert('Please select a delivery method');
+      return;
+    }
+    if (index === 3 && !paymentMethod) {
       Alert.alert('Please select a payment method');
       return;
     }
-    if (index === 3) {
+    if (index === 4) {
       handleCheckout();
       Alert.alert('order created')
       return;
@@ -539,238 +553,353 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   return (
     <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-      <View
-        style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
-        <View
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 10 }}>
-          <View style={{ flex: 1, alignItems: 'flex-start' }}>
-            {index === 0 ? (
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                style={{
-                  height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
-                }}
-              >
-                <Ionicons size={30} color={COLORS.blackLight} name='close' />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={prevScreen}
-                style={{
-                  height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
-                }}
-              >
-                <Ionicons size={30} color={COLORS.blackLight} name='chevron-back-outline' />
-              </TouchableOpacity>
-            )}
-          </View>
-          <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
-              {[
-                'Product Details',
-                'Delivery Method',
-                'Payment Method',
-                'Checkout'][index] || ''}
-            </Text>
-          </View>
-          <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            {index === 0 ? (
-              <View style={{ flex: 1, alignItems: 'flex-end' }} />
-            ) : (
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                style={{
-                  height: 45,
-                  width: 45,
-                  borderColor: COLORS.blackLight,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Ionicons size={30} color={COLORS.blackLight} name='close' />
-              </TouchableOpacity>
-            )}
+      <View>
+        <View style={{ zIndex: 1, height: 60, backgroundColor: COLORS.background, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+          <View style={{ height: '100%', backgroundColor: COLORS.background, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 10 }}>
+            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+              {index === 0 ? (
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{
+                    height: 40,
+                    width: 40,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={prevScreen}
+                  style={{
+                    height: 45, width: 45, borderColor: COLORS.blackLight, borderWidth: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons size={30} color={COLORS.blackLight} name='chevron-back-outline' />
+                </TouchableOpacity>
+              )}
+            </View>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
+                {[
+                  `${product?.title}`,
+                  'Select Dates',
+                  'Delivery Method',
+                  'Payment Method',
+                  'Checkout'][index] || ''}
+              </Text>
+            </View>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              {index === 0 ? (
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{
+                    height: 40,
+                    width: 40,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons size={25} color={COLORS.black} name='bookmark-outline' />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={{
+                    height: 45,
+                    width: 45,
+                    borderColor: COLORS.blackLight,
+                    borderWidth: 1,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons size={25} color={COLORS.blackLight} name='close' />
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
       </View>
       {product ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 15, paddingBottom: 70 }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 70, }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
           {index === 0 && (
-            <View style={{ width: '100%', gap: 10 }}>
-              {selectedImage ? (
-                <View style={[]}>
-                  <Image
-                    source={{ uri: selectedImage }}
-                    style={{
-                      width: '100%',
-                      height: 300,
-                      borderRadius: 10,
-                      marginBottom: 10,
-                    }}
-                    resizeMode="cover"
-                  />
-                  {/* Delete Button */}
-                  <TouchableOpacity
-                    onPress={() => { }}
-                    style={{
-                      position: 'absolute',
-                      top: 250,
-                      right: 10,
-                      backgroundColor: 'rgba(0,0,0,0.6)',
-                      padding: 8,
-                      borderRadius: 20,
-                    }}
+            <View style={{ width: '100%', paddingTop: 10 }}>
+              <View style={{ paddingHorizontal: 20, backgroundColor: COLORS.background, paddingBottom: 20 }}>
+                <View style={{ height: 250 }}>
+                  <Swiper
+                    dotColor={COLORS.primaryLight}
+                    activeDotColor={COLORS.primary}
+                    autoplay={false}
+                    autoplayTimeout={2}
+                    showsPagination={Platform.OS === "android" ? true : false}
+                    loop={false}
                   >
-                    <Ionicons name="heart-outline" size={24} color={COLORS.white} />
-                  </TouchableOpacity>
-                  {/* Thumbnail List */}
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {images.map((imageUri, index) => (
-                      <TouchableOpacity key={index} onPress={() => setSelectedImage(imageUri)}>
+                    {images.map((data, index) => (
+                      <View key={index}>
                         <Image
-                          source={{ uri: imageUri }}
                           style={{
-                            width: 80,
-                            height: 80,
-                            marginRight: 10,
-                            borderRadius: 10,
-                            borderWidth: selectedImage === imageUri ? 3 : 0,
-                            borderColor: selectedImage === imageUri ? '#007bff' : 'transparent',
+                            backgroundColor: COLORS.placeholder,
+                            height: 250,
+                            width: '100%',
+                            resizeMode: 'cover',
+                            borderRadius: 20,
                           }}
+                          source={{ uri: data }}
                         />
-                      </TouchableOpacity>
-                    ))}
-                  </ScrollView>
-                </View>
-              ) : (
-                <View
-                  style={{
-                    width: '100%',
-                    height: 300,
-                    borderRadius: 10,
-                    marginBottom: 10,
-                    backgroundColor: COLORS.card,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text style={{ color: COLORS.blackLight }}>No image selected</Text>
-                </View>
-              )}
-              <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginBottom: 10, marginTop: 20 }}>
-                  <View style={{ flex: 1, alignItems: 'center' }}>
-                    {
-                      owner ? (
-                        <Image
-                          source={{ uri: owner.profileImageUrl }}
-                          style={{
-                            width: 60,
-                            height: 60,
-                            borderRadius: 40,
-                          }}
-                        />
-                      ) : (
-                        <View
-                          style={{
-                            width: 60,
-                            height: 60,
-                            borderRadius: 40,
-                            marginBottom: 10,
-                            backgroundColor: COLORS.card,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <Ionicons name={'image-outline'} size={20} color={COLORS.blackLight} style={{ opacity: .5 }} />
-                        </View>
-                      )
-                    }
-                  </View>
-                  <View style={{ flex: 7, paddingLeft: 20 }}>
-                    <TouchableOpacity
-                      // onPress={() => navigation.navigate('ProductDetails', { product: borrowing.product })}>
-                      onPress={() => { }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{product.title}</Text>
-                        <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />
                       </View>
-                    </TouchableOpacity>
-                    <Text style={{ fontSize: 14, color: COLORS.blackLight }}>by {owner?.firstName} {owner?.lastName} </Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => { if (user && owner) handleChat(user, owner) }}
-                    style={{
-                      bottom: 10,
-                      right: 10,
-                      backgroundColor: COLORS.placeholder,
-                      padding: 10,
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Ionicons name="chatbubble-ellipses-outline" size={24} color={COLORS.white} />
-                  </TouchableOpacity>
+                    ))}
+                  </Swiper>
                 </View>
-                <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 10 }}>£ {product.lendingRate} / day</Text>
-                <Text style={{ fontSize: 18, fontWeight: 'semibold', color: COLORS.black }}>{product.address}</Text>
-                <Text style={{ fontSize: 14, color: COLORS.blackLight, paddingBottom: 20 }}>{product.description}</Text>
-                <View style={GlobalStyleSheet.line} />
-                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Available Slots</Text>
-                <Calendar
-                  enableSwipeMonths={true}
-                  markedDates={selectedDates}
-                  markingType={'period'}
-                  onDayPress={handleDayPress}
-                  minDate={new Date().toISOString().split('T')[0]} // Disable past dates
-                  renderHeader={(date) => (
-                    <Text style={{ fontSize: 17, fontWeight: 'bold', color: COLORS.black }}>
-                      {format(new Date(date), 'MMMM yyyy')}
-                    </Text>
+                <View style={{ paddingTop: 20 }}>
+                  <TabButtonStyleHome
+                    buttons={buttons}
+                    onClick={onCLick}
+                    scrollX={scrollX}
+                  />
+                </View>
+                <ScrollView
+                  ref={scrollViewHome}
+                  horizontal
+                  pagingEnabled
+                  scrollEventThrottle={16}
+                  scrollEnabled={false}
+                  decelerationRate="fast"
+                  showsHorizontalScrollIndicator={false}
+                  onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                    { useNativeDriver: false },
                   )}
-                />
-                <View style={GlobalStyleSheet.line} />
-                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Borrowing Conditions</Text>
-                <Text style={{ fontSize: 14, color: COLORS.black, paddingBottom: 20 }}>{product.borrowingNotes}</Text>
-                <View style={GlobalStyleSheet.line} />
-                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 30, paddingBottom: 10 }}>Location</Text>
-                <View style={{ height: 200, borderRadius: 20, overflow: 'hidden', borderColor: COLORS.blackLight, borderWidth: 1, }}>
-                  <MapView
-                    ref={mapRef}
-                    style={{ height: '100%' }}
-                    region={{
-                      latitude: product.latitude,
-                      longitude: product.longitude,
-                      latitudeDelta: 0.05, // Adjust zoom level
-                      longitudeDelta: 0.05,
-                    }}
-                    scrollEnabled={false}
-                    zoomEnabled={false}
-                    rotateEnabled={false}
-                    pitchEnabled={false}
-                    toolbarEnabled={false}
-                  >
-                    <Circle
-                      center={{ latitude: product.latitude, longitude: product.longitude }}
-                      radius={1000} // Radius in meters (1000m = 1km)
-                      strokeWidth={2}
-                      strokeColor="rgba(0, 122, 255, 0.5)"
-                      fillColor="rgba(0, 122, 255, 0.2)" // Light blue transparent fill
-                    />
-                  </MapView>
-                  <View style={GlobalStyleSheet.line} />
-                </View>
+                >
+                  {buttons.map((button, index) => (
+                    <ScrollView
+                      showsVerticalScrollIndicator={false}
+                      style={{ width: SIZES.width, paddingTop: 10 }}
+                      key={index}
+                      refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                      }
+                    >
+                      <View style={{}}>
+                        {index === 0 && (
+                          <View style={{ paddingTop: 10, paddingRight: 40 }}>
+                            <View style={{ flexDirection: 'row', marginBottom: 10, }}>
+                              <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                {
+                                  owner ? (
+                                    <Image
+                                      source={{ uri: owner.profileImageUrl }}
+                                      style={{
+                                        width: 60,
+                                        height: 60,
+                                        borderRadius: 40,
+                                      }}
+                                    />
+                                  ) : (
+                                    <View
+                                      style={{
+                                        width: 60,
+                                        height: 60,
+                                        borderRadius: 40,
+                                        marginBottom: 10,
+                                        backgroundColor: COLORS.card,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      <Ionicons name={'image-outline'} size={20} color={COLORS.blackLight} style={{ opacity: .5 }} />
+                                    </View>
+                                  )
+                                }
+                              </View>
+                              <View style={{ flex: 7, paddingLeft: 35, justifyContent: 'center' }}>
+                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>{product.title}</Text>
+                                <Text style={{ fontSize: 14, color: COLORS.blackLight }}>by {owner?.firstName} {owner?.lastName} </Text>
+                              </View>
+                              {/* <TouchableOpacity
+                                onPress={() => { if (user && owner) handleChat(user, owner) }}
+                                style={{
+                                  bottom: 10,
+                                  right: 10,
+                                  backgroundColor: COLORS.placeholder,
+                                  padding: 10,
+                                  borderRadius: 10,
+                                }}
+                              >
+                                <Ionicons name="chatbubble-ellipses-outline" size={24} color={COLORS.white} />
+                              </TouchableOpacity> */}
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, }}>
+                              <Ionicons name="location-outline" size={20} color={COLORS.black} style={{ opacity: 0.5 }} />
+                              <Text>{product.address}</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, paddingBottom: 20 }}>
+                              {Array.from({ length: 5 }, (_, i) => (
+                                <Ionicons
+                                  key={i}
+                                  name="star"
+                                  size={16}
+                                  color={i < (product.averageRating ?? 0) ? COLORS.warning : COLORS.blackLight}
+                                />
+                              ))}
+                              <Text style={{}}> {product.averageRating?.toFixed(1)} </Text>
+                              <Text style={{}}>({product.ratingCount})</Text>
+                              <Text style={{ textDecorationLine: 'underline', color: COLORS.primary, paddingLeft: 4 }}>see all reviews</Text>
+                            </View>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Description</Text>
+                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>{product.description} jesdf fsdkljf sjdkhfkl sjdhfkjdh sdfhjkdshfksh sdkjfhdskhfjsdh fdkjshfkjsdhfkjsdhfdkjshf khfksdjhfksdhfk sdjhfkjdshfk jkhdfjkshf uhdksfjhsdkfhsdkjhf k</Text>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingBottom: 5 }}>Location</Text>
+                            <View style={{ height: 200, borderRadius: 20, overflow: 'hidden', borderColor: COLORS.blackLight, borderWidth: 1 }}>
+                              <MapView
+                                ref={mapRef}
+                                style={{ height: '100%' }}
+                                region={{
+                                  latitude: product.latitude,
+                                  longitude: product.longitude,
+                                  latitudeDelta: 0.05, // Adjust zoom level
+                                  longitudeDelta: 0.05,
+                                }}
+                                scrollEnabled={false}
+                                zoomEnabled={false}
+                                rotateEnabled={false}
+                                pitchEnabled={false}
+                                toolbarEnabled={false}
+                              >
+                                <Circle
+                                  center={{ latitude: product.latitude, longitude: product.longitude }}
+                                  radius={1000} // Radius in meters (1000m = 1km)
+                                  strokeWidth={2}
+                                  strokeColor="rgba(0, 122, 255, 0.5)"
+                                  fillColor="rgba(0, 122, 255, 0.2)" // Light blue transparent fill
+                                />
+                              </MapView>
+                              <View style={GlobalStyleSheet.line} />
+                            </View>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingBottom: 20, textAlign: 'center' }}>The exact location will be disclosed upon rental completion</Text>
+                          </View>
+                        )}
+                        {index === 1 && (
+                          <View style={{ paddingRight: 40 }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>What's Included</Text>
+                            <View style={{ paddingLeft: 10 }}>
+                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Body</Text>
+                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Extra lens</Text>
+                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Charger</Text>
+                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Memory card</Text>
+                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Cables</Text>
+                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Carry case</Text>
+                            </View>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Usage Guidelines</Text>
+                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>{product.borrowingNotes}</Text>
+                          </View>
+                        )}
+                        {index === 2 && (
+                          <View style={{ paddingRight: 40 }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Deposit Policy</Text>
+                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>I will be taking a £{product.depositAmount} for deposit. Will be returned back to borrower depends on the return condition.</Text>
+                            <View style={GlobalStyleSheet.line} />
+                            <View style={{ paddingHorizontal: 10 }}>
+                              <TouchableOpacity
+                                onPress={() => setAccordionOpen((prev) => ({ ...prev, insurance: !prev.insurance }))}
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  paddingVertical: 10,
+                                }}
+                              >
+                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>
+                                  Insurance/Liability
+                                </Text>
+                                <Ionicons
+                                  name={accordionOpen.insurance ? 'chevron-up-outline' : 'chevron-down-outline'}
+                                  size={24}
+                                  color={COLORS.blackLight}
+                                />
+                              </TouchableOpacity>
+                              {accordionOpen.insurance && (
+                                <View style={{ paddingLeft: 10 }}>
+                                  <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>
+                                    The borrower is responsible for any damages or loss during the rental period. Insurance coverage is not included. Please ensure proper care of the item.
+                                  </Text>
+                                </View>
+                              )}
+                            </View>
+
+                            <View style={{ paddingHorizontal: 10 }}>
+                              <TouchableOpacity
+                                onPress={() => setAccordionOpen((prev) => ({ ...prev, handover: !prev.handover }))}
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  paddingVertical: 10,
+                                }}
+                              >
+                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>
+                                  Handover Instructions
+                                </Text>
+                                <Ionicons
+                                  name={accordionOpen.handover ? 'chevron-up-outline' : 'chevron-down-outline'}
+                                  size={24}
+                                  color={COLORS.blackLight}
+                                />
+                              </TouchableOpacity>
+                              {accordionOpen.handover && (
+                                <View style={{ paddingLeft: 10 }}>
+                                  <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>
+                                    Please ensure to meet at the agreed location and time for the handover. Verify the condition of the product before accepting it.
+                                  </Text>
+                                </View>
+                              )}
+                            </View>
+
+                            <View style={{ paddingHorizontal: 10 }}>
+                              <TouchableOpacity
+                                onPress={() => setAccordionOpen((prev) => ({ ...prev, faqs: !prev.faqs }))}
+                                style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  paddingVertical: 10,
+                                }}
+                              >
+                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>
+                                  Product FAQs
+                                </Text>
+                                <Ionicons
+                                  name={accordionOpen.faqs ? 'chevron-up-outline' : 'chevron-down-outline'}
+                                  size={24}
+                                  color={COLORS.blackLight}
+                                />
+                              </TouchableOpacity>
+                              {accordionOpen.faqs && (
+                                <View style={{ paddingLeft: 10 }}>
+                                  <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>
+                                    Q: Is the product fully functional?{'\n'}
+                                    A: Yes, the product is tested and fully functional.{'\n\n'}
+                                    Q: Are there any additional accessories included?{'\n'}
+                                    A: Please refer to the "What's Included" section for details.
+                                  </Text>
+                                </View>
+                              )}
+                            </View>
+                          </View>
+                        )}
+                      </View>
+                    </ScrollView>
+                  ))}
+                </ScrollView>
+                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}> Top Reviews</Text>
               </View>
-              <Text style={{ fontSize: 14, color: COLORS.black, paddingBottom: 20, textAlign: 'center' }}>The exact location will be disclosed upon rental completion</Text>
-              <View style={GlobalStyleSheet.line} />
-              <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Reviews</Text>
               <View>
                 <ScrollView
                   horizontal
@@ -827,6 +956,34 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
           )}
           {index === 1 && (
             <View style={{ width: '100%', paddingTop: 60, gap: 10 }}>
+                <View style={{ alignItems: 'center', marginVertical: 10 }}>
+                  <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.title }}>
+                  {startDate && endDate
+                    ? `Your Borrowing Period`
+                    : 'Select a Date Range'}
+                  </Text>
+                  {startDate && endDate && (
+                  <Text style={{ fontSize: 16, color: COLORS.blackLight, marginTop: 5 }}>
+                    {`From ${format(new Date(startDate), 'dd MMM yyyy')} to ${format(new Date(endDate), 'dd MMM yyyy')}`}
+                  </Text>
+                  )}
+                </View>
+              <Calendar
+                enableSwipeMonths={true}
+                markedDates={selectedDates}
+                markingType={'period'}
+                onDayPress={handleDayPress}
+                minDate={new Date().toISOString().split('T')[0]} // Disable past dates
+                renderHeader={(date) => (
+                  <Text style={{ fontSize: 17, fontWeight: 'bold', color: COLORS.black }}>
+                    {format(new Date(date), 'MMMM yyyy')}
+                  </Text>
+                )}
+              />
+            </View>
+          )}
+          {index === 2 && (
+            <View style={{ width: '100%', paddingTop: 60, paddingHorizontal: 15, gap: 10 }}>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={{
@@ -875,7 +1032,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                   </Text>
                 </View>
                 <TouchableOpacity
-                  onPress={() => setAccordionOpen((prev) => !prev)}
+                  onPress={() => setAccordionOpen((prev) => ({ ...prev, [index]: !prev[index] }))}
                   style={{
                     padding: 5,
                     borderRadius: 10,
@@ -918,8 +1075,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
               )}
             </View>
           )}
-          {index === 2 && (
-            <View style={{ width: '100%', paddingTop: 60, gap: 10 }}>
+          {index === 3 && (
+            <View style={{ width: '100%', paddingTop: 60, paddingHorizontal: 15, gap: 10 }}>
               {paymentMethods.map((method, index) => (
                 <TouchableOpacity
                   key={index}
@@ -948,8 +1105,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
               ))}
             </View>
           )}
-          {index === 3 && total && (
-            <View style={{ width: '100%', paddingTop: 20, gap: 10 }}>
+          {index === 4 && total && (
+            <View style={{ width: '100%', paddingTop: 20, paddingHorizontal: 15, gap: 10 }}>
               {/* Product Info */}
               <View style={{ flexDirection: "row", marginBottom: 20 }}>
                 <Image
@@ -1028,7 +1185,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
           <Text style={{ color: COLORS.black }}>Product not found 404</Text>
         </View>
       )}
-      {index === 0 ? (
+      {index <= 1 ? (
         <View style={[GlobalStyleSheet.flex, { paddingVertical: 15, paddingHorizontal: 20, backgroundColor: COLORS.card, }]}>
           <View
             style={{
@@ -1038,20 +1195,21 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             }}
           >
             <View style={{ flexDirection: 'column' }}>
-              <View style={{ flexDirection: 'row', gap: 5 }}>
-                <Text style={{ fontSize: 24, color: COLORS.title, lineHeight: 30, fontWeight: 'bold' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                <Text style={{ fontSize: 24, color: COLORS.title, fontWeight: 'bold' }}>
                   £{total} for {numberOfDays} days
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', gap: 5 }}>
-                <Text>{startDate && endDate ? `${format(new Date(startDate), 'EEE, dd/MM/yy')} - ${format(new Date(endDate), 'EEE, dd/MM/yy')}` : ''}</Text>
+                <Text style={{ fontSize: 14, color: COLORS.blackLight2 }}>£{Number(total ?? 0) + Number(product.depositAmount)} total includes fees </Text>
+                {/* <Text>{startDate && endDate ? `Available from ${format(new Date(startDate), 'dd MMM.')}` : ''}</Text> */}
               </View>
             </View>
           </View>
           <TouchableOpacity
             style={{
               backgroundColor: COLORS.primary,
-              width: 120,
+              width: 150,
               padding: 15,
               borderRadius: 10,
               alignItems: 'center',
@@ -1059,7 +1217,10 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             }}
             onPress={nextScreen}
           >
-            <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>Borrow</Text>
+            <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>{[
+              `Pick Dates`,
+              'Delivery Method',
+              ][index] || ''}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -1076,7 +1237,11 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
               }}
               onPress={nextScreen}
             >
-              <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>{index === 3 ? 'Pay & Borrow' : 'Next'}</Text>
+              <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>{index === 4 ? 'Pay & Borrow' : [
+              `Pick Dates`,
+              'Delivery Method',
+              'Payment Method',
+              'Checkout'][index] || ''}</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
