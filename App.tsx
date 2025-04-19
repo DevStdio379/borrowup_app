@@ -9,19 +9,9 @@ import { UserProvider } from './app/context/UserContext';
 import { Provider } from 'react-redux';
 import { store } from './app/redux/store';
 
-const originalWarn = console.warn;
-
-console.warn = (...args) => {
-  if (
-    typeof args[0] === 'string' &&
-    args[0].includes('@firebase/auth: Auth') &&
-    args[0].includes('without providing AsyncStorage')
-  ) {
-    return;
-  }
-
-  originalWarn(...args);
-};
+LogBox.ignoreLogs([
+  'You are initializing Firebase Auth for React Native without providing',
+]);
 
 export default function App() {
   const requestLocationPermission = async () => {
