@@ -4,7 +4,7 @@ import { useNavigation, useTheme } from '@react-navigation/native';
 import Header from '../../layout/Header';
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
-import { COLORS } from '../../constants/theme';
+import { COLORS, SIZES } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -18,71 +18,45 @@ const PaymentInformation = ({ navigation }: PaymentInformationScreenProps) => {
     const { colors }: { colors: any } = theme;
     const { user } = useUser();
 
-    const [isFocused, setisFocused] = useState(false)
-    const [isFocused1, setisFocused1] = useState(false)
-    const [isFocused2, setisFocused2] = useState(false)
-    const [isFocused3, setisFocused3] = useState(false)
-
-    const [imageUrl, setImageUrl] = useState('');
-
-    const [inputValue, setInputValue] = useState("");
-
-    const handleChange = (text: any) => {
-        const numericValue = text.replace(/[^0-9]/g, "");
-        setInputValue(numericValue);
-    };
-
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
-            <Header
-                title='Payment Information'
-                leftIcon='back'
-            />
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 15, marginBottom: 50 }}>
-                <View style={[GlobalStyleSheet.container, { marginTop: 10, paddingVertical: 10 }]}>
-                    <View style={{ marginBottom: 15, marginTop: 30 }}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => {} }>
-                            <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Image source={IMAGES.appname} style={styles.icon} />
-                                    <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Gift Card</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? user?.firstName : 'Enter Code'}</Text>
-                                    <Ionicons name="chevron-forward-outline" size={24} color={colors.title} />
-                                </View>
-                            </View>
-                        </TouchableOpacity>
+            <View>
+                <View style={{ zIndex: 1, height: 60, backgroundColor: COLORS.background, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+                    <View style={{ height: '100%', backgroundColor: COLORS.background, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 10 }}>
+                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                            <TouchableOpacity
+                                onPress={() => navigation.goBack()}
+                                style={{
+                                    height: 40,
+                                    width: 40,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 1, alignItems: 'center' }}>
+                            <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>Payment Information</Text>
+                        </View>
+                        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        </View>
                     </View>
+                </View>
+            </View>
+            <ScrollView contentContainerStyle={{ width: SIZES.width, marginBottom: 50, }}>
+                <View style={{ marginTop: 50, paddingHorizontal: 15 }}>
                     <View style={{ marginBottom: 15 }}>
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            onPress={() => {} }>
-                            <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
-                                    <Ionicons name="wallet" size={24} color={COLORS.title} />
-                                    <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Wallet (£35.00)</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? user?.firstName : 'Activate Now'}</Text>
-                                    <Ionicons name="chevron-forward-outline" size={24} color={user?.isActive ? COLORS.title : COLORS.blackLight} />
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ marginBottom: 15 }}>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={() => {} }>
+                            onPress={() => { }}>
                             <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 30 }}>
                                     <Ionicons name="card" size={24} color={COLORS.title} />
                                     <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Credit or Debit Card</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? user?.firstName : 'Add or Update Card'}</Text>
+                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? 'disabled' : 'Add or Update Card'}</Text>
                                     <Ionicons name="chevron-forward-outline" size={24} color={user?.isActive ? COLORS.title : COLORS.blackLight} />
                                 </View>
                             </View>
@@ -91,14 +65,14 @@ const PaymentInformation = ({ navigation }: PaymentInformationScreenProps) => {
                     <View style={{ marginBottom: 15 }}>
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            onPress={() => {} }>
+                            onPress={() => { }}>
                             <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                                     <Ionicons name="logo-apple" size={24} color={colors.title} />
                                     <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Apple Pay</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? user?.firstName : 'Activate Now'}</Text>
+                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? 'disabled' : 'Activate Now'}</Text>
                                     <Ionicons name="chevron-forward-outline" size={24} color={colors.title} />
                                 </View>
                             </View>
@@ -107,14 +81,14 @@ const PaymentInformation = ({ navigation }: PaymentInformationScreenProps) => {
                     <View style={{ marginBottom: 15 }}>
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            onPress={() => {} }>
+                            onPress={() => { }}>
                             <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                                     <Ionicons name="logo-google" size={24} color={colors.title} />
                                     <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Google Pay</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? user?.firstName : 'Activate Now'}</Text>
+                                    <Text style={{ fontSize: 16, color: user?.isActive ? COLORS.title : COLORS.blackLight, fontWeight: 'bold' }}>{user?.isActive ? 'disabled' : 'Activate Now'}</Text>
                                     <Ionicons name="chevron-forward-outline" size={24} color={colors.title} />
                                 </View>
                             </View>
