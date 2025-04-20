@@ -4,7 +4,7 @@ import { db, storage } from "../services/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { format, formatDistanceToNow } from "date-fns";
-import { Alert } from "react-native";
+import { Address } from "../services/AddressServices";
 
 export interface User {
   uid: string;
@@ -19,6 +19,7 @@ export interface User {
   createAt: any;
   updatedAt: any;
   memberFor: string;
+  currentAddress?: Address;
 }
 
 export interface UserContextType {
@@ -42,6 +43,8 @@ export const defaultUser: User = {
   updatedAt: "Feb 6, 2025, 12:24:09 PM",
   memberFor: "1 year",
 };
+
+
 
 // Function to upload a single image to Firebase Storage
 export const uploadImage = async (imageName: string, imageUrl: string) => {
@@ -131,7 +134,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           profileImageUrl: userData.profileImageUrl || '',
           createAt: userData.createAt || '',
           updatedAt: userData.updatedAt || '',
-          memberFor: formatDistanceToNow(userData.createdAt.toDate(), { addSuffix: false })
+          memberFor: formatDistanceToNow(userData.createdAt.toDate(), { addSuffix: false }),
+          currentAddress: userData.currentAddress ? (userData.currentAddress as Address) : undefined,
         };
         setUser(updatedUser);
         console.log("User updated in context:", updatedUser);
@@ -173,6 +177,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           createAt: userData.createAt || '',
           updatedAt: userData.updatedAt || '',
           memberFor: formatDistanceToNow(userData.createdAt.toDate(), { addSuffix: false }),
+          currentAddress: userData.currentAddress || undefined,
         };
         setUser(userInfo);
         console.log("User fetched and context updated:", userInfo);
@@ -220,6 +225,7 @@ export const fetchSelectedUser = async (userId: string): Promise<User | null> =>
         createAt: userData.createAt || '',
         updatedAt: userData.updatedAt || '',
         memberFor: formatDistanceToNow(userData.createdAt.toDate(), { addSuffix: false }),
+        currentAddress: userData.currentAddress || undefined,
       };
       return userInfo;
     } else {
@@ -251,6 +257,7 @@ export const fetchAllUsers = async (): Promise<User[]> => {
         createAt: userData.createAt || '',
         updatedAt: userData.updatedAt || '',
         memberFor: formatDistanceToNow(userData.createdAt.toDate(), { addSuffix: false }),
+        currentAddress: userData.currentAddress || undefined,
       };
     });
     return usersList;
