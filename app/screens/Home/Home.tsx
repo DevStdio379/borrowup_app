@@ -29,7 +29,7 @@ export const Home = ({ navigation }: HomeScreenProps) => {
 
     const { user } = useUser();
 
-    const userId = 'user123'; // replace with actual auth user id
+    const userId = user?.uid || ''; // replace with actual auth user id
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
