@@ -104,7 +104,8 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
                   onPress={() => navigation.navigate('ProductDetails', { product: product })}
                   product={true}
                   ratingCount={product.ratingCount} 
-                  deposit={product.depositAmount}/>
+                  deposit={product.depositAmount}
+                  averageRating={product.averageRating}/>
               </View>
             );
           }}
