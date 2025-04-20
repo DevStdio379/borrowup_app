@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Platform, TextInput, FlatList } from 'react-native'
 import { useNavigation, useTheme } from '@react-navigation/native';
-import Header from '../../layout/Header';
-import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { COLORS, SIZES } from '../../constants/theme';
 import { useUser } from '../../context/UserContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { fetchUserAddresses } from '../../services/AddressServices';
+import { fetchUserAddresses, Address } from '../../services/AddressServices';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import { StackScreenProps } from '@react-navigation/stack';
 
@@ -15,9 +13,10 @@ type AddressBookScreenProps = StackScreenProps<RootStackParamList, 'AddressBook'
 const AddressBook = ({ navigation }: AddressBookScreenProps) => {
   const theme = useTheme();
   const { colors }: { colors: any } = theme;
-  const { user } = useUser();
+  const { user, updateUserData } = useUser();
 
-  const [addresses, setAddresses] = useState<{ [key: string]: any; id: string; }[]>([]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [currentAddress, setCurrentAddress] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const userId = user?.uid;
@@ -35,56 +34,76 @@ const AddressBook = ({ navigation }: AddressBookScreenProps) => {
 
   return (
     <View style={{ backgroundColor: colors.background, flex: 1 }}>
-      <Header
-        title='Addresss Book'
-        leftIcon='back'
-        titleRight
-      />
-      <FlatList
-        data={addresses}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={() => (
-          <View style={[GlobalStyleSheet.container, { marginTop: 10, paddingVertical: 10, borderRadius: 15 }]}>
-            <Text style={{ fontSize: 18, color: COLORS.black, fontWeight: 'bold', marginBottom: 30 }}>My addresses</Text>
+      <View>
+        <View style={{ zIndex: 1, height: 60, backgroundColor: COLORS.background, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+          <View style={{ height: '100%', backgroundColor: COLORS.background, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 10 }}>
+            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+              <TouchableOpacity
+                onPress={() => { }}
+                style={{
+                  height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
+                Address Book
+              </Text>
+            </View>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('SearchAddress')}
+                style={{
+                  height: 40,
+                  width: 40,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Ionicons size={30} color={COLORS.black} name='add' />
+              </TouchableOpacity>
+            </View>
           </View>
-        )}
-        renderItem={({ item }) => (
-          <View style={{paddingVertical: 10}}>
+        </View>
+      </View>
+      {addresses.map((address, index) => (
+        <View key={index} style={{ paddingHorizontal: 15, paddingTop: 30 }}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={{
+              padding: 15,
+              borderColor: address.id === user?.currentAddress?.id ? COLORS.primary : COLORS.blackLight,
+              borderRadius: 10,
+              borderWidth: 1,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onPress={async () => {
+              if (userId) {
+                updateUserData(userId, { currentAddress: address || undefined });
+              }
+            }}>
+            <Ionicons name={'location'} size={30} color={COLORS.black} style={{ margin: 5 }} />
+            <View style={{ flex: 1, paddingLeft: 10 }}>
+              <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                {address.addressName}
+              </Text>
+              <Text style={{ fontSize: 13, color: COLORS.black }}>
+                {address.address}
+              </Text>
+            </View>
             <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate('EditAttributes', { profileAttribute: { attributeName: 'username' } })}>
-              <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20, width: SIZES.width * 0.8 }}>
-                  <Ionicons name="location" size={24} color={colors.title} />
-                  <View style={{ width: SIZES.width * 0.7 }}>
-                    <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>{item.addressName}</Text>
-                    <Text style={{ fontSize: 14, color: colors.subtitle }}>{item.address}</Text>
-                  </View>
-                  <Ionicons name="pencil" size={20} color={colors.title} />
-                </View>
-              </View>
+              onPress={() => { }}
+              style={{ padding: 0, borderRadius: 5 }}>
+              <Ionicons name={'pencil'} size={20} color={COLORS.black} style={{ margin: 5 }} />
             </TouchableOpacity>
-            <View style={GlobalStyleSheet.line} />
-          </View>
-        )}
-        ListFooterComponent={() => (
-          <View style={{ marginBottom: 15, marginTop: 10 }}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate('SearchAddress')}>
-              <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20, width: SIZES.width * 0.8 }}>
-                  <Ionicons name="add" size={26} color={colors.title} />
-                  <View>
-                    <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Add a new address</Text>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-        )}
-        contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 50 }}
-      />
+          </TouchableOpacity>
+        </View>
+      ))}
+      <Text>OK: {user?.currentAddress?.addressName}</Text>
     </View>
   )
 }
