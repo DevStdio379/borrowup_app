@@ -45,9 +45,23 @@ export const fetchUserAddresses = async (userId: string) => {
     const userAddressesRef = collection(db, 'users', userId, 'addresses');
     const querySnapshot = await getDocs(userAddressesRef);
 
-    const addresses: { id: string;[key: string]: any }[] = [];
+    const addresses: Address[] = [];
     querySnapshot.forEach((doc) => {
-      addresses.push({ id: doc.id, ...doc.data() });
+      const data = doc.data();
+      addresses.push({
+      id: doc.id,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      addressName: data.addressName,
+      address: data.address,
+      buildingType: data.buildingType,
+      additionalDetails: data.additionalDetails,
+      postcode: data.postcode,
+      addressLabel: data.addressLabel,
+      instruction: data.instruction,
+      createAt: data.createAt,
+      updatedAt: data.updatedAt
+      });
     });
 
     return addresses;
