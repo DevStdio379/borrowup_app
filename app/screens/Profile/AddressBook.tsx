@@ -69,7 +69,7 @@ const AddressBook = ({ navigation }: AddressBookScreenProps) => {
         </View>
       </View>
       {addresses.map((address, index) => (
-        <View key={index} style={{ paddingHorizontal: 15, paddingTop: 30 }}>
+        <View key={index} style={{ paddingHorizontal: 15, paddingTop: 10 }}>
           <TouchableOpacity
             activeOpacity={0.8}
             style={{
@@ -88,6 +88,11 @@ const AddressBook = ({ navigation }: AddressBookScreenProps) => {
             }}>
             <Ionicons name={'location'} size={30} color={COLORS.black} style={{ margin: 5 }} />
             <View style={{ flex: 1, paddingLeft: 10 }}>
+              {address.id === user?.currentAddress?.id && (
+                <View style={{ width: 58, backgroundColor: COLORS.primary, borderRadius: 5, paddingHorizontal: 8, paddingVertical: 2 }}>
+                  <Text style={{ color: COLORS.white, fontSize: 12, fontWeight: 'bold' }}>Default</Text>
+                </View>
+              )}
               <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
                 {address.addressName}
               </Text>
@@ -103,7 +108,6 @@ const AddressBook = ({ navigation }: AddressBookScreenProps) => {
           </TouchableOpacity>
         </View>
       ))}
-      <Text>OK: {user?.currentAddress?.addressName}</Text>
     </View>
   )
 }
