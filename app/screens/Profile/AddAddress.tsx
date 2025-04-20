@@ -34,7 +34,7 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
   const snapPoints = useMemo(() => ['25%', '50%', '100%'], []);
   const [buildingType, setBuildingType] = useState('house');
   const [additionalDetails, setAdditionalDetails] = useState<string | undefined>();
-  const [postcode, setPostcode] = useState<string | undefined>( post );
+  const [postcode, setPostcode] = useState<string | undefined>(post);
   const [addressLabel, setAddressLabel] = useState<string | undefined>();
   const [deliveryInstruction, setDeliveryInstruction] = useState<string | undefined>();
 
@@ -67,7 +67,10 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
     if (userId && Object.values(addressData).every(val => val !== '')) {
       await saveUserAddress(userId, addressData); // Save address to Firestore
       Alert.alert('Success', 'Address saved successfully!');
-      navigation.navigate('AddressBook');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'BottomNavigation', params: { screen: 'AddressBook' } }],
+      });
     } else {
       Alert.alert('Error', 'Please fill in all fields');
     }
@@ -111,7 +114,7 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
           <TouchableOpacity
             style={{ position: 'absolute', borderRadius: 12, backgroundColor: COLORS.primary, padding: 10, elevation: 3, alignItems: 'center', right: SIZES.width * 0.4, top: SIZES.height * 0.15 }}
             // onPress={() => navigation.navigate('EditLocationPinPoint', { location: address })}
-            onPress={() => {}}
+            onPress={() => { }}
           >
             <Text style={{ color: COLORS.white, fontWeight: 'bold' }}>Edit Pin</Text>
           </TouchableOpacity>
@@ -120,7 +123,7 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
         <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Building Type</Text>
 
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={() => { }}
           activeOpacity={0.8}>
           <View style={[styles.inputBox, { flexDirection: 'row' }]}>
             <TextInput
@@ -263,7 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary
   },
   InputTitle: {
-   
+
     fontSize: 13,
     color: COLORS.title,
     marginBottom: 5
