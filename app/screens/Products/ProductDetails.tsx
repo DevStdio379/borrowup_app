@@ -24,7 +24,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   const [product, setProduct] = useState(route.params.product);
   // const [productAddress, setProductAddress] = useState<Address>();
-  const [addresses, setAddresses] = useState<{ [key: string]: any; id: string; }[]>([]);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const [owner, setOwner] = useState<User>();
 
   const [loading, setLoading] = useState(true);
@@ -47,7 +47,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const [scrollY, setScrollY] = useState(0);
   const [deliveryMethod, setDeliveryMethod] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
-  const [selectedAddress, setSelectedAddress] = useState<{ [key: string]: any; id: string; address: string } | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState< Address | null>(null);
   const [numberOfDays, setNumberOfDays] = useState<number>();
   const [total, setTotal] = useState<number>();
 
@@ -1047,7 +1047,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                         justifyContent: 'center',
                         marginBottom: 10,
                       }}
-                      onPress={() => setSelectedAddress({ id: address.id, address: address.address })}
+                      onPress={() => setSelectedAddress(address)}
                     >
                       <Ionicons name="location-outline" size={30} color={COLORS.blackLight} style={{ margin: 5 }} />
                       <View style={{ flex: 1, paddingLeft: 10 }}>
