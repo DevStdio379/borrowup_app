@@ -87,9 +87,7 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
 
             if (!product) {
               return (
-                <View style={styles.card}>
-                  <ActivityIndicator size="small" color="#888" />
-                </View>
+                <View/>
               );
             }
 
@@ -106,7 +104,7 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
                   onPress={() => navigation.navigate('ProductDetails', { product: product })}
                   product={true}
                   ratingCount={product.ratingCount} 
-                  deposit={product.depositAmount}                />
+                  deposit={product.depositAmount}/>
               </View>
             );
           }}
