@@ -96,7 +96,7 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
             return (
               <View style={{ flex: 1, margin: 5 }}>
                 <Cardstyle4
-                  id={productId }
+                  id={productId}
                   imageUrl={product.imageUrls[0]}
                   price={product.lendingRate}
                   ownerID={product.ownerID}
@@ -105,8 +105,8 @@ const Map = ({ navigation }: FavouriteCollectionScreenProps) => {
                   title={product.title}
                   onPress={() => navigation.navigate('ProductDetails', { product: product })}
                   product={true}
-                  reviewCount={product.reviewCount}
-                />
+                  ratingCount={product.ratingCount} 
+                  deposit={product.depositAmount}                />
               </View>
             );
           }}
