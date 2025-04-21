@@ -588,21 +588,19 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                     showsVerticalScrollIndicator={false}
                                     style={{ width: SIZES.width, paddingTop: 10 }}
                                     key={index}
-                                    refreshControl={
-                                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                                    }
                                 >
                                     <View style={{}}>
                                         {index === 0 && (
                                             <ScrollView
                                                 showsVerticalScrollIndicator={false}
                                                 contentContainerStyle={{ flexGrow: 1, paddingBottom: 20, alignItems: 'flex-start' }}
-                                                refreshControl={
-                                                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                                                }
                                             >
                                                 <View style={{ width: SIZES.width * 0.93, paddingTop: 20, paddingHorizontal: 15, gap: 10 }}>
                                                     {/* Product Info */}
+                                                    <View style={{ flexDirection: 'row' }}>
+                                                        <Text style={{ fontSize: 14, fontWeight: "bold", color: COLORS.title }}>Borrowing ID: </Text>
+                                                        <Text style={{ fontSize: 14, color: COLORS.blackLight }}>{lending.id}</Text>
+                                                    </View>
                                                     <View style={{ flexDirection: "row", marginBottom: 20 }}>
                                                         <Image
                                                             source={{ uri: lending.product.imageUrls[0] }}
@@ -766,7 +764,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                             ))}
                         </ScrollView>
                         <View style={GlobalStyleSheet.line} />
-                        <View style={{ width: '100%',}}>
+                        <View style={{ width: '100%', }}>
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Additional Information</Text>
                             <FlatList
                                 scrollEnabled={false}
