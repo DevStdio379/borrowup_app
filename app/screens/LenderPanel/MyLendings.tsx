@@ -133,6 +133,19 @@ const MyLendings = ({ navigation, route }: MyLendingsScreenProps) => {
                                 backgroundColor: COLORS.card,
                               }}>
                               <View style={[GlobalStyleSheet.flexcenter, { justifyContent: 'flex-start' }]}>
+                                {data.status === 0 && (
+                                  <View style={{
+                                    position: 'absolute',
+                                    top: 10,
+                                    right: 10,
+                                    backgroundColor: COLORS.primary,
+                                    paddingHorizontal: 8,
+                                    paddingVertical: 2,
+                                    borderRadius: 5,
+                                  }}>
+                                    <Text style={{ color: COLORS.white, fontSize: 12, fontWeight: 'bold' }}>Need action</Text>
+                                  </View>
+                                )}
                                 {data.product.imageUrls && data.product.imageUrls.length > 0 ? (
                                   <View style={{ width: '30%' }}>
                                     <Image
@@ -147,12 +160,25 @@ const MyLendings = ({ navigation, route }: MyLendingsScreenProps) => {
                                 )}
                                 <View style={{ width: '70%', padding: 10 }}>
                                   <Text numberOfLines={1} style={{ fontSize: 16, color: COLORS.black, fontWeight: 'bold' }}>{data.product.title}</Text>
-                                  <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>{data.ownerFirstName} {data.ownerLastName}</Text>
+                                  <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>borrowed by {data.firstName} {data.lastName}</Text>
+                                  <Text style={{ fontSize: 14, color: COLORS.black, opacity: 0.7 }}>for £{data.total.toFixed(2)}</Text>
                                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 14 }}>{new Date(data.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.startDate).toLocaleDateString('en-GB', { weekday: 'short' })} to {new Date(data.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.endDate).toLocaleDateString('en-GB', { weekday: 'short' })}</Text>
+                                    <Text style={{ fontSize: 14 }}>{new Date(data.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.startDate).toLocaleDateString('en-GB', { weekday: 'short' })} - {new Date(data.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.endDate).toLocaleDateString('en-GB', { weekday: 'short' })}</Text>
                                   </View>
                                 </View>
                               </View>
+                              {Number(data.product.depositAmount) !== 0 && (
+                                <View style={{
+                                  position: 'absolute',
+                                  bottom: 10,
+                                  right: 10,
+                                  paddingHorizontal: 8,
+                                  paddingVertical: 2,
+                                  borderRadius: 5,
+                                }}>
+                                  <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Deposit: £{data.product.depositAmount}</Text>
+                                </View>
+                              )}
                             </TouchableOpacity>
                           </View>
                         ))

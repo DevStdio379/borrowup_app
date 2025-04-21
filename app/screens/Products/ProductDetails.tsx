@@ -587,7 +587,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             <View style={{ flex: 1, alignItems: 'flex-end' }}>
               {index === 0 ? (
                 <TouchableOpacity
-                  onPress={() => navigation.goBack()}
+                  onPress={() => {}}
                   style={{
                     height: 40,
                     width: 40,
