@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { View, Text, Image, TouchableOpacity, StyleSheet, Platform, Alert, Animated, Easing, FlatList, Dimensions, ScrollView, RefreshControl, ActivityIndicator, TextInput } from 'react-native'
-import { COLORS } from '../../constants/theme';
+import { COLORS, SIZES } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import MapView, { Marker } from 'react-native-maps';
@@ -21,7 +21,14 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
 
+    const scrollViewHome = useRef<any>(null);
+    const buttons = ['Transaction Summary', 'Instructions'];
+    const scrollX = useRef(new Animated.Value(0)).current;
+    const onCLick = (i: any) => scrollViewHome.current.scrollTo({ x: i * SIZES.width });
+    const [activeIndex, setActiveIndex] = useState(0);
+
     const [lending, setLending] = useState<Borrowing>(route.params.lending);
+    const [accordionOpen, setAccordionOpen] = useState<{ [key: string]: boolean }>({});
     const [owner, setOwner] = useState<User>();
     const [images, setImages] = useState<string[]>([]);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -83,7 +90,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                     setLending(selectedBorrowing);
                     setStatus(selectedBorrowing.status);
 
-                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.product.ownerID);
+                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.userId);
                     if (fetchedOwner) {
                         setOwner(fetchedOwner);
                     }
@@ -114,7 +121,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
 
                 const selectedBorrowing = await fetchSelectedBorrowing(lending.id || 'undefined');
                 if (selectedBorrowing) {
-                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.product.ownerID);
+                    const fetchedOwner = await fetchSelectedUser(selectedBorrowing.userId);
                     if (fetchedOwner) {
                         setOwner(fetchedOwner);
                     }
@@ -161,7 +168,30 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
 
     return (
         <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-            <Header title='My Lending Details' />
+            <View style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+                <View
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 5 }}>
+                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                        <TouchableOpacity
+                            onPress={() => navigation.goBack()}
+                            style={{
+                                height: 40,
+                                width: 40,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>Lending Details</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        {/* right header element */}
+                    </View>
+                </View>
+            </View>
             {lending ? (
                 <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -206,7 +236,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                         <View style={{ backgroundColor: "#f3f3f3", padding: 16, borderRadius: 12, alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, marginVertical: 20, marginHorizontal: 10 }}>
                             {status === 0 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontWeight: 'bold' }}>Please confirm this lending?</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>Please confirm this lending</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                                         <TouchableOpacity
                                             style={{
@@ -454,58 +484,34 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                             }
                         </View>
                         {/* Images View */}
-                        <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                            {/* Large Preview Image */}
-                            {selectedImage ? (
-                                <View style={[GlobalStyleSheet.container, { flex: 1 }]}>
-                                    <Image
-                                        source={{ uri: selectedImage }}
-                                        style={{
-                                            width: '100%',
-                                            height: 300,
-                                            borderRadius: 10,
-                                            marginBottom: 10,
-                                        }}
-                                        resizeMode="cover"
-                                    />
-                                    {/* Thumbnail List */}
-                                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                        {images.map((imageUri, index) => (
-                                            <TouchableOpacity key={index} onPress={() => setSelectedImage(imageUri)}>
-                                                <Image
-                                                    source={{ uri: imageUri }}
-                                                    style={{
-                                                        width: 80,
-                                                        height: 80,
-                                                        marginRight: 10,
-                                                        borderRadius: 10,
-                                                        borderWidth: selectedImage === imageUri ? 3 : 0,
-                                                        borderColor: selectedImage === imageUri ? '#007bff' : 'transparent',
-                                                    }}
-                                                />
-                                            </TouchableOpacity>
-                                        ))}
-                                    </ScrollView>
-                                </View>
-                            ) : (
-                                <View
-                                    style={{
-                                        width: '100%',
-                                        height: 300,
-                                        borderRadius: 10,
-                                        marginBottom: 10,
-                                        backgroundColor: COLORS.card,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}
-                                >
-                                    <Text style={{ color: COLORS.blackLight }}>No image selected</Text>
-                                </View>
-                            )}
-                        </View>
+                        {/* <View style={{ height: 250 }}>
+                            <Swiper
+                                dotColor={COLORS.primaryLight}
+                                activeDotColor={COLORS.primary}
+                                autoplay={false}
+                                autoplayTimeout={2}
+                                showsPagination={Platform.OS === "android" ? true : false}
+                                loop={false}
+                            >
+                                {images.map((data, index) => (
+                                    <View key={index}>
+                                        <Image
+                                            style={{
+                                                backgroundColor: COLORS.placeholder,
+                                                height: 250,
+                                                width: '100%',
+                                                resizeMode: 'cover',
+                                                borderRadius: 20,
+                                            }}
+                                            source={{ uri: data }}
+                                        />
+                                    </View>
+                                ))}
+                            </Swiper>
+                        </View> */}
                         {/* Borrowing Details */}
-                        <View style={{ width: '100%', marginTop: 10 }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginBottom: 10, marginTop: 20 }}>
+                        <View style={{ width: '100%', paddingHorizontal: 15, borderRadius: 20, borderColor: COLORS.blackLight, borderWidth: 1, marginBottom: 20 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginVertical: 10 }}>
                                 <View style={{ flex: 1, alignItems: 'center' }}>
                                     {
                                         owner ? (
@@ -541,49 +547,226 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                             <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />
                                         </View>
                                     </TouchableOpacity>
-                                    <Text style={{ fontSize: 14, color: COLORS.blackLight }}>by {owner?.firstName} {owner?.lastName} </Text>
+                                    <Text style={{ fontSize: 14, color: COLORS.blackLight }}>borrowed by {owner?.firstName} {owner?.lastName} </Text>
                                 </View>
                             </View>
-                            <View style={GlobalStyleSheet.line} />
-                            <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Borrowing Notes</Text>
-                            <Text style={{ marginBottom: 30 }}>{greetings + '\n'}</Text>
-                            <Text style={{ marginBottom: 30 }}>{lending.product.borrowingNotes}</Text>
-                            <View style={GlobalStyleSheet.line} />
-                            <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Pickup Instructions</Text>
-                            <Text style={{ marginBottom: 30 }}>{lending.product.pickupInstructions}</Text>
-                            <View style={GlobalStyleSheet.line} />
-                            <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20, marginBottom: 10 }}>Location</Text>
-                            <View style={{ height: 200, borderRadius: 20, overflow: 'hidden', borderColor: COLORS.blackLight, borderWidth: 1, }}>
-                                <MapView
-                                    ref={mapRef}
-                                    style={{ height: '100%' }}
-                                    initialRegion={{
-                                        latitude: lending.product.latitude,
-                                        longitude: lending.product.longitude,
-                                        latitudeDelta: 0.0005,
-                                        longitudeDelta: 0.0005,
-                                    }}
-                                    scrollEnabled={false}
-                                    zoomEnabled={false}
-                                    rotateEnabled={false}
-                                    pitchEnabled={false}
-                                    toolbarEnabled={false}
-                                >
-                                    <Marker
-                                        coordinate={{
-                                            latitude: lending.product.latitude,
-                                            longitude: lending.product.longitude,
+                        </View>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            {buttons.map((btn: any, i: number) => (
+                                <View style={{ flexDirection: 'row', width: SIZES.width * 0.5, paddingHorizontal: 10, justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <TouchableOpacity
+                                        key={btn}
+                                        style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}
+                                        onPress={() => {
+                                            setActiveIndex(i);
+                                            if (onCLick) {
+                                                onCLick(i);
+                                            }
                                         }}
-                                        title="Selected Location"
-                                    />
-                                </MapView>
-                                <View style={GlobalStyleSheet.line} />
-                            </View>
-                            <Text style={{ marginBottom: 30, marginTop: 5 }}>{lending.product.addressName}, {lending.product.address}</Text>
-                            <View style={GlobalStyleSheet.line} />
-                            <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Return Instructions</Text>
-                            <Text style={{ marginBottom: 30 }}>{lending.product.returnInstructions}</Text>
-                            <View style={GlobalStyleSheet.line} />
+                                    >
+                                        <Text style={{ color: COLORS.text, paddingBottom: 5, }}>{btn}</Text>
+                                        {activeIndex === i && <View style={{ height: 3, width: '100%', backgroundColor: 'black' }} />}
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                        </ScrollView>
+                        <ScrollView
+                            ref={scrollViewHome}
+                            horizontal
+                            pagingEnabled
+                            scrollEventThrottle={16}
+                            scrollEnabled={false}
+                            decelerationRate="fast"
+                            showsHorizontalScrollIndicator={false}
+                            onScroll={Animated.event(
+                                [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                                { useNativeDriver: false },
+                            )}
+                        >
+                            {buttons.map((button, index) => (
+                                <ScrollView
+                                    showsVerticalScrollIndicator={false}
+                                    style={{ width: SIZES.width, paddingTop: 10 }}
+                                    key={index}
+                                    refreshControl={
+                                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                    }
+                                >
+                                    <View style={{}}>
+                                        {index === 0 && (
+                                            <ScrollView
+                                                showsVerticalScrollIndicator={false}
+                                                contentContainerStyle={{ flexGrow: 1, paddingBottom: 20, alignItems: 'flex-start' }}
+                                                refreshControl={
+                                                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                                                }
+                                            >
+                                                <View style={{ width: SIZES.width * 0.93, paddingTop: 20, paddingHorizontal: 15, gap: 10 }}>
+                                                    {/* Product Info */}
+                                                    <View style={{ flexDirection: "row", marginBottom: 20 }}>
+                                                        <Image
+                                                            source={{ uri: lending.product.imageUrls[0] }}
+                                                            style={{ width: 100, height: 100, borderRadius: 8, marginRight: 16 }}
+                                                        />
+                                                        <View style={{ flex: 1, marginTop: 5 }}>
+                                                            <Text style={{ fontSize: 16, marginBottom: 5 }}>
+                                                                <Text style={{ color: "#E63946", fontWeight: "bold" }}>£{Number(lending.product.lendingRate).toFixed(2)}</Text>/day{" "}
+                                                                {/* <Text style={styles.originalPrice}>£40.20</Text> */}
+                                                            </Text>
+                                                            <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title }}>{lending.product.title}</Text>
+                                                            <Text style={{ fontSize: 14, color: COLORS.blackLight }}>{lending.product.description}</Text>
+                                                        </View>
+                                                    </View>
+                                                    <View style={GlobalStyleSheet.line} />
+                                                    {/* Rental Period and Delivery Method */}
+                                                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
+                                                        <View style={{ paddingVertical: 10 }}>
+                                                            <Text style={{ fontSize: 16, fontWeight: "bold", color: COLORS.title }}>Rental Period</Text>
+                                                            <Text style={{ fontSize: 14, color: "#666", marginBottom: 20 }}>Day Rental</Text>
+                                                            <Text style={{ fontSize: 14, fontWeight: "bold" }}>From:</Text>
+                                                            <Text style={{ fontSize: 14, color: COLORS.title }}>{new Date(lending.startDate).toLocaleDateString('en-GB')}</Text>
+                                                            <Text style={{ fontSize: 14, color: COLORS.title }}>09:00 AM</Text>
+                                                        </View>
+                                                        <View style={{ marginHorizontal: 40, paddingTop: 60 }}>
+                                                            <Ionicons name="arrow-forward" size={30} color={COLORS.title} />
+                                                        </View>
+                                                        <View style={{ paddingVertical: 10 }}>
+                                                            <Text style={{ fontSize: 16, fontWeight: "bold", color: COLORS.title }}>Delivery Method</Text>
+                                                            <Text style={{ fontSize: 14, color: "#666", marginBottom: 20 }}>{lending.deliveryMethod}</Text>
+                                                            <Text style={{ fontSize: 14, fontWeight: "bold" }}>Until:</Text>
+                                                            <Text style={{ fontSize: 14, color: COLORS.title }}>{new Date(lending.endDate).toLocaleDateString('en-GB')}</Text>
+                                                            <Text style={{ fontSize: 14, color: COLORS.title }}>09:00 AM</Text>
+                                                        </View>
+                                                    </View>
+                                                    <View style={GlobalStyleSheet.line} />
+                                                    {/* Rental Rate Breakdown */}
+                                                    <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title, marginTop: 10 }}>Rental Rate Breakdown</Text>
+                                                    <Text style={{ fontSize: 14, color: COLORS.blackLight, marginBottom: 10 }}>Cash on Pickup</Text>
+                                                    <View style={{ marginBottom: 20 }}>
+                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
+                                                            <Text style={{ fontSize: 14, color: "#333" }}>Borrowing rate</Text>
+                                                            <Text style={{ fontSize: 14, color: "#333" }}>£{lending.product.lendingRate} x {(Number(lending.total) - Number(lending.product.depositAmount)) / Number(lending.product.lendingRate)} day</Text>
+                                                            <Text style={{ fontSize: 14, fontWeight: "bold" }}>£{lending.total - Number(lending.product.depositAmount)}</Text>
+                                                        </View>
+                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
+                                                            <Text style={{ fontSize: 14, color: "#333" }}>Service Charge</Text>
+                                                            <Text style={{ fontSize: 14, color: "#333" }}>FREE</Text>
+                                                            <Text style={{ fontSize: 14, fontWeight: "bold" }}>£0.00</Text>
+                                                        </View>
+                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
+                                                            <Text style={{ fontSize: 14, color: "#333" }}>Delivery Charge</Text>
+                                                            <Text style={{ fontSize: 14, color: "#333" }}>FREE (PICKUP)</Text>
+                                                            <Text style={{ fontSize: 14, fontWeight: "bold" }}>£0.00</Text>
+                                                        </View>
+                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
+                                                            <Text style={{ fontSize: 14, color: "#333" }}>Deposit</Text>
+                                                            <Text style={{ fontSize: 14, color: "#333" }}></Text>
+                                                            <Text style={{ fontSize: 14, fontWeight: "bold" }}>{lending.product.depositAmount}</Text>
+                                                        </View>
+                                                        <View style={[{ backgroundColor: COLORS.black, height: 1, margin: 10, width: '90%', alignSelf: 'center' },]} />
+                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
+                                                            <Text style={{ fontSize: 14, fontWeight: "bold" }}>Total</Text>
+                                                            <Text style={{ fontSize: 14, color: "#333", fontWeight: "bold" }}>£{lending.total}</Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            </ScrollView>
+                                        )}
+                                        {index === 1 && (
+                                            <View style={{ paddingRight: 40 }}>
+                                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Borrowing Notes</Text>
+                                                <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>{lending.product.borrowingNotes}</Text>
+                                                <View style={GlobalStyleSheet.line} />
+                                                <View style={{ paddingHorizontal: 10 }}>
+                                                    <TouchableOpacity
+                                                        onPress={() => setAccordionOpen((prev) => ({ ...prev, insurance: !prev.insurance }))}
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'space-between',
+                                                            alignItems: 'center',
+                                                            paddingVertical: 10,
+                                                        }}
+                                                    >
+                                                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>
+                                                            Your Pickup Instructions
+                                                        </Text>
+                                                        <Ionicons
+                                                            name={accordionOpen.insurance ? 'chevron-up-outline' : 'chevron-down-outline'}
+                                                            size={24}
+                                                            color={COLORS.blackLight}
+                                                        />
+                                                    </TouchableOpacity>
+                                                    {accordionOpen.insurance && (
+                                                        <View style={{ paddingLeft: 10 }}>
+                                                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>
+                                                                {lending.product.pickupInstructions}
+                                                            </Text>
+                                                        </View>
+                                                    )}
+                                                </View>
+                                                <View style={{ paddingHorizontal: 10 }}>
+                                                    <TouchableOpacity
+                                                        onPress={() => setAccordionOpen((prev) => ({ ...prev, handover: !prev.handover }))}
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'space-between',
+                                                            alignItems: 'center',
+                                                            paddingVertical: 10,
+                                                        }}
+                                                    >
+                                                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>
+                                                            Your Return Instructions
+                                                        </Text>
+                                                        <Ionicons
+                                                            name={accordionOpen.handover ? 'chevron-up-outline' : 'chevron-down-outline'}
+                                                            size={24}
+                                                            color={COLORS.blackLight}
+                                                        />
+                                                    </TouchableOpacity>
+                                                    {accordionOpen.handover && (
+                                                        <View style={{ paddingLeft: 10 }}>
+                                                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>
+                                                                {lending.product.returnInstructions}
+                                                            </Text>
+                                                        </View>
+                                                    )}
+                                                </View>
+
+                                                <View style={{ paddingHorizontal: 10 }}>
+                                                    <TouchableOpacity
+                                                        onPress={() => setAccordionOpen((prev) => ({ ...prev, faqs: !prev.faqs }))}
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'space-between',
+                                                            alignItems: 'center',
+                                                            paddingVertical: 10,
+                                                        }}
+                                                    >
+                                                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>
+                                                            Deposit Release
+                                                        </Text>
+                                                        <Ionicons
+                                                            name={accordionOpen.faqs ? 'chevron-up-outline' : 'chevron-down-outline'}
+                                                            size={24}
+                                                            color={COLORS.blackLight}
+                                                        />
+                                                    </TouchableOpacity>
+                                                    {accordionOpen.faqs && (
+                                                        <View style={{ paddingLeft: 10 }}>
+                                                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>
+                                                                £{Number(lending.product.depositAmount).toFixed(2)} will be released within 3-5 working days after the product is returned and checked.
+                                                            </Text>
+                                                        </View>
+                                                    )}
+                                                </View>
+                                            </View>
+                                        )}
+                                    </View>
+                                </ScrollView>
+                            ))}
+                        </ScrollView>
+                        <View style={GlobalStyleSheet.line} />
+                        <View style={{ width: '100%',}}>
                             <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: 20 }}>Additional Information</Text>
                             <FlatList
                                 scrollEnabled={false}
@@ -621,7 +804,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                     }}
                                     onPress={() => { }}
                                 >
-                                    <Text style={{ fontSize: 14, color: COLORS.danger, lineHeight: 21, fontWeight: 'bold', textDecorationLine: 'underline' }}>Cancel Rental</Text>
+                                    <Text style={{ fontSize: 14, color: COLORS.danger, lineHeight: 21, fontWeight: 'bold', textDecorationLine: 'underline' }}>Cancel Lending</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
