@@ -72,7 +72,15 @@ const Listings = ({ navigation, route }: ListingsScreenProps) => {
                         <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>My Listing</Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                        {/* right header element */}
+                        <TouchableOpacity
+                            style={{
+                                borderRadius: 50,
+                                padding: 10,
+                            }}
+                            onPress={() => navigation.navigate('AddListing', { listing: null })}
+                        >
+                            <Ionicons name="add" size={25} color={COLORS.title} />
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
