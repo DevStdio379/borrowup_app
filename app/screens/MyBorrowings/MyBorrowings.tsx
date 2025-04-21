@@ -21,7 +21,6 @@ const MyBorrowings = ({ navigation }: MyBorrowingsScreenProps) => {
 
     const scrollViewHome = useRef<any>(null);
     const buttons = ['Active', 'History'];
-
     const scrollX = useRef(new Animated.Value(0)).current;
     const onCLick = (i: any) => scrollViewHome.current.scrollTo({ x: i * SIZES.width });
     const [activeIndex, setActiveIndex] = useState(0);
