@@ -151,15 +151,3 @@ export const countActivitiesByUser = async (userID: string): Promise<{ borrowing
     throw error;  // Throwing the error to handle it at the call site
   }
 };
-
-export const fetchTotalBorrowingsByProduct = async (productId: string): Promise<number> => {
-  try {
-    const borrowingsRef = collection(db, 'borrowings');
-    const productQuery = query(borrowingsRef, where('product.id', '==', productId));
-    const productSnapshot = await getDocs(productQuery);
-    return productSnapshot.size; // Total number of borrowings for the product
-  } catch (error) {
-    console.error('Error fetching total borrowings by product: ', error);
-    throw error; // Throwing the error to handle it at the call site
-  }
-};
