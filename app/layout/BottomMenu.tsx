@@ -139,7 +139,7 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                                 case 'MyRental':
                                                     return 'My Rental';
                                                 case 'MyBorrowings':
-                                                    return 'Borrowings';
+                                                    return 'Borrowing';
                                                 case 'LenderDashboard':
                                                     return 'Dashboard';
                                                 case 'ChatList':
