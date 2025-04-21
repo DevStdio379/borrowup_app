@@ -64,29 +64,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
             </View>
         );
     };
-
-    const renderItemHorizontal = ({ item }: { item: Product }) => {
-        return (
-            <View style={{ flex: 1, margin: 5 }} >
-                <Cardstyle4
-                    id={item.id || 'undefined'}
-                    imageUrl={item.imageUrls[0]}
-                    price={item.lendingRate}
-                    ownerID={item.ownerID}
-                    description={item.description}
-                    location={item.addressID}
-                    title={item.title}
-                    onPress={() => navigation.navigate('ProductDetails', { product: item })}
-                    onPress5={() => addItemToWishList(item)}
-                    product={true}
-                    deposit={item.depositAmount}
-                    averageRating={item.averageRating}
-                    ratingCount={item.ratingCount}
-                />
-            </View>
-        );
-    };
-
     // Fetch products from Firestore using the separated model function
     const fetchData = async () => {
         try {
@@ -108,16 +85,6 @@ export const Home = ({ navigation }: HomeScreenProps) => {
         fetchData().then(() => setRefreshing(false));
     }, []);
 
-    const addItemToWishList = (data: any) => {
-        // dispatch(addTowishList({
-        //     id: data.id,
-        //     image: data.imageUrls[0],
-        //     title: data.title,
-        //     price: data.lendingRate,
-        //     brand: data.ownerID,
-        // } as any));
-    }
-
     const scrollViewHome = useRef<any>(null);
 
 
@@ -137,6 +104,9 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     <View style={{ paddingTop: 50, paddingBottom: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                         {user?.isActive ? (
                             <View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={{ fontSize: 14, color: COLORS.title }}>{user.currentAddress?.addressName}</Text>
+                                </View>
                                 <Text style={{ fontSize: 30, fontWeight: 'bold', color: COLORS.title }}>Hello {user.userName}</Text>
                             </View>
                         ) : (
