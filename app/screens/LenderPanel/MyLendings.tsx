@@ -61,7 +61,7 @@ const MyLendings = ({ navigation, route }: MyLendingsScreenProps) => {
             {/* left header element */}
           </View>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>My Lendings</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>My Lending</Text>
           </View>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
             {/* right header element */}
