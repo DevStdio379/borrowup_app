@@ -9,7 +9,7 @@ import Header from '../../layout/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser } from '../../context/UserContext';
 import { fetchUserProductListings, Product } from '../../services/ProductServices';
-import { Borrowing, fetchTotalBorrowingsByProduct } from '../../services/BorrowingServices';
+import { Borrowing, fetchLendingsByUser } from '../../services/BorrowingServices';
 
 type ListingsScreenProps = StackScreenProps<RootStackParamList, 'Listings'>;
 
@@ -28,13 +28,16 @@ const Listings = ({ navigation, route }: ListingsScreenProps) => {
 
     const fetchData = async () => {
         if (user?.uid) {
+
             const myListingsData = await fetchUserProductListings(user.uid);
-            const myListingsWithBorrowings = await Promise.all(
-                myListingsData.map(async (listing) => {
-                    const productBorrowingCount = listing.id ? await fetchTotalBorrowingsByProduct(listing.id) : 0;
-                    return { ...listing, productBorrowingCount };
-                })
-            );
+            const userLendings = await fetchLendingsByUser(user.uid);
+            const myListingsWithBorrowings = myListingsData.map((listing: Product) => {
+                const borrowingCounts = userLendings.filter((borrowing: Borrowing) => borrowing.product.id === listing.id).length;
+                const hasActiveBorrowing = userLendings.some(
+                    (borrowing: Borrowing) => borrowing.product.id === listing.id && borrowing.status < 6
+                );
+                return { ...listing, productBorrowingCount: borrowingCounts, activeBorrowing: hasActiveBorrowing };
+            });
             const activeListings = myListingsWithBorrowings.filter(listing => listing.isActive);
             const inactiveListings = myListingsWithBorrowings.filter(listing => !listing.isActive);
             setActiveListings(activeListings);
@@ -170,6 +173,19 @@ const Listings = ({ navigation, route }: ListingsScreenProps) => {
                                                                         </Text>
                                                                     </View>
                                                                     <Text>Borrowed {data.productBorrowingCount} times</Text>
+                                                                    {data.activeBorrowing && (
+                                                                        <View
+                                                                            style={{
+                                                                                height: 10,
+                                                                                width: 10,
+                                                                                borderRadius: 5,
+                                                                                backgroundColor: COLORS.primary,
+                                                                                position: 'absolute',
+                                                                                top: 5,
+                                                                                right: 5,
+                                                                            }}
+                                                                        />
+                                                                    )}
                                                                 </View>
                                                             </View>
                                                         </TouchableOpacity>
