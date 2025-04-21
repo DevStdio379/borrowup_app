@@ -11,7 +11,7 @@ import Input from '../../components/Input/Input';
 import MapView from 'react-native-maps';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { createProduct, fetchSelectedProduct, Product, updateProduct } from '../../services/ProductServices';
-import { fetchUserAddresses } from '../../services/AddressServices';
+import { Address, fetchUserAddresses } from '../../services/AddressServices';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 type AddListingScreenProps = StackScreenProps<RootStackParamList, 'AddListing'>;
@@ -67,7 +67,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [images, setImages] = useState<string[]>([]);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const [addresses, setAddresses] = useState<{ [key: string]: any; id: string; }[]>([]);
+    const [addresses, setAddresses] = useState<Address[]>([]);
     const [loading, setLoading] = useState(true);
 
     const snapPoints = useMemo(() => ['1%', '35%'], []);
@@ -333,71 +333,62 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
     return (
         <View style={{ flex: 1 }}>
             <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
-                <View
-                    style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
-                    <View
-                        style={[GlobalStyleSheet.container, {
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            paddingTop: 8,
-                            paddingHorizontal: 10,
-                        }]}>
-                        <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                            {index === 0 ? (
+                <View>
+                    <View style={{ zIndex: 1, height: 60, backgroundColor: COLORS.background, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+                        <View style={{ height: '100%', backgroundColor: COLORS.background, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 10 }}>
+                            <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                                {index === 0 ? (
+                                    <TouchableOpacity
+                                        onPress={() => navigation.goBack()}
+                                        style={{
+                                            height: 40,
+                                            width: 40,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                        onPress={prevScreen}
+                                        style={{
+                                            height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
+                                        }}
+                                    >
+                                        <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+                            <View style={{ flex: 1, alignItems: 'center' }}>
+                                <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
+                                    {[
+                                        'Add New Listing',
+                                        'Select Photos',
+                                        'Add Item Details',
+                                        'Select Category',
+                                        'Set Rental Rate',
+                                        'Add Borrowing Conditions',
+                                        'Add Pickup & Return Instructions',
+                                        'Select Pickup Address',
+                                        'Add Deposit Details',
+                                        'Publish Listing',
+                                    ][index] || ''}
+                                </Text>
+                            </View>
+                            <View style={{ flex: 1, alignItems: 'flex-end' }}>
                                 <TouchableOpacity
                                     onPress={() => navigation.goBack()}
                                     style={{
                                         height: 45,
                                         width: 45,
-                                        borderColor: COLORS.blackLight,
-                                        borderWidth: 1,
-                                        borderRadius: 10,
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    <Ionicons size={30} color={COLORS.blackLight} name='close' />
+                                    <Ionicons size={30} color={COLORS.black} name='close' />
                                 </TouchableOpacity>
-                            ) : (
-                                <TouchableOpacity
-                                    onPress={prevScreen}
-                                    style={{
-                                        height: 45,
-                                        width: 45,
-                                        borderColor: COLORS.blackLight,
-                                        borderWidth: 1,
-                                        borderRadius: 10,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Ionicons size={30} color={COLORS.blackLight} name='chevron-back-outline' />
-                                </TouchableOpacity>
-                            )}
-                        </View>
-                        <View style={{ flex: 1, alignItems: 'center' }}>
-                            <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>Add Listing</Text>
-                        </View>
-                        <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                            {index === 0 ? (
-                                <View style={{ flex: 1, alignItems: 'flex-end' }} />
-                            ) : (
-                                <TouchableOpacity
-                                    onPress={handlePress}
-                                    style={{
-                                        height: 45,
-                                        width: 45,
-                                        borderColor: COLORS.blackLight,
-                                        borderWidth: 1,
-                                        borderRadius: 10,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Ionicons size={30} color={COLORS.blackLight} name='close' />
-                                </TouchableOpacity>
-                            )}
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -825,7 +816,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                             }}
                                             onPress={() => {
                                                 console.log(item);
-                                                setAddressID(item.id);
+                                                setAddressID(item.id ?? '');
                                                 setLatitude(item.latitude);
                                                 setLongitude(item.longitude);
                                                 setAddressName(item.addressName);
@@ -987,23 +978,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                     <View style={{ flex: 1, backgroundColor: index > 8 ? COLORS.primary : COLORS.placeholder, height: 5 }} />
                 </View>
                 {
-                    index === 0 ? (
-                        <View style={[GlobalStyleSheet.container, { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 15, paddingVertical: 10, backgroundColor: COLORS.card }]}>
-                            <TouchableOpacity
-                                style={{
-                                    backgroundColor: COLORS.primary,
-                                    padding: 15,
-                                    borderRadius: 10,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    width: "100%"
-                                }}
-                                onPress={nextScreen}
-                            >
-                                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Start</Text>
-                            </TouchableOpacity>
-                        </View>
-                    ) : index === 9 ? (
+                    index === 9 ? (
                         <View style={[GlobalStyleSheet.container, { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 15, paddingVertical: 10 }]}>
                             <TouchableOpacity
                                 style={{
@@ -1036,7 +1011,17 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                 }}
                                 onPress={nextScreen}
                             >
-                                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Next</Text>
+                                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{[
+                                    'Start',
+                                    'Add Item Details',
+                                    'Select Category',
+                                    'Set Rental Rate',
+                                    'Add Borrowing Conditions',
+                                    'Add Pickup & Return Instructions',
+                                    'Select Pickup Address',
+                                    'Add Deposit Details',
+                                    'Publish Listing',
+                                ][index] || ''}</Text>
                             </TouchableOpacity>
                         </View>
                     )
