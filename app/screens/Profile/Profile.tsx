@@ -47,7 +47,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
             const updatedBorrowingCount = count.borrowingReviews ?? 0;
             const updatedLendingCount = count.lendingReviews ?? 0;
 
-            const overallRating = (updatedBorrowingCount + updatedLendingCount) > 0 
+            const overallRating = (updatedBorrowingCount + updatedLendingCount) > 0
                 ? ((borrowingRating ?? 0) * updatedBorrowingCount + (lendingRating ?? 0) * updatedLendingCount) / (updatedBorrowingCount + updatedLendingCount)
                 : 0;
             console.log('overallRating: ', overallRating);
@@ -122,10 +122,21 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
     }
 
     return (
-        <View style={{ backgroundColor: colors.card, flex: 1 }}>
-            <Header
-                title='Profile'
-            />
+        <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
+            <View style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+                <View
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 5 }}>
+                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                        {/* left header element */}
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>Profile</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        {/* right header element */}
+                    </View>
+                </View>
+            </View>
             <ScrollView
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1, paddingBottom: 50 }}
@@ -259,7 +270,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         // onPress={() => dispatch(openDrawer())}
-                        onPress={() => {}}
+                        onPress={() => { }}
                     >
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
                             <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
