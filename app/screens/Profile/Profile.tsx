@@ -127,7 +127,14 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 <View
                     style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 5 }}>
                     <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                        {/* left header element */}
+                        {/* <TouchableOpacity
+                            onPress={() => navigation.goBack()}
+                            style={{
+                                height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
+                            }}
+                        >
+                            <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                        </TouchableOpacity> */}
                     </View>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>Profile</Text>
