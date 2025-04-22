@@ -67,28 +67,33 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                 </TouchableOpacity>
             </View>
             <ScrollView contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
-                <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <View style={[styles.arrivaldata, { flex: 1, marginRight: 10, padding: 15 }]}>
-                        <View>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                                Total Earnings
-                            </Text>
-                            <Text style={{ fontSize: 14, color: COLORS.title }}>
-                                $500.00
-                            </Text>
-                        </View>
-                        <Ionicons name="wallet-outline" size={30} color={COLORS.primary} />
+                <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                    <View style={[styles.arrivaldata, { flex: 1, margin: 5, padding: 20, alignItems: 'center' }]}>
+                        <Ionicons name="wallet-outline" size={30} color={COLORS.primary} style={{ marginBottom: 10 }} />
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
+                            Total Earnings
+                        </Text>
+                        <Text style={{ fontSize: 14, color: COLORS.title, textAlign: 'center' }}>
+                            $500.00
+                        </Text>
                     </View>
-                    <View style={[styles.arrivaldata, { flex: 1, marginLeft: 10, padding: 15 }]}>
-                        <View>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                                Pending Balance
-                            </Text>
-                            <Text style={{ fontSize: 14, color: COLORS.title }}>
-                                $150.00
-                            </Text>
-                        </View>
-                        <Ionicons name="time-outline" size={30} color={COLORS.primary} />
+                    <View style={[styles.arrivaldata, { flex: 1, margin: 5, padding: 20, alignItems: 'center' }]}>
+                        <Ionicons name="time-outline" size={30} color={COLORS.primary} style={{ marginBottom: 10 }} />
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
+                            Pending Balance
+                        </Text>
+                        <Text style={{ fontSize: 14, color: COLORS.title, textAlign: 'center' }}>
+                            $150.00
+                        </Text>
+                    </View>
+                    <View style={[styles.arrivaldata, { flex: 1, margin: 5, padding: 20, alignItems: 'center' }]}>
+                        <Ionicons name="lock-closed-outline" size={30} color={COLORS.primary} style={{ marginBottom: 10 }} />
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
+                            Deposit Held
+                        </Text>
+                        <Text style={{ fontSize: 14, color: COLORS.title, textAlign: 'center' }}>
+                            $200.00
+                        </Text>
                     </View>
                 </View>
                 <View style={{ marginTop: 20 }}>
@@ -102,7 +107,7 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                             </Text>
                         </TouchableOpacity>
                     </View>
-                    <ScrollView contentContainerStyle={{ justifyContent: 'center' }} style={{ backgroundColor: COLORS.card, borderRadius: 10 }} showsHorizontalScrollIndicator={false}>
+                    <ScrollView contentContainerStyle={{ justifyContent: 'center' }} showsHorizontalScrollIndicator={false}>
                         <View style={[styles.LenderDashboardcard, { flex: 1, padding: 5 }]}>
                             <View style={styles.cardimg}>
                                 <Image
@@ -143,7 +148,7 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                         </View>
                     </ScrollView>
                 </View>
-                <View style={{ marginTop: 20 }}>
+                <View style={{ marginTop: 10 }}>
                     <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.title, marginBottom: 10 }}>
                         Owner Resources and Tips
                     </Text>
