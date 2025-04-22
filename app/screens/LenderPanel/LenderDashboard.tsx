@@ -36,115 +36,167 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
 
 
     return (
-        <View style={GlobalStyleSheet.container}>
-            <Header title='Lender Dashboard' />
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 70, alignItems: 'flex-start' }}>
-                <View style={[GlobalStyleSheet.container, { paddingTop: 20, paddingBottom: 30 }]}>
-                    <View style={{ paddingHorizontal: 15 }}>
-                        <Text style={[styles.brandsubtitle3, { fontSize: 22, fontWeight: 'semibold', color: colors.title }]}>Welcome back, {user?.userName}</Text>
-                        <Text style={[styles.brandsubtitle3, { fontSize: 14, color: colors.title }]}>Your task highlights</Text>
+        <View style={{ flex: 1, backgroundColor: colors.background, paddingHorizontal: 15 }}>
+            <View style={{ paddingTop: 50, paddingBottom: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+                {user?.isActive ? (
+                    <View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 14, color: COLORS.title }}>{user.currentAddress?.addressName}</Text>
+                        </View>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: COLORS.title }}>Owner Dashboard</Text>
                     </View>
-                    <View style={{ paddingTop: 10, paddingHorizontal: 15 }}>
-                        <CardInfoStyle
-                            id={''}
-                            title={'Add a payout method'}
-                            subtitle={'Required to get paid'}
-                            onPress={() => { }}
-                        />
+                ) : (
+                    <View>
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: COLORS.title }}>BorrowNest</Text>
+                        <Text style={{ fontSize: 16, color: COLORS.title }}>Borrow & lend items around you.</Text>
+                    </View>
+                )}
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Profile')}
+                    activeOpacity={0.5}
+                    style={{ justifyContent: 'center', alignItems: 'center' }}
+                >
+                    <Image
+                        source={{ uri: user?.profileImageUrl || 'https://via.placeholder.com/150' }}
+                        style={{
+                            width: 60,
+                            height: 60,
+                            borderRadius: 60,
+                        }}
+                    />
+                </TouchableOpacity>
+            </View>
+            <ScrollView contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
+                <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <View style={[styles.arrivaldata, { flex: 1, marginRight: 10, padding: 15 }]}>
+                        <View>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                Total Earnings
+                            </Text>
+                            <Text style={{ fontSize: 14, color: COLORS.title }}>
+                                $500.00
+                            </Text>
+                        </View>
+                        <Ionicons name="wallet-outline" size={30} color={COLORS.primary} />
+                    </View>
+                    <View style={[styles.arrivaldata, { flex: 1, marginLeft: 10, padding: 15 }]}>
+                        <View>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                Pending Balance
+                            </Text>
+                            <Text style={{ fontSize: 14, color: COLORS.title }}>
+                                $150.00
+                            </Text>
+                        </View>
+                        <Ionicons name="time-outline" size={30} color={COLORS.primary} />
                     </View>
                 </View>
-                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                    <Text style={[styles.brandsubtitle3, { fontSize: 20, fontWeight: 'semibold', color: colors.title }]}>Your recent lentings</Text>
-                </View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}>
-                    <View style={{ flexDirection: 'row', paddingTop: 10, paddingHorizontal: 15 }}>
-                        {['Active (10)', 'Pending (5)', 'Completed (15)', 'Return (10)', 'Issues (0)'].map((title, index) => (
-                            <View key={index} style={{ paddingHorizontal: 5 }}>
-                                <PillStyle
-                                    id={''}
-                                    title={title}
-                                    onPress={() => { }}
+                <View style={{ marginTop: 20 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.title }}>
+                            Recent Lendings
+                        </Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('MyLendings')}>
+                            <Text style={{ fontSize: 14, color: COLORS.primary }}>
+                                View All
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView contentContainerStyle={{ justifyContent: 'center' }} style={{ backgroundColor: COLORS.card, borderRadius: 10 }} showsHorizontalScrollIndicator={false}>
+                        <View style={[styles.LenderDashboardcard, { flex: 1, padding: 5 }]}>
+                            <View style={styles.cardimg}>
+                                <Image
+                                    source={{ uri: 'https://via.placeholder.com/150' }}
+                                    style={{ width: 50, height: 50, borderRadius: 10 }}
                                 />
                             </View>
-                        ))}
-                    </View>
-                </ScrollView>
-                <View style={{ paddingHorizontal: 15, width: SIZES.width }}>
-                    <View style={{ borderRadius: 10, borderColor: COLORS.black, borderWidth: 1 }}>
-                        <Image
-                            style={{ height: 100, width: "100%", borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
-                            source={IMAGES.pickupLocation}
-                        />
-                        <View style={{ paddingTop: 10, paddingHorizontal: 10 }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Ionicons name="person-circle-outline" size={40} color={COLORS.primary} style={{ marginRight: 10 }} />
-                                <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
-                                    <Text style={{ fontWeight: 'bold' }}>Afiq Ismail</Text>
-                                    <Text> is borrowing </Text>
-                                </View>
+                            <View>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                    Sample Item
+                                </Text>
+                                <Text style={{ fontSize: 14, color: COLORS.title }}>
+                                    Borrower Name
+                                </Text>
+                                <Text style={{ fontSize: 12, color: COLORS.title }}>
+                                    Due: 2023-12-31
+                                </Text>
                             </View>
-                            <View style={{ flexDirection: 'row', paddingVertical: 3 }}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 16 }} >DJI Drone Mavic Pro 3</Text>
-                                <Text style={{ fontSize: 16 }} > for 3 days </Text>
+                        </View>
+                        <View style={[styles.LenderDashboardcard, { flex: 1, padding: 5 }]}>
+                            <View style={styles.cardimg}>
+                                <Image
+                                    source={{ uri: 'https://via.placeholder.com/150' }}
+                                    style={{ width: 50, height: 50, borderRadius: 10 }}
+                                />
                             </View>
                             <View>
-                                <Text>13/2/24, Thursday - 14/2/24, Friday</Text>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                    Sample Item
+                                </Text>
+                                <Text style={{ fontSize: 14, color: COLORS.title }}>
+                                    Borrower Name
+                                </Text>
+                                <Text style={{ fontSize: 12, color: COLORS.title }}>
+                                    Due: 2023-12-31
+                                </Text>
                             </View>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={{
-                                    flex: 1,
-                                    padding: 20,
-                                    borderColor: COLORS.blackLight,
-                                    borderBottomLeftRadius: 10,
-                                    borderWidth: 1,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                                onPress={() => { }}
-                            >
-                                <Text style={{ fontSize: 12, lineHeight: 21 }}>
-                                    Message
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={{
-                                    flex: 1,
-                                    padding: 20,
-                                    borderColor: COLORS.blackLight,
-                                    borderBottomRightRadius: 10,
-                                    borderWidth: 1,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                                onPress={() => { }}
-                            >
-                                <Text style={{ fontSize: 12, lineHeight: 21 }}>
-                                    Call
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                    </ScrollView>
                 </View>
-                <View style={{ paddingHorizontal: 15 }}>
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={{
-                            paddingTop: 10,
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: 10
-                        }}
-                        onPress={() => handleSignOut()}
-                    >
-                        <Text style={{ fontSize: 14, color: COLORS.black, lineHeight: 21, textDecorationLine: 'underline' }}>Sign Out</Text>
-                    </TouchableOpacity>
+                <View style={{ marginTop: 20 }}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.title, marginBottom: 10 }}>
+                        Owner Resources and Tips
+                    </Text>
+                    <ScrollView showsHorizontalScrollIndicator={false}>
+                        <View style={[styles.LenderDashboardcard, { width: 200, padding: 10 }]}>
+                            <View style={styles.cardimg}>
+                                <Image
+                                    source={{ uri: 'https://via.placeholder.com/150' }}
+                                    style={{ width: 50, height: 50, borderRadius: 10 }}
+                                />
+                            </View>
+                            <View>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                    Resource 1
+                                </Text>
+                                <Text style={{ fontSize: 12, color: COLORS.title }}>
+                                    Learn how to maximize your earnings.
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={[styles.LenderDashboardcard, { width: 200, padding: 10 }]}>
+                            <View style={styles.cardimg}>
+                                <Image
+                                    source={{ uri: 'https://via.placeholder.com/150' }}
+                                    style={{ width: 50, height: 50, borderRadius: 10 }}
+                                />
+                            </View>
+                            <View>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                    Resource 2
+                                </Text>
+                                <Text style={{ fontSize: 12, color: COLORS.title }}>
+                                    Tips for safe lending practices.
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={[styles.LenderDashboardcard, { width: 200, padding: 10 }]}>
+                            <View style={styles.cardimg}>
+                                <Image
+                                    source={{ uri: 'https://via.placeholder.com/150' }}
+                                    style={{ width: 50, height: 50, borderRadius: 10 }}
+                                />
+                            </View>
+                            <View>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                    Resource 3
+                                </Text>
+                                <Text style={{ fontSize: 12, color: COLORS.title }}>
+                                    How to attract more borrowers.
+                                </Text>
+                            </View>
+                        </View>
+                    </ScrollView>
                 </View>
             </ScrollView>
         </View>
