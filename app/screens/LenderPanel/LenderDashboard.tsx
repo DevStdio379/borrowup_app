@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
-import React from 'react'
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native'
 import { GlobalStyleSheet } from '../../constants/StyleSheet';
 import { IMAGES } from '../../constants/Images';
 import { COLORS, SIZES } from '../../constants/theme';
@@ -11,6 +11,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useUser, defaultUser } from '../../context/UserContext';
 import CardInfoStyle from '../../components/Card/CardInfoStyle';
 import PillStyle from '../../components/Pills/PillStyle';
+import { fetchLendingsByUser } from '../../services/BorrowingServices';
+import { set } from 'date-fns';
 
 type LenderDashboardScreenProps = StackScreenProps<RootStackParamList, 'LenderDashboard'>;
 
@@ -18,21 +20,40 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
 
     const theme = useTheme();
     const { user, updateUserData, setUser } = useUser();
+    const [loading, setLoading] = useState(true);
     const { colors }: { colors: any } = theme;
+    const [refreshing, setRefreshing] = useState(false);
+    const [lendings, setLendings] = useState<any[]>([]);
 
-    const handleSignOut = async () => {
-        try {
-            if (user?.uid) {
-                await updateUserData(user.uid, { 'isActive': false });
-                navigation.navigate('SignIn')
-                setUser(defaultUser)
-            } else {
-                console.error("User ID is undefined");
-            }
-        } catch (error) {
-            console.error("Error updating user:", error);
+    const fetchData = async () => {
+        if (user?.uid) {
+            const myListingsData = await fetchLendingsByUser(user.uid);
+            myListingsData.sort((a: any, b: any) => {
+                const startDateA = new Date(a.startDate).getTime();
+                const startDateB = new Date(b.startDate).getTime();
+                return startDateB - startDateA;
+            });
+            setLendings(myListingsData);
         }
+        setLoading(false);
     };
+
+    useEffect(() => {
+        fetchData();
+    }, [user?.uid]);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchData().then(() => setRefreshing(false));
+    }, []);
+
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={COLORS.primary} />
+            </View>
+        );
+    }
 
 
     return (
@@ -66,7 +87,11 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                     />
                 </TouchableOpacity>
             </View>
-            <ScrollView contentContainerStyle={{ paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 20 }}
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }>
                 <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                     <View style={[styles.arrivaldata, { flex: 1, margin: 5, padding: 20, alignItems: 'center' }]}>
                         <Ionicons name="wallet-outline" size={30} color={COLORS.primary} style={{ marginBottom: 10 }} />
@@ -108,44 +133,25 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                         </TouchableOpacity>
                     </View>
                     <ScrollView contentContainerStyle={{ justifyContent: 'center' }} showsHorizontalScrollIndicator={false}>
-                        <View style={[styles.LenderDashboardcard, { flex: 1, padding: 5 }]}>
-                            <View style={styles.cardimg}>
-                                <Image
-                                    source={{ uri: 'https://via.placeholder.com/150' }}
-                                    style={{ width: 50, height: 50, borderRadius: 10 }}
-                                />
+                        {lendings.slice(0, 2).map((lending, index) => (
+                            <View key={index} style={[styles.LenderDashboardcard, { flex: 1, padding: 5 }]}>
+                                <View style={styles.cardimg}>
+                                    <Image
+                                        source={{ uri: lending.product.imageUrls[0] || 'https://via.placeholder.com/150' }}
+                                        style={{ width: 50, height: 50, borderRadius: 10 }}
+                                    />
+                                </View>
+                                <View>
+                                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                        {lending.product.title || 'Unknown Product'}
+                                    </Text>
+                                    <Text style={{ fontSize: 14, color: COLORS.title }}>
+                                        {lending.firstName + ' ' + lending.lastName || 'Unknown Borrower'}
+                                    </Text>
+                                    <Text style={{ fontSize: 14 }}>{new Date(lending.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(lending.startDate).toLocaleDateString('en-GB', { weekday: 'short' })} - {new Date(lending.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(lending.endDate).toLocaleDateString('en-GB', { weekday: 'short' })}</Text>
+                                </View>
                             </View>
-                            <View>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                                    Sample Item
-                                </Text>
-                                <Text style={{ fontSize: 14, color: COLORS.title }}>
-                                    Borrower Name
-                                </Text>
-                                <Text style={{ fontSize: 12, color: COLORS.title }}>
-                                    Due: 2023-12-31
-                                </Text>
-                            </View>
-                        </View>
-                        <View style={[styles.LenderDashboardcard, { flex: 1, padding: 5 }]}>
-                            <View style={styles.cardimg}>
-                                <Image
-                                    source={{ uri: 'https://via.placeholder.com/150' }}
-                                    style={{ width: 50, height: 50, borderRadius: 10 }}
-                                />
-                            </View>
-                            <View>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                                    Sample Item
-                                </Text>
-                                <Text style={{ fontSize: 14, color: COLORS.title }}>
-                                    Borrower Name
-                                </Text>
-                                <Text style={{ fontSize: 12, color: COLORS.title }}>
-                                    Due: 2023-12-31
-                                </Text>
-                            </View>
-                        </View>
+                        ))}
                     </ScrollView>
                 </View>
                 <View style={{ marginTop: 10 }}>
