@@ -63,16 +63,16 @@ const BottomNavigation = () => {
                 tabBar={(props: any) => <BottomMenu {...props} />}
             >
                 <Tab.Screen
-                    name='MyLendings'
-                    component={MyLendingsStack}
+                    name='LenderDashboard'
+                    component={LenderDashboard}
                 />
                 <Tab.Screen
                     name='Listings'
                     component={ListingsScreen}
                 />
                 <Tab.Screen
-                    name='LenderDashboard'
-                    component={LenderDashboard}
+                    name='MyLendings'
+                    component={MyLendingsStack}
                 />
                 <Tab.Screen
                     name='ChatList'
