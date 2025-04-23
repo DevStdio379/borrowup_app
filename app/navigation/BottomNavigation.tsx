@@ -79,8 +79,8 @@ const BottomNavigation = () => {
                     component={ChatListScreen}
                 />
                 <Tab.Screen
-                    name='Profile'
-                    component={ProfileScreen}
+                    name='ProfileStack'
+                    component={ProfileStack}
                 />
             </Tab.Navigator>
         )
