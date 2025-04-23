@@ -151,21 +151,37 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }>
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 20, paddingHorizontal: 20 }}>
-                    <View
-                        style={{
-                            height: 80,
-                            width: 80,
-                            borderRadius: 50,
-                            backgroundColor: COLORS.primary,
-                            overflow: 'hidden',
-                            marginRight: 20,
-                        }}
-                    >
-                        {user?.profileImageUrl ? (
-                            <Image source={{ uri: user?.profileImageUrl }} style={{ height: '100%', width: '100%' }} />
-                        ) : (
-                            <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }} >
-                                <Ionicons name="person-outline" size={40} color={COLORS.black} />
+                    <View>
+                        <View
+                            style={{
+                                height: 80,
+                                width: 80,
+                                borderRadius: 50,
+                                backgroundColor: COLORS.primary,
+                                overflow: 'hidden',
+                                marginRight: 20,
+                            }}
+                        >
+                            {user?.profileImageUrl ? (
+                                <Image source={{ uri: user?.profileImageUrl }} style={{ height: '100%', width: '100%' }} />
+                            ) : (
+                                <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }} >
+                                    <Ionicons name="person-outline" size={40} color={COLORS.black} />
+                                </View>
+                            )}
+                        </View>
+                        {user?.isVerified && (
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    right: 10,
+                                    borderRadius: 40,
+                                    backgroundColor: COLORS.primary,
+                                    padding: 5,
+                                }}
+                            >
+                                <Ionicons name="shield-checkmark" size={15} color={COLORS.white} />
                             </View>
                         )}
                     </View>
@@ -250,21 +266,21 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         </View>
                     </TouchableOpacity>
                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                        <View style={[ styles.cardimg ]} >
+                        <View style={[styles.cardimg]} >
                             <Ionicons name='settings' size={30} color={colors.title} />
                         </View>
                         <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Settings</Text>
                     </View>
                     <View style={[GlobalStyleSheet.line, { margin: 10 },]} />
                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                        <View style={[ styles.cardimg ]} >
+                        <View style={[styles.cardimg]} >
                             <Ionicons name='clipboard' size={30} color={colors.title} />
                         </View>
                         <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Request an Item</Text>
                     </View>
                     <View style={[GlobalStyleSheet.line, { margin: 10 },]} />
                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                        <View style={[ styles.cardimg ]} >
+                        <View style={[styles.cardimg]} >
                             <Ionicons name='help-circle' size={30} color={colors.title} />
                         </View>
                         <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>FAQs</Text>
@@ -275,7 +291,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         onPress={() => { }}
                     >
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                            <View style={[ styles.cardimg ]} >
+                            <View style={[styles.cardimg]} >
                                 <Ionicons name='menu' size={30} color={colors.title} />
                             </View>
                             <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Menu</Text>
@@ -286,7 +302,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         onPress={() => navigation.navigate('Profile')}
                     >
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                            <View style={[ styles.cardimg ]} >
+                            <View style={[styles.cardimg]} >
                                 <Ionicons name='notifications' size={30} color={colors.title} />
                             </View>
                             <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Notification</Text>
