@@ -150,66 +150,48 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }>
-                <View style={{ flexDirection: 'row', width: '100%', paddingTop: 20 }}>
-                    <View style={{ width: '40%' }}>
-                        <View style={{ alignItems: 'center' }}>
-                            <View
-                                style={{
-                                    height: 80,
-                                    width: 80,
-                                    borderRadius: 150,
-                                    backgroundColor: COLORS.primary,
-                                    overflow: 'hidden',
-                                }}
-                            >
-
-                                {user?.profileImageUrl ? (
-                                    <Image source={{ uri: user?.profileImageUrl }} style={{ height: '100%', width: '100%', borderRadius: 45 }} />
-                                ) : (
-                                    <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }} >
-                                        <Ionicons name="person-outline" size={24} color={COLORS.black} />
-                                    </View>
-                                )}
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 20 , paddingHorizontal: 20 }}>
+                    <View
+                        style={{
+                            height: 80,
+                            width: 80,
+                            borderRadius: 50,
+                            backgroundColor: COLORS.primary,
+                            overflow: 'hidden',
+                            marginRight: 20,
+                        }}
+                    >
+                        {user?.profileImageUrl ? (
+                            <Image source={{ uri: user?.profileImageUrl }} style={{ height: '100%', width: '100%' }} />
+                        ) : (
+                            <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }} >
+                                <Ionicons name="person-outline" size={40} color={COLORS.black} />
                             </View>
-                        </View>
-                    </View>
-                    <View style={{ width: '60%' }}>
-                        <Text style={{ fontSize: 24, color: colors.title }}>
-                            {user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : user?.userName}
+                        )}
+                    </View>  
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: colors.title, paddingBottom: 10 }}>
+                            {user?.firstName} {user?.lastName} <Text style={{ fontSize: 14, fontWeight: 'normal' }}>{overallRating.toFixed(2)} <Ionicons name="star" size={14} color={COLORS.placeholder} /></Text>
                         </Text>
-                        {/* add star rating here */}
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                            {[...Array(5)].map((_, index) => (
-                                <Ionicons
-                                    key={index}
-                                    name={index < overallRating ? 'star' : 'star-outline'}
-                                    size={20}
-                                    color={COLORS.primary}
-                                    style={{ marginRight: 5 }}
-                                />
-                            ))}
-                            <Text style={{ fontSize: 16, color: COLORS.blackLight }}>{overallRating.toFixed(2)}</Text>
-                        </View>
-                        {/* Right side content */}
-                    </View>
-                </View>
-                <View style={{ marginHorizontal: 35, marginVertical: 15, paddingHorizontal: 20, borderRadius: 20, borderWidth: 1, borderColor: COLORS.blackLight }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingVertical: 20 }}>
-                        <View style={{ alignItems: 'center', flex: 1 }}>
-                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{borrowingCount || 0}</Text>
-                            <Text style={{ fontSize: 14, color: colors.text }}>Borrowings</Text>
-                            <Text style={{ fontSize: 14, color: colors.text }}>{borrowingRating}</Text>
-                        </View>
-                        <View style={{ width: 2, backgroundColor: COLORS.blackLight, marginHorizontal: 5 }} />
-                        <View style={{ alignItems: 'center', flex: 1 }}>
-                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{lendingCount || 0}</Text>
-                            <Text style={{ fontSize: 14, color: colors.text }}>Lendings</Text>
-                            <Text style={{ fontSize: 14, color: colors.text }}>{lendingRating}</Text>
-                        </View>
-                        <View style={{ width: 2, backgroundColor: COLORS.blackLight, marginHorizontal: 10 }} />
-                        <View style={{ alignItems: 'center', flex: 1 }}>
-                            <Text style={{ fontSize: 18, color: colors.title, fontWeight: 'bold' }}>{0}</Text>
-                            <Text style={{ fontSize: 14, color: colors.text }}>Reviews</Text>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View style={{ flex: 1 }}>
+                                <Text style={{ fontSize: 14, color: COLORS.blackLight }}>
+                                    {borrowingRating.toFixed(2)} <Ionicons name="star" size={14} color={COLORS.placeholder} />
+                                </Text>
+                                <Text style={{ fontSize: 14, color: colors.text }}>Borrowings</Text>
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                <Text style={{ fontSize: 14, color: COLORS.blackLight }}>
+                                    {lendingRating.toFixed(2)} <Ionicons name="star" size={14} color={COLORS.placeholder} />
+                                </Text>
+                                <Text style={{ fontSize: 14, color: colors.text }}>Lendings</Text>
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                <Text style={{ fontSize: 14, color: COLORS.blackLight }}>
+                                    {borrowingCount + lendingCount}
+                                </Text>
+                                <Text style={{ fontSize: 14, color: colors.text }}>Reviews</Text>
+                            </View>
                         </View>
                     </View>
                 </View>
