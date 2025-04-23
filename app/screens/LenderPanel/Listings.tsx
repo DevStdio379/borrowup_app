@@ -88,9 +88,8 @@ const Listings = ({ navigation, route }: ListingsScreenProps) => {
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     {buttons.map((btn: any, i: number) => (
-                        <View style={{ flexDirection: 'row', width: SIZES.width * 0.5, paddingHorizontal: 10, justifyContent: 'space-between', alignItems: 'center' }}>
+                        <View key={i} style={{ flexDirection: 'row', width: SIZES.width * 0.5, paddingHorizontal: 10, justifyContent: 'space-between', alignItems: 'center' }}>
                             <TouchableOpacity
-                                key={btn}
                                 style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}
                                 onPress={() => {
                                     setActiveIndex(i);
@@ -137,8 +136,8 @@ const Listings = ({ navigation, route }: ListingsScreenProps) => {
                                     <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 40, paddingTop: 10 }]}>
                                         <View>
                                             {
-                                                activeListings.map((data: any) => (
-                                                    <View style={{ marginVertical: 5, height: 100 }} key={data.id || data.title}>
+                                                activeListings.map((data: any, index) => (
+                                                    <View style={{ marginVertical: 5, height: 100 }} key={index}>
                                                         <TouchableOpacity
                                                             activeOpacity={0.8}
                                                             onPress={() => navigation.navigate('AddListing', { listing: data })}
@@ -204,8 +203,8 @@ const Listings = ({ navigation, route }: ListingsScreenProps) => {
                                     <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 40, paddingTop: 10 }]}>
                                         <View>
                                             {
-                                                inactiveListings.map((data: any) => (
-                                                    <View style={{ marginVertical: 5, height: 100 }} key={data.id || data.title}>
+                                                inactiveListings.map((data: any, index) => (
+                                                    <View style={{ marginVertical: 5, height: 100 }} key={index}>
                                                         <TouchableOpacity
                                                             activeOpacity={0.8}
                                                             onPress={() => navigation.navigate('AddListing', { listing: data })}
