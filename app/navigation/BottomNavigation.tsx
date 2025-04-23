@@ -42,7 +42,7 @@ const BottomNavigation = () => {
                     component={FavouriteStack}
                 />
                 <Tab.Screen
-                    name='MyBorrowings'
+                    name='MyBorrowingsStack'
                     component={MyBorrowingsStack}
                 />
                 <Tab.Screen
