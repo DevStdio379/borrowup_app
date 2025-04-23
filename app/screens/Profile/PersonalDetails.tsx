@@ -73,13 +73,29 @@ const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
-            <Header
-                title='Personal Details'
-                leftIcon='back'
-                titleRight
-            />
+            <View style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+                <View
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 5 }}>
+                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                        <TouchableOpacity
+                            onPress={() => navigation.goBack()}
+                            style={{
+                                height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
+                            }}
+                        >
+                            <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                        </TouchableOpacity>
+                    </View>
+                    <View >
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', }}>Personal Details</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        {/* right header element */}
+                    </View>
+                </View>
+            </View>
             <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 15, marginBottom: 50 }}>
-                <View style={[GlobalStyleSheet.container, { backgroundColor: theme.dark ? 'rgba(255,255,255,.1)' : colors.background, marginTop: 10, borderRadius: 15 }]}>
+                <View style={{ backgroundColor: theme.dark ? 'rgba(255,255,255,.1)' : colors.background, marginTop: 10, borderRadius: 15 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
                         <View style={{}}>
                             <View style={{
@@ -133,7 +149,7 @@ const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
                         </View>
                     </View>
                 </View>
-                <View style={[GlobalStyleSheet.container, { marginTop: 10, paddingVertical: 10, borderRadius: 15 }]}>
+                <View style={{ marginTop: 10, paddingVertical: 10, borderRadius: 15 }}>
                     <Text style={{ fontSize: 16, color: COLORS.blackLight, fontWeight: 'bold' }}>About You</Text>
                     <View style={{ marginBottom: 15, marginTop: 30 }}>
                         <TouchableOpacity
