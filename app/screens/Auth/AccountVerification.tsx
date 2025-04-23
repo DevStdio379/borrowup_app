@@ -70,20 +70,23 @@ const AccountVerification = ({ navigation }: AccountVerificationScreenProps) => 
         <View
           style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 5 }}>
           <View style={{ flex: 1, alignItems: 'flex-start' }}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
-              }}
-            >
-              <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
-            </TouchableOpacity>
+            {/* left header element */}
           </View>
           <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>Verify Your Email</Text>
           </View>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            {/* right header element */}
+            <TouchableOpacity
+              onPress={() => navigation.reset({
+              index: 0,
+              routes: [{ name: 'BottomNavigation' }],
+              })}
+              style={{
+              height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <Ionicons size={30} color={COLORS.black} name='close-outline' />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -109,7 +112,7 @@ const AccountVerification = ({ navigation }: AccountVerificationScreenProps) => 
                     You can resend the email in {resendCountdown} seconds.
                   </Text>
                 ) : (
-                    <TouchableOpacity
+                  <TouchableOpacity
                     onPress={() => {
                       resendEmail();
                       setResendCountdown(60); // Reset the timer to 60 seconds
@@ -121,9 +124,9 @@ const AccountVerification = ({ navigation }: AccountVerificationScreenProps) => 
                       borderRadius: 10,
                       marginBottom: 15,
                     }}
-                    >
+                  >
                     <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>Re-Send Verification Email</Text>
-                    </TouchableOpacity>
+                  </TouchableOpacity>
                 )}
                 <TouchableOpacity
                   onPress={checkEmailVerification}
