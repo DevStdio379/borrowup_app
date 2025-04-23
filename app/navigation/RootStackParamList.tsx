@@ -8,6 +8,7 @@ export type RootStackParamList = {
     OnBoarding: undefined;
     SignUp: undefined;
     SignIn: undefined;
+    AccountVerification: undefined;
 
     Home: undefined;
     Products: undefined;
