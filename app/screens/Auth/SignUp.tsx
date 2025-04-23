@@ -12,7 +12,6 @@ import { useUser, User } from '../../context/UserContext'
 import { createUserWithEmailAndPassword } from "firebase/auth"
 import { auth } from '../../services/firebaseConfig'
 
-
 type SignUpScreenProps = StackScreenProps<RootStackParamList, 'SignUp'>;
 
 const SignUp = ({ navigation }: SignUpScreenProps) => {
@@ -23,11 +22,15 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const [isFocused, setisFocused] = useState(false);
     const [isFocused2, setisFocused2] = useState(false);
     const [isFocused3, setisFocused3] = useState(false);
+    const [isFocused4, setisFocused4] = useState(false);
+    const [isFocused5, setisFocused5] = useState(false);
 
     const { createUser } = useUser();
     const [username, setUserName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [firstName, setFirstName] = useState<string>('');
+    const [lastName, setLastName] = useState<string>('');
 
     // sign up with email and password
     const handleSignUp = async () => {
@@ -41,8 +44,8 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                 email: user.email || '',
                 userName: username,
                 isActive: true,
-                firstName: '',
-                lastName: '',
+                firstName: firstName,
+                lastName: lastName,
                 phoneNumber: '',
                 accountType: 'borrower',
                 createAt: new Date(),
@@ -61,11 +64,31 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     };
 
     return (
-        <ScrollView style={{ backgroundColor: COLORS.background}}  showsVerticalScrollIndicator={false}>
+        <ScrollView style={{ backgroundColor: COLORS.background }} showsVerticalScrollIndicator={false}>
             <View style={[GlobalStyleSheet.container, { flexGrow: 1, paddingBottom: 0, paddingHorizontal: 30, paddingTop: 0 }]}>
-                <View style={{ paddingTop: 80, marginBottom: 30 }}>
-                    <View style={{ marginBottom: 30 }}>
-                        <Text style={{ fontSize: 24, color: COLORS.title, marginBottom: 5, fontWeight: 'bold' }}>Hello! Register to get {'\n'}started</Text>
+                <View style={{ paddingTop: 50, marginBottom: 30 }}>
+                    <View style={{ marginBottom: 10 }}>
+                        <Text style={{ fontSize: 26, color: COLORS.title, marginBottom: 5, fontWeight: 'bold' }}>Hello! Register to get {'\n'}started</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+                        <View style={{ flex: 1, marginRight: 10 }}>
+                            <Text style={{ fontSize: 14, color: '#8A8A8A' }}>First Name</Text>
+                            <Input
+                                onFocus={() => setisFocused4(true)}
+                                onBlur={() => setisFocused4(false)}
+                                onChangeText={setFirstName}
+                                isFocused={isFocused4}
+                            />
+                        </View>
+                        <View style={{ flex: 1, marginLeft: 10 }}>
+                            <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Last Name</Text>
+                            <Input
+                                onFocus={() => setisFocused5(true)}
+                                onBlur={() => setisFocused5(false)}
+                                onChangeText={setLastName}
+                                isFocused={isFocused5}
+                            />
+                        </View>
                     </View>
                     <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
                         <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Username</Text>
@@ -76,7 +99,6 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                             onBlur={() => setisFocused(false)}
                             onChangeText={setUserName}
                             isFocused={isFocused}
-                            inputBorder
                         />
                     </View>
                     <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
@@ -89,7 +111,6 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                             backround={colors.card}
                             onChangeText={setEmail}
                             isFocused={isFocused2}
-                            inputBorder
                         />
                     </View>
                     <View style={[GlobalStyleSheet.container, { padding: 0 }]}>
@@ -103,11 +124,10 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                             onChangeText={setPassword}
                             isFocused={isFocused3}
                             type={'password'}
-                            inputBorder
                         />
                     </View>
                 </View>
-                <View style={{ marginTop: 30 }}>
+                <View>
                     <TouchableOpacity
                         onPress={() => handleSignUp()}
                         style={{ backgroundColor: COLORS.primary, borderRadius: 20, padding: 15, alignItems: 'center' }}
