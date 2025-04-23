@@ -595,7 +595,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     justifyContent: 'center',
                   }}
                 >
-                  <Ionicons size={25} color={COLORS.black} name='bookmark-outline' />
+                  <View></View>
+                  {/* <Ionicons size={25} color={COLORS.black} name='bookmark-outline' /> */}
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
@@ -733,19 +734,25 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                               <Text>{product.address}</Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, paddingBottom: 20 }}>
-                              {Array.from({ length: 5 }, (_, i) => (
+                              {product.ratingCount && product.ratingCount > 0 ? (
+                              <>
+                                {Array.from({ length: 5 }, (_, i) => (
                                 <Ionicons
                                   key={i}
                                   name="star"
                                   size={16}
-                                  color={i < (product.averageRating ?? 0) ? COLORS.warning : COLORS.blackLight}
+                                  color={i < (product.averageRating ?? 0) ? COLORS.warning : COLORS.card}
                                 />
-                              ))}
-                              <Text style={{}}> {product.averageRating?.toFixed(1)} </Text>
-                              <Text style={{}}>({product.ratingCount})</Text>
+                                ))}
+                                <Text style={{}}> {product.averageRating?.toFixed(1)} </Text>
+                                <Text style={{}}>({product.ratingCount})</Text>
                                 <TouchableOpacity onPress={() => onCLick(3)}>
                                 <Text style={{ textDecorationLine: 'underline', color: COLORS.primary, paddingLeft: 4 }}>see all reviews</Text>
                                 </TouchableOpacity>
+                              </>
+                              ) : (
+                              <Text style={{ color: COLORS.blackLight }}>No reviews yet</Text>
+                              )}
                             </View>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Description</Text>
                             <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>{product.description} jesdf fsdkljf sjdkhfkl sjdhfkjdh sdfhjkdshfksh sdkjfhdskhfjsdh fdkjshfkjsdhfkjsdhfdkjshf khfksdjhfksdhfk sdjhfkjdshfk jkhdfjkshf uhdksfjhsdkfhsdkjhf k</Text>
