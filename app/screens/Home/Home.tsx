@@ -104,12 +104,16 @@ export const Home = ({ navigation }: HomeScreenProps) => {
                     <View style={{ paddingTop: 50, paddingBottom: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
                         {user?.isActive ? (
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 5 }}>
-                                <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                                    <Image
-                                        source={{ uri: user?.profileImageUrl || 'https://via.placeholder.com/150' }}
-                                        style={{ width: 50, height: 50, borderRadius: 25 }}
-                                    />
-                                </TouchableOpacity>
+                                {user?.profileImageUrl ? (
+                                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                                        <Image
+                                            source={{ uri: user.profileImageUrl }}
+                                            style={{ width: 50, height: 50, borderRadius: 25 }}
+                                        />
+                                    </TouchableOpacity>
+                                ) : (
+                                    <Ionicons name="person-circle-outline" size={55} color={COLORS.blackLight} />
+                                )}
                                 <View style={{ marginLeft: 10 }}>
                                     <Text style={{ fontSize: 14, color: COLORS.title }}>{user.currentAddress?.addressName}</Text>
                                     <Text style={{ fontSize: 25, fontWeight: 'bold', color: COLORS.title }}>Hello {user.firstName} {user.lastName}</Text>
