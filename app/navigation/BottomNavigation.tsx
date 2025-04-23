@@ -50,7 +50,7 @@ const BottomNavigation = () => {
                     component={ChatListScreen}
                 />
                 <Tab.Screen
-                    name='Profile'
+                    name='ProfileStack'
                     component={ProfileStack}
                 />
             </Tab.Navigator>

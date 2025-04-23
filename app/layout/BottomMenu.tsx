@@ -112,7 +112,7 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                                 // both universal
                                                 case 'ChatList':
                                                     return 'chatbox';
-                                                case 'Profile':
+                                                case 'ProfileStack':
                                                     return 'menu';
                                                 // lender
                                                 case 'MyLendings':
@@ -148,7 +148,7 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                                     return 'Dashboard';
                                                 case 'ChatList':
                                                     return 'Chat';
-                                                case 'Profile':
+                                                case 'ProfileStack':
                                                     return 'Menus';
                                                 case 'Chat':
                                                     return 'Messages';
