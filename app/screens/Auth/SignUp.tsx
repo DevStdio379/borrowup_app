@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, Alert } from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { COLORS, SIZES } from '../../constants/theme'
 import { GlobalStyleSheet } from '../../constants/StyleSheet'
@@ -32,8 +32,11 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
 
+    const [loading, setLoading] = useState(false);
+
     // sign up with email and password
     const handleSignUp = async () => {
+        setLoading(true);
         try {
             // Create user with email & password
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -75,6 +78,8 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
             );
         } catch (error: any) {
             Alert.alert("Error", error.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -197,6 +202,11 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                     <Text style={{ fontSize: 16, color: COLORS.primary, fontWeight: 'bold' }}> Login Now</Text>
                 </TouchableOpacity>
             </View>
+            {loading && (
+                <View style={[GlobalStyleSheet.loadingOverlay, { height: SIZES.height }]}>
+                    <ActivityIndicator size="large" color={COLORS.primary} />
+                </View>
+            )}
         </ScrollView>
     )
 }

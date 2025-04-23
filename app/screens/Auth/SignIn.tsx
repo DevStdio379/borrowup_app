@@ -69,102 +69,99 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
     };
 
     return (
-        <ScrollView style={{ backgroundColor: COLORS.background}} >
-            <View style={[{ height: '100%', backgroundColor: COLORS.backgroundColor, paddingHorizontal: 30, justifyContent: 'center', alignItems: 'center' }]}>
-                <View style={{ width: '100%',  }}>
-                    <View style={{ paddingTop: 80, marginBottom: 30 }}>
-                        <Text style={{ color: colors.title, fontWeight: 'bold', fontSize: 30, marginBottom: 5 }}>Welcome back! Glad to see you, Again!</Text>
-                    </View>
-                    <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Email</Text>
-                    <View style={{ marginBottom: 20, marginTop: 0 }}>
-                        <Input
-                            onFocus={() => setisFocused(true)}
-                            onBlur={() => setisFocused(false)}
-                            onChangeText={setEmail}
-                            isFocused={isFocused}
-                        />
-                    </View>
-                    <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Password</Text>
-                    <View style={{ marginBottom: 10, marginTop: 0 }}>
-                        <Input
-                            onFocus={() => setisFocused2(true)}
-                            onBlur={() => setisFocused2(false)}
-                            backround={colors.card}
-                            onChangeText={setPassword}
-                            isFocused={isFocused2}
-                            type={'password'}
-                        />
-                    </View>
-                    <View style={{ marginTop: 30 }}>
+        <ScrollView style={{ backgroundColor: COLORS.background }} showsVerticalScrollIndicator={false}>
+            <View style={[GlobalStyleSheet.container, { flexGrow: 1, paddingBottom: 0, paddingHorizontal: 30, paddingTop: 0 }]}>
+                <View style={{ paddingTop: 80, marginBottom: 30 }}>
+                    <Text style={{ color: colors.title, fontWeight: 'bold', fontSize: 30, marginBottom: 5 }}>Welcome back! Glad to see you, Again!</Text>
+                </View>
+                <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Email</Text>
+                <View style={{ marginBottom: 20, marginTop: 0 }}>
+                    <Input
+                        onFocus={() => setisFocused(true)}
+                        onBlur={() => setisFocused(false)}
+                        onChangeText={setEmail}
+                        isFocused={isFocused}
+                    />
+                </View>
+                <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Password</Text>
+                <View style={{ marginBottom: 10, marginTop: 0 }}>
+                    <Input
+                        onFocus={() => setisFocused2(true)}
+                        onBlur={() => setisFocused2(false)}
+                        backround={colors.card}
+                        onChangeText={setPassword}
+                        isFocused={isFocused2}
+                        type={'password'}
+                    />
+                </View>
+                <View style={{ marginTop: 30 }}>
+                    <TouchableOpacity
+                        onPress={() => handleSignIn()}
+                        style={{ backgroundColor: COLORS.primary, borderRadius: 20, padding: 15, alignItems: 'center' }}
+                    >
+                        <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Sign In</Text>
+                    </TouchableOpacity>
+                    <View
+                        style={[GlobalStyleSheet.flex, {
+                            marginBottom: 20,
+                            marginTop: 10,
+                            paddingHorizontal: 10,
+                            justifyContent: 'flex-start',
+                            gap: 5
+                        }]}
+                    >
+                        <Text style={{ fontSize: 14, color: colors.title }}>Forgot Password?</Text>
                         <TouchableOpacity
-                            onPress={() => handleSignIn()}
-                            style={{ backgroundColor: COLORS.primary, borderRadius: 20, padding: 15, alignItems: 'center' }}
+                            activeOpacity={0.5}
+                            onPress={() => navigation.navigate('SignIn')}
                         >
-                            <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>Sign In</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.primary }}>Reset here</Text>
                         </TouchableOpacity>
-                        <View
-                            style={[GlobalStyleSheet.flex, {
-                                marginBottom: 20,
-                                marginTop: 10,
-                                paddingHorizontal: 10,
-                                justifyContent: 'flex-start',
-                                gap: 5
-                            }]}
-                        >
-                            <Text style={{ fontSize: 14, color: colors.title }}>Forgot Password?</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
+                        <View style={{ flex: 1, height: 2, backgroundColor: '#ddd' }} />
+                        <Text style={{ fontSize: 14, color: COLORS.title, marginHorizontal: 10 }}>Or Login with</Text>
+                        <View style={{ flex: 1, height: 2, backgroundColor: '#ddd' }} />
+                    </View>
+                    <View style={{ alignItems: 'center', marginTop: 30 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                            <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                onPress={() => {
+                                    setEmail('ummi@gmail.com');
+                                    setPassword('12345678');
+                                }}>
+                                {/* <Text>Ummi</Text> */}
+                                <Ionicons name='logo-apple' size={24} color={COLORS.title} />
+                            </TouchableOpacity>
                             <TouchableOpacity
-                                activeOpacity={0.5}
-                                onPress={() => navigation.navigate('SignIn')}
-                            >
-                                <Text style={{ fontSize: 14, color: COLORS.primary }}>Reset here</Text>
+                                style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                onPress={() => {
+                                    setEmail('afiq379@gmail.com');
+                                    setPassword('12345678');
+                                }}>
+                                <Ionicons name='logo-google' size={24} color={COLORS.title} />
+                                {/* <Text>Afiq</Text> */}
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
+                                onPress={() => {
+                                    setEmail('farizah@gmail.com');
+                                    setPassword('12345678');
+                                }}>
+                                <Ionicons name='logo-facebook' size={24} color={COLORS.title} />
+                                {/* <Text>Farizah</Text> */}
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-                            <View style={{ flex: 1, height: 2, backgroundColor: '#ddd' }} />
-                            <Text style={{ fontSize: 14, color: COLORS.title, marginHorizontal: 10 }}>Or Login with</Text>
-                            <View style={{ flex: 1, height: 2, backgroundColor: '#ddd' }} />
-                        </View>
-                        <View style={{ alignItems: 'center', marginTop: 30 }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
-                                    onPress={() => {
-                                        setEmail('ummi@gmail.com');
-                                        setPassword('12345678');
-                                    }}>
-                                    {/* <Text>Ummi</Text> */}
-                                    <Ionicons name='logo-apple' size={24} color={COLORS.title} />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
-                                    onPress={() => {
-                                        setEmail('afiq379@gmail.com');
-                                        setPassword('12345678');
-                                    }}>
-                                    <Ionicons name='logo-google' size={24} color={COLORS.title} />
-                                    {/* <Text>Afiq</Text> */}
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
-                                    onPress={() => {
-                                        setEmail('farizah@gmail.com');
-                                        setPassword('12345678');
-                                    }}>
-                                    <Ionicons name='logo-facebook' size={24} color={COLORS.title} />
-                                    {/* <Text>Farizah</Text> */}
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <View style={{ marginBottom: 15, marginTop: 20, flexDirection: 'row', justifyContent: 'center' }}>
-                            <Text style={{ fontSize: 16, color: colors.title, textAlign: 'center', }}>Don't have an account?</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate('SignUp')} activeOpacity={0.5}>
-                                <Text style={{ fontSize: 16, color: COLORS.primary, fontWeight: 'bold' }}> Register Now</Text>
-                            </TouchableOpacity>
-                        </View>
+                    </View>
+                    <View style={{ marginBottom: 15, marginTop: 20, flexDirection: 'row', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 16, color: colors.title, textAlign: 'center', }}>Don't have an account?</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('SignUp')} activeOpacity={0.5}>
+                            <Text style={{ fontSize: 16, color: COLORS.primary, fontWeight: 'bold' }}> Register Now</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
             {loading && (
-                <View style={GlobalStyleSheet.loadingOverlay}>
+                <View style={[GlobalStyleSheet.loadingOverlay, {height: SIZES.height}]}>
                     <ActivityIndicator size="large" color={COLORS.primary} />
                 </View>
             )}
