@@ -542,8 +542,8 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                     }
                     {index === 2 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 100 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Provide photos of your lendable item</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 10 }}>Try our AI assisted data entries to fill those entries for you or manually enter yours.</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30, paddingBottom: 10 }}>Provide photos of your lendable item</Text>
+                            {/* <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 10 }}>Try our AI assisted data entries to fill those entries for you or manually enter yours.</Text> */}
                             {/* <View style={{ width: '100%', justifyContent: 'flex-end', alignItems: 'flex-end', paddingBottom: 10 }}>
                                 <TouchableOpacity
                                     style={{
