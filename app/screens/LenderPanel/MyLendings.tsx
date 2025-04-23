@@ -114,9 +114,6 @@ const MyLendings = ({ navigation, route }: MyLendingsScreenProps) => {
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ flexGrow: 1, paddingBottom: 70, alignItems: 'flex-start' }}
-                  refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                  }
                 >
                   <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 40, paddingTop: 10 }]}>
                     <View>
@@ -191,9 +188,6 @@ const MyLendings = ({ navigation, route }: MyLendingsScreenProps) => {
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ flexGrow: 1, paddingBottom: 70, alignItems: 'flex-start' }}
-                  refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                  }
                 >
                   <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 40, paddingTop: 10 }]}>
                     <View>
