@@ -69,9 +69,8 @@ const MyLendings = ({ navigation, route }: MyLendingsScreenProps) => {
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {buttons.map((btn: any, i: number) => (
-            <View style={{ flexDirection: 'row', width: SIZES.width * 0.5, paddingHorizontal: 10, justifyContent: 'space-between', alignItems: 'center' }}>
+            <View key={i} style={{ flexDirection: 'row', width: SIZES.width * 0.5, paddingHorizontal: 10, justifyContent: 'space-between', alignItems: 'center' }}>
               <TouchableOpacity
-                key={btn}
                 style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}
                 onPress={() => {
                   setActiveIndex(i);

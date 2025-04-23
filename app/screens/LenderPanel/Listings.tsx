@@ -137,8 +137,8 @@ const Listings = ({ navigation, route }: ListingsScreenProps) => {
                                     <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 40, paddingTop: 10 }]}>
                                         <View>
                                             {
-                                                activeListings.map((data: any, index) => (
-                                                    <View style={{ marginVertical: 5, height: 100 }} key={index}>
+                                                activeListings.map((data: any) => (
+                                                    <View style={{ marginVertical: 5, height: 100 }} key={data.id || data.title}>
                                                         <TouchableOpacity
                                                             activeOpacity={0.8}
                                                             onPress={() => navigation.navigate('AddListing', { listing: data })}
@@ -204,8 +204,8 @@ const Listings = ({ navigation, route }: ListingsScreenProps) => {
                                     <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, paddingBottom: 40, paddingTop: 10 }]}>
                                         <View>
                                             {
-                                                inactiveListings.map((data: any, index) => (
-                                                    <View style={{ marginVertical: 5, height: 100 }} key={index}>
+                                                inactiveListings.map((data: any) => (
+                                                    <View style={{ marginVertical: 5, height: 100 }} key={data.id || data.title}>
                                                         <TouchableOpacity
                                                             activeOpacity={0.8}
                                                             onPress={() => navigation.navigate('AddListing', { listing: data })}
