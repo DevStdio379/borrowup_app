@@ -15,6 +15,7 @@ export interface User {
   lastName: string;
   phoneNumber: string;
   accountType: string;
+  isVerified: boolean;
   profileImageUrl?: string;
   createAt: any;
   updatedAt: any;
@@ -39,6 +40,7 @@ export const defaultUser: User = {
   lastName: "UserLastName",
   phoneNumber: "1234567890",
   accountType: "borrower",
+  isVerified: false,
   createAt: "Feb 6, 2025, 12:24:09 PM",
   updatedAt: "Feb 6, 2025, 12:24:09 PM",
   memberFor: "1 year",
@@ -131,6 +133,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           lastName: userData.lastName || '',
           phoneNumber: userData.phoneNumber || '',
           accountType: userData.accountType || '',
+          isVerified: userData.isVerified || false,
           profileImageUrl: userData.profileImageUrl || '',
           createAt: userData.createAt || '',
           updatedAt: userData.updatedAt || '',
@@ -173,6 +176,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           lastName: userData.lastName || '',
           phoneNumber: userData.phoneNumber || '',
           accountType: userData.accounType,
+          isVerified: userData.isVerified || false,
           profileImageUrl: userData.profileImageUrl || '',
           createAt: userData.createAt || '',
           updatedAt: userData.updatedAt || '',
@@ -221,6 +225,7 @@ export const fetchSelectedUser = async (userId: string): Promise<User | null> =>
         lastName: userData.lastName || '',
         phoneNumber: userData.phoneNumber || '',
         accountType: userData.accountType || '',
+        isVerified: userData.isVerified || false,
         profileImageUrl: userData.profileImageUrl || '',
         createAt: userData.createAt || '',
         updatedAt: userData.updatedAt || '',
@@ -253,6 +258,7 @@ export const fetchAllUsers = async (): Promise<User[]> => {
         lastName: userData.lastName || '',
         phoneNumber: userData.phoneNumber || '',
         accountType: userData.accountType || '',
+        isVerified: userData.isVerified || false,
         profileImageUrl: userData.profileImageUrl || '',
         createAt: userData.createAt || '',
         updatedAt: userData.updatedAt || '',
