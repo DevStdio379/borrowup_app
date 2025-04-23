@@ -68,12 +68,28 @@ const EditAttributes = ({ navigation, route }: EditAttributesScreenProps) => {
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
-            <Header
-                title={`Edit ${attribute}`}
-                leftIcon='back'
-                saveButton
-            />
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, marginBottom: 50 }}>
+            <View style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+                <View
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 5 }}>
+                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                        <TouchableOpacity
+                            onPress={() => navigation.goBack()}
+                            style={{
+                                height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
+                            }}
+                        >
+                            <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>{`Edit ${attribute}`}</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        {/* right header element */}
+                    </View>
+                </View>
+            </View>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, marginBottom: 50, paddingTop: 20 }} showsVerticalScrollIndicator={false}>
                 <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold', marginBottom: 15 }}>{attribute}</Text>
                 <Input
                     onFocus={() => setisFocused(true)}
@@ -87,9 +103,9 @@ const EditAttributes = ({ navigation, route }: EditAttributesScreenProps) => {
                     keyboardType={attribute === 'Phone Number' ? 'phone-pad' : 'default'}
                 />
             </ScrollView>
-            <View style={[GlobalStyleSheet.container]}>
+            <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
                 <TouchableOpacity
-                    style={{ backgroundColor: COLORS.primary, borderRadius: 50, padding: 15, alignItems: 'center' }}
+                    style={{ backgroundColor: COLORS.primary, borderRadius: 10, padding: 15, alignItems: 'center' }}
                     onPress={() => {
                         attributeData ? handleUpdate() : Alert.alert("Error", "Invalid attribute data")
                     }}
