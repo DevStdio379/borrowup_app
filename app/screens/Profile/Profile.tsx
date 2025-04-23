@@ -165,8 +165,8 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             {user?.profileImageUrl ? (
                                 <Image source={{ uri: user?.profileImageUrl }} style={{ height: '100%', width: '100%' }} />
                             ) : (
-                                <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background }} >
-                                    <Ionicons name="person-outline" size={40} color={COLORS.black} />
+                                <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.card }} >
+                                    <Ionicons name="person-outline" size={40} color={COLORS.blackLight} />
                                 </View>
                             )}
                         </View>
