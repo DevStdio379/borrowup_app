@@ -150,7 +150,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 20 , paddingHorizontal: 20 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 20, paddingHorizontal: 20 }}>
                     <View
                         style={{
                             height: 80,
@@ -168,7 +168,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                                 <Ionicons name="person-outline" size={40} color={COLORS.black} />
                             </View>
                         )}
-                    </View>  
+                    </View>
                     <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold', color: colors.title, paddingBottom: 10 }}>
                             {user?.firstName} {user?.lastName} <Text style={{ fontSize: 14, fontWeight: 'normal' }}>{overallRating.toFixed(2)} <Ionicons name="star" size={14} color={COLORS.placeholder} /></Text>
@@ -195,14 +195,14 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         </View>
                     </View>
                 </View>
-                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 40, marginTop: 10 }]}>
+                <View style={[GlobalStyleSheet.container, { paddingHorizontal: 30, marginTop: 10 }]}>
                     <View style={[GlobalStyleSheet.line, { margin: 10 },]} />
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => navigation.navigate('PersonalDetails')}>
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'center' }]} >
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }} >
-                                <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                <View style={[styles.cardimg]} >
                                     <Ionicons name='person' size={30} color={colors.title} />
                                 </View>
                                 <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Personal Details</Text>
@@ -215,7 +215,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         onPress={() => navigation.navigate('AddressBook')}>
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'center' }]} >
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }} >
-                                <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                <View style={[styles.cardimg]} >
                                     <Ionicons name='compass' size={30} color={colors.title} />
                                 </View>
                                 <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Address Book</Text>
@@ -228,7 +228,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         onPress={() => navigation.navigate('PaymentInformation')}>
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'center' }]} >
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 15 }} >
-                                <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                                <View style={[styles.cardimg]} >
                                     <Ionicons name='card' size={30} color={colors.title} />
                                 </View>
                                 <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Payment Information</Text>
@@ -237,21 +237,21 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         </View>
                     </TouchableOpacity>
                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                        <View style={[ styles.cardimg ]} >
                             <Ionicons name='settings' size={30} color={colors.title} />
                         </View>
                         <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Settings</Text>
                     </View>
                     <View style={[GlobalStyleSheet.line, { margin: 10 },]} />
                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                        <View style={[ styles.cardimg ]} >
                             <Ionicons name='clipboard' size={30} color={colors.title} />
                         </View>
                         <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Request an Item</Text>
                     </View>
                     <View style={[GlobalStyleSheet.line, { margin: 10 },]} />
                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                        <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                        <View style={[ styles.cardimg ]} >
                             <Ionicons name='help-circle' size={30} color={colors.title} />
                         </View>
                         <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>FAQs</Text>
@@ -262,7 +262,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         onPress={() => { }}
                     >
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                            <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                            <View style={[ styles.cardimg ]} >
                                 <Ionicons name='menu' size={30} color={colors.title} />
                             </View>
                             <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Menu</Text>
@@ -273,7 +273,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                         onPress={() => navigation.navigate('Profile')}
                     >
                         <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                            <View style={[styles.cardimg, { backgroundColor: colors.card }]} >
+                            <View style={[ styles.cardimg ]} >
                                 <Ionicons name='notifications' size={30} color={colors.title} />
                             </View>
                             <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Notification</Text>
@@ -343,15 +343,6 @@ const styles = StyleSheet.create({
         height: 54,
         width: 54,
         borderRadius: 10,
-        backgroundColor: COLORS.card,
-        shadowColor: "rgba(0,0,0,0.5)",
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 20.27,
-        elevation: 5,
         alignItems: 'center',
         justifyContent: 'center'
     },
