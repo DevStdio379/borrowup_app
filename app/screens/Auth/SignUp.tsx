@@ -9,7 +9,7 @@ import { RootStackParamList } from '../../navigation/RootStackParamList'
 import Input from '../../components/Input/Input'
 
 import { useUser, User } from '../../context/UserContext'
-import { createUserWithEmailAndPassword } from "firebase/auth"
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth"
 import { auth } from '../../services/firebaseConfig'
 
 type SignUpScreenProps = StackScreenProps<RootStackParamList, 'SignUp'>;
@@ -35,9 +35,12 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
     // sign up with email and password
     const handleSignUp = async () => {
         try {
-            // Firebase authentication: create user profile
+            // Create user with email & password
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+
+            // Send email verification
+            await sendEmailVerification(user);
 
             const userData: User = {
                 uid: user.uid,
@@ -48,20 +51,33 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                 lastName: lastName,
                 phoneNumber: '',
                 accountType: 'borrower',
+                isVerified: false,
                 createAt: new Date(),
                 updatedAt: new Date(),
                 memberFor: '',
             };
 
-            // Call the context function to create the user in Firestore and update context
+            // Save user in Firestore
             await createUser(userData);
 
-            Alert.alert("Success!", "Account created successfully.");
-            navigation.navigate('BottomNavigation', { screen: 'HomeStack' });
+            Alert.alert(
+                "Verify Your Email",
+                "A verification email has been sent. Please check your inbox before logging in.",
+                [
+                    {
+                        text: "OK",
+                        onPress: () => navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'AccountVerification' }]
+                        }),
+                    },
+                ]
+            );
         } catch (error: any) {
             Alert.alert("Error", error.message);
         }
     };
+
 
     return (
         <ScrollView style={{ backgroundColor: COLORS.background }} showsVerticalScrollIndicator={false}>
