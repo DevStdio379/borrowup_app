@@ -98,19 +98,22 @@ const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
                 <View style={{ backgroundColor: theme.dark ? 'rgba(255,255,255,.1)' : colors.background, marginTop: 10, borderRadius: 15 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
                         <View style={{}}>
-                            <View style={{
-                                borderWidth: 2,
-                                borderColor: COLORS.primary,
-                                height: 90,
-                                width: 90,
-                                borderRadius: 50,
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                                {selectedImage ? (
-                                    <Image source={{ uri: selectedImage }} style={{ height: 90, width: 90, borderRadius: 45 }} />
+                            <View
+                                style={{
+                                    height: 80,
+                                    width: 80,
+                                    borderRadius: 40,
+                                    backgroundColor: COLORS.primary,
+                                    overflow: 'hidden',
+                                    marginRight: 20,
+                                }}
+                            >
+                                {user?.profileImageUrl ? (
+                                    <Image source={{ uri: user?.profileImageUrl }} style={{ height: '100%', width: '100%' }} />
                                 ) : (
-                                    <Ionicons name="person-outline" size={24} color={COLORS.black} />
+                                    <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.card }} >
+                                        <Ionicons name="person-outline" size={40} color={COLORS.blackLight} />
+                                    </View>
                                 )}
                             </View>
                             <TouchableOpacity
@@ -127,8 +130,8 @@ const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
                                     );
                                 }}
                                 style={{
-                                    height: 42,
-                                    width: 42,
+                                    height: 30,
+                                    width: 30,
                                     borderRadius: 40,
                                     backgroundColor: COLORS.card,
                                     alignItems: 'center',
@@ -138,20 +141,31 @@ const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
                                     left: 60
                                 }}
                             >
-                                <View style={{ height: 36, width: 36, borderRadius: 36, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.primary }}>
-                                    <Ionicons name="pencil-outline" size={16} color={COLORS.white} />
+                                <View style={{ height: 30, width: 30, borderRadius: 36, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.primary }}>
+                                    <Ionicons name="pencil-outline" size={13} color={COLORS.white} />
                                 </View>
                             </TouchableOpacity>
                         </View>
                         <View>
-                            <Text style={[{ fontSize: 19, color: colors.title }]}>{user?.userName}</Text>
-                            <Text style={[{ fontSize: 14, color: colors.text }]}>{user?.isActive === true ? 'active' : 'inactive'}</Text>
+                            <Text style={[{ fontSize: 19, color: colors.title }]}>{user?.firstName} {user?.lastName}</Text>
+                            <Text style={[{ fontSize: 12, color: colors.text, marginTop: 5 }]}>UID: {user?.uid}</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+                                <View
+                                    style={{
+                                        height: 7,
+                                        width: 7,
+                                        borderRadius: 5,
+                                        backgroundColor: user?.isActive ? COLORS.success : COLORS.danger,
+                                        marginRight: 5,
+                                    }}
+                                />
+                                <Text style={[{ fontSize: 13, color: colors.text }]}>{user?.isActive ? 'Active' : 'Inactive'}</Text>
+                            </View>
                         </View>
                     </View>
                 </View>
                 <View style={{ marginTop: 10, paddingVertical: 10, borderRadius: 15 }}>
-                    <Text style={{ fontSize: 16, color: COLORS.blackLight, fontWeight: 'bold' }}>About You</Text>
-                    <View style={{ marginBottom: 15, marginTop: 30 }}>
+                    <View style={{ marginBottom: 15, marginTop: 10 }}>
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => navigation.navigate('EditAttributes', { profileAttribute: { attributeName: 'username' } })}>
@@ -202,6 +216,34 @@ const PersonalDetails = ({ navigation }: PersonalDetailsScreenProps) => {
                                 </View>
                             </View>
                         </TouchableOpacity>
+                    </View>
+                    <View style={{ marginBottom: 15 }}>
+                        {user?.isVerified && (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => {}}>
+                                <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
+                                    <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Account Status</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                        <Text style={{ fontSize: 16, color: COLORS.blackLight, fontWeight: 'bold' }}>Verified</Text>
+                                        <Ionicons name="checkmark-outline" size={24} color={COLORS.blackLight} />
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        {!user?.isVerified && (
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={() => navigation.navigate('AccountVerification')}>
+                                <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'space-between', marginBottom: 15, alignItems: 'flex-start' }]} >
+                                    <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Account Status</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                        <Text style={{ fontSize: 16, color: COLORS.blackLight, fontWeight: 'bold' }}>Not Verified</Text>
+                                        <Ionicons name="chevron-forward-outline" size={24} color={COLORS.blackLight} />
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        )}
                     </View>
                     <View style={{ marginBottom: 15 }}>
                         <TouchableOpacity
