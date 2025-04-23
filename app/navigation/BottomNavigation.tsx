@@ -71,7 +71,7 @@ const BottomNavigation = () => {
                     component={ListingsScreen}
                 />
                 <Tab.Screen
-                    name='MyLendings'
+                    name='MyLendingsStack'
                     component={MyLendingsStack}
                 />
                 <Tab.Screen

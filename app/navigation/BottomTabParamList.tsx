@@ -11,7 +11,7 @@ export type BottomTabParamList = {
     ProfileStack: undefined;
 
     LenderDashboard: undefined;
-    MyLendings: undefined;
+    MyLendingsStack: undefined;
     LendingDetails: { lending: Borrowing };
     Listings: undefined;
     // ChatList: undefined;

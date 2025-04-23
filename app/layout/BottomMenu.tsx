@@ -115,7 +115,7 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                                 case 'ProfileStack':
                                                     return 'menu';
                                                 // lender
-                                                case 'MyLendings':
+                                                case 'MyLendingsStack':
                                                     return 'calendar';
                                                 case 'Listings':
                                                     return 'clipboard';
@@ -140,7 +140,7 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                                     return 'My Rental';
                                                 case 'MyBorrowingsStack':
                                                     return 'Borrowed';
-                                                case 'MyLendings':
+                                                case 'MyLendingsStack':
                                                     return 'Lending';
                                                 case 'Listings':
                                                     return 'Listing';
