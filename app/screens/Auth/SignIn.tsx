@@ -82,7 +82,6 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
                             onBlur={() => setisFocused(false)}
                             onChangeText={setEmail}
                             isFocused={isFocused}
-                            inputBorder
                         />
                     </View>
                     <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Password</Text>
@@ -94,7 +93,6 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
                             onChangeText={setPassword}
                             isFocused={isFocused2}
                             type={'password'}
-                            inputBorder
                         />
                     </View>
                     <View style={{ marginTop: 30 }}>
