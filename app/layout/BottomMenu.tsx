@@ -106,8 +106,8 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                                 case 'FavouriteStack':
                                                     return 'bookmarks';
                                                 case 'HomeStack':
-                                                    return 'home';
-                                                case 'MyBorrowings':
+                                                    return 'search';
+                                                case 'MyBorrowingsStack':
                                                     return 'cube';
                                                 // both universal
                                                 case 'ChatList':
@@ -133,13 +133,13 @@ const BottomMenu = ({ state, navigation, descriptors }: Props) => {
                                         {(() => {
                                             switch (label) {
                                                 case 'HomeStack':
-                                                    return 'Home';
+                                                    return 'Explore';
                                                 case 'FavouriteStack':
                                                     return 'Saved';
                                                 case 'MyRental':
                                                     return 'My Rental';
-                                                case 'MyBorrowings':
-                                                    return 'Borrowing';
+                                                case 'MyBorrowingsStack':
+                                                    return 'Borrowed';
                                                 case 'MyLendings':
                                                     return 'Lending';
                                                 case 'Listings':
