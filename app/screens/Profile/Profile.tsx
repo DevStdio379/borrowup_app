@@ -213,13 +213,13 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                 </View>
                 {!user?.isVerified && (
                     <TouchableOpacity
-                        style={{ marginHorizontal: 25, marginTop: 15, padding: 10, borderRadius: 15, borderWidth: 1, borderColor: COLORS.blackLight, backgroundColor: COLORS.card }}
+                        style={{ marginHorizontal: 30, marginTop: 15, borderRadius: 15 }}
                         onPress={() => navigation.navigate('AccountVerification')}
                     >
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
-                            <Ionicons name="warning-outline" size={18} style={{ marginRight: 5 }} />
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Ionicons name="warning" size={18} style={{ marginRight: 5, color: COLORS.warning }} />
                             <Text style={{ fontSize: 14 }}>
-                                Your account is not verified. <Text style={{ textDecorationLine: 'underline', color: COLORS.primary }}>Tap to verify.</Text>
+                                Your account is not verified. <Text style={{ textDecorationLine: 'underline', fontWeight: 'bold', color: COLORS.primary }}>Tap to verify.</Text>
                             </Text>
                         </View>
                     </TouchableOpacity>
