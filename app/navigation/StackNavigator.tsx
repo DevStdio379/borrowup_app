@@ -32,6 +32,7 @@ import NewChat from '../screens/Chat/NewChat';
 import PaymentSuccess from '../screens/Products/PaymentSuccess';
 import AddressMapView from '../screens/Profile/AddressMapView';
 import BottomNavigation from './BottomNavigation';
+import AccountVerification from '../screens/Auth/AccountVerification';
 
 
 const StackComponent = createStackNavigator<RootStackParamList>();
@@ -50,6 +51,9 @@ const StackNavigator = () => {
 				<StackComponent.Screen name="OnBoarding" component={OnBoarding} />
 				<StackComponent.Screen name="SignUp" component={SignUp} />
 				<StackComponent.Screen name="SignIn" component={SignIn} />
+				<StackComponent.Screen name="AccountVerification" component={AccountVerification} />
+
+				{/* Borrower */}
 
 				<StackComponent.Screen name="BottomNavigation" component={BottomNavigation} />
 				<StackComponent.Screen name="Products" component={Products} />
