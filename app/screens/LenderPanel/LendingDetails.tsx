@@ -184,7 +184,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                             <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
                         </TouchableOpacity>
                     </View>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>Lending Details</Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -225,7 +225,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                         {/* Progress Section */}
                         <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", height: 60 }}>
                             {steps.map((step, index) => (
-                                <View style={{ alignItems: "center", paddingHorizontal: 10 }}>
+                                <View key={index} style={{ alignItems: "center", paddingHorizontal: 10 }}>
                                     {/* Label */}
                                     <Text style={{ textAlign: "center", fontSize: 12, fontWeight: "600", marginTop: 8 }}>{step.label}</Text>
                                     {step.date && <Text style={{ textAlign: "center", fontSize: 10, color: "gray" }}>{step.date}</Text>}
@@ -542,9 +542,11 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                 </View>
                                 <View style={{ flex: 7, paddingLeft: 20 }}>
                                     <TouchableOpacity onPress={() => navigation.navigate('ProductDetails', { product: lending.product })}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }}>{lending.product.title}</Text>
-                                            <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />
+                                        <View style={{ width: SIZES.width * 0.63 }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                <Text style={{ fontSize: 17, fontWeight: 'bold', color: COLORS.black, textDecorationLine: 'underline' }} numberOfLines={1} ellipsizeMode="tail">{lending.product.title}</Text>
+                                                <Ionicons name="link" size={20} color={COLORS.blackLight} style={{ marginLeft: 5 }} />
+                                            </View>
                                         </View>
                                     </TouchableOpacity>
                                     <Text style={{ fontSize: 14, color: COLORS.blackLight }}>borrowed by {owner?.firstName} {owner?.lastName} </Text>
@@ -553,7 +555,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                         </View>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {buttons.map((btn: any, i: number) => (
-                                <View style={{ flexDirection: 'row', width: SIZES.width * 0.5, paddingHorizontal: 10, justifyContent: 'space-between', alignItems: 'center' }}>
+                                <View  key={i} style={{ flexDirection: 'row', width: SIZES.width * 0.5, paddingHorizontal: 10, justifyContent: 'space-between', alignItems: 'center' }}>
                                     <TouchableOpacity
                                         key={btn}
                                         style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}
@@ -611,8 +613,8 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                                                 <Text style={{ color: "#E63946", fontWeight: "bold" }}>£{Number(lending.product.lendingRate).toFixed(2)}</Text>/day{" "}
                                                                 {/* <Text style={styles.originalPrice}>£40.20</Text> */}
                                                             </Text>
-                                                            <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title }}>{lending.product.title}</Text>
-                                                            <Text style={{ fontSize: 14, color: COLORS.blackLight }}>{lending.product.description}</Text>
+                                                            <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title }} numberOfLines={1} ellipsizeMode="tail">{lending.product.title}</Text>
+                                                            <Text style={{ fontSize: 14, color: COLORS.blackLight }}>{lending.product.category}</Text>
                                                         </View>
                                                     </View>
                                                     <View style={GlobalStyleSheet.line} />
