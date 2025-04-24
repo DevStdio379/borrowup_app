@@ -163,7 +163,7 @@ const MyBorrowings = ({ navigation }: MyBorrowingsScreenProps) => {
                                                                 )}
                                                                 <View style={{ width: '70%', padding: 10 }}>
                                                                     <Text numberOfLines={1} style={{ fontSize: 16, color: COLORS.black, fontWeight: 'bold' }}>{data.product.title}</Text>
-                                                                    <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>{data.ownerFirstName} {data.ownerLastName}</Text>
+                                                                    <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>provided by {data.ownerFirstName} {data.ownerLastName}</Text>
                                                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                                         <Text style={{ fontSize: 14 }}>{new Date(data.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.startDate).toLocaleDateString('en-GB', { weekday: 'short' })} to {new Date(data.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.endDate).toLocaleDateString('en-GB', { weekday: 'short' })}</Text>
                                                                     </View>
@@ -214,7 +214,7 @@ const MyBorrowings = ({ navigation }: MyBorrowingsScreenProps) => {
                                                                 )}
                                                                 <View style={{ width: '70%', padding: 10 }}>
                                                                     <Text numberOfLines={1} style={{ fontSize: 16, color: COLORS.black, fontWeight: 'bold' }}>{data.product.title}</Text>
-                                                                    <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>{data.ownerFirstName} {data.ownerLastName}</Text>
+                                                                    <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>provided by {data.ownerFirstName} {data.ownerLastName}</Text>
                                                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                                         <Text style={{ fontSize: 14 }}>{new Date(data.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.startDate).toLocaleDateString('en-GB', { weekday: 'short' })} to {new Date(data.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(data.endDate).toLocaleDateString('en-GB', { weekday: 'short' })}</Text>
                                                                     </View>
