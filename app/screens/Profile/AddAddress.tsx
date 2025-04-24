@@ -29,7 +29,6 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
     { name: 'Apartment', icon: 'business' },
     { name: 'Office', icon: 'briefcase' },
     { name: 'Hotel', icon: 'bed' },
-    { name: 'Other', icon: 'location' }
   ];
   const snapPoints = useMemo(() => ['25%', '50%', '100%'], []);
   const [buildingType, setBuildingType] = useState('house');
@@ -78,11 +77,27 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
 
   return (
     <View style={{ backgroundColor: COLORS.backgroundColor, flex: 1 }}>
-      <Header
-        title='Add Address'
-        leftIcon='back'
-        saveButton
-      />
+      <View style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 5 }}>
+          <View style={{ flex: 1, alignItems: 'flex-start' }}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
+            </TouchableOpacity>
+          </View>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>Add Address</Text>
+          </View>
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            {/* right header element */}
+          </View>
+        </View>
+      </View>
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, marginBottom: 50 }}>
         <View style={styles.mapContainer}>
           <View style={styles.mapWrapper}>
@@ -122,21 +137,42 @@ const AddAddress = ({ navigation, route }: AddAddressScreenProps) => {
         <Text style={{ fontSize: 14, color: COLORS.title, marginBottom: 10 }}><Text style={{ fontSize: 14, color: COLORS.title, fontWeight: 'bold' }}>{addrName}, </Text>{addr}, {post}</Text>
         <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Building Type</Text>
 
-        <TouchableOpacity
-          onPress={() => { }}
-          activeOpacity={0.8}>
-          <View style={[styles.inputBox, { flexDirection: 'row' }]}>
-            <TextInput
-              value={selectedOption || buildingType}
-              onChangeText={setBuildingType}
-              editable={false} // This makes the input read-only
-              style={{ width: SIZES.width * 0.8, paddingHorizontal: 20 }}
-            />
-            <View style={{ paddingTop: 10 }}>
-              <Ionicons name="chevron-down-outline" size={24} color={COLORS.title} />
-            </View>
-          </View>
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 10 }}>
+          {options.map(option => (
+            <TouchableOpacity
+              key={option.name}
+              onPress={() => {
+                setSelectedOption(option.name.toLowerCase());
+                setBuildingType(option.name.toLowerCase());
+              }}
+              style={{
+                backgroundColor: selectedOption === option.name.toLowerCase() ? COLORS.primary : COLORS.card,
+                borderRadius: 12,
+                paddingVertical: 10,
+                paddingHorizontal: 15,
+                marginRight: 10,
+                marginBottom: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <Ionicons
+                name={option.icon}
+                size={20}
+                color={selectedOption === option.name.toLowerCase() ? COLORS.white : COLORS.title}
+                style={{ marginRight: 5 }}
+              />
+              <Text
+                style={{
+                  color: selectedOption === option.name.toLowerCase() ? COLORS.white : COLORS.title,
+                  fontWeight: 'bold',
+                }}
+              >
+                {option.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Additional Details</Text>
         <Input
           onFocus={() => setisFocused1(true)}
