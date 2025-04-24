@@ -498,7 +498,6 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text>{returnFeedback}</Text>
                             <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Return Experience Review</Text>
                             <Input
                                 onFocus={() => setisFocused2(true)}
@@ -553,7 +552,6 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     ))}
                                 </View>
                             </View>
-                            <Text>{listingMatchFeedback}</Text>
                             <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
                             <Input
                                 onFocus={() => setisFocused3(true)}
@@ -602,7 +600,6 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text>{communicationFeedback}</Text>
                             <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
                             <Input
                                 onFocus={() => setisFocused4(true)}
@@ -651,7 +648,6 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text>{productConditionFeedback}</Text>
                             <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
                             <Input
                                 onFocus={() => setisFocused5(true)}
