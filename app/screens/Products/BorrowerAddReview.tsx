@@ -154,7 +154,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
     const screens = 10;
 
     const nextScreen = async () => {
-        if (index === 1 && !overallRating) {
+        if (index === 1 && overallRating === 0) {
             Alert.alert('Please give an overall rating.');
             return;
         }
@@ -326,14 +326,12 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     style={{
                                         height: 45,
                                         width: 45,
-                                        borderColor: COLORS.blackLight,
-                                        borderWidth: 1,
-                                        borderRadius: 10,
+                                        borderColor: COLORS.blackLight2,
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    <Ionicons size={30} color={COLORS.blackLight} name='chevron-back-outline' />
+                                    <Ionicons size={30} color={COLORS.blackLight2} name='chevron-back-outline' />
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -349,14 +347,13 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     style={{
                                         height: 45,
                                         width: 45,
-                                        borderColor: COLORS.blackLight,
-                                        borderWidth: 1,
-                                        borderRadius: 10,
+                                        borderColor: COLORS.blackLight2,
+    
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    <Ionicons size={30} color={COLORS.blackLight} name='close' />
+                                    <Ionicons size={30} color={COLORS.blackLight2} name='close' />
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -421,8 +418,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                     }
                     {index === 2 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>How was the collection experience?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Since you do pickup, please tell us</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50,  paddingBottom: 30 }}>How was the collection experience?</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 40 }}>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <TouchableOpacity key={star} onPress={() => setCollectionRating(star)}>
@@ -438,7 +434,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                             <View style={GlobalStyleSheet.line}></View>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us what stood out</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Responsive Host', 'Clear Instruction', 'Easy to navigate'].map((feedback, index) => (
+                                {['Clear Directions Provided', 'Safe & Convenient Location', 'Easy to Find Location'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -454,7 +450,6 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text>{collectionFeedback}</Text>
                             <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Collection Experience Review</Text>
                             <Input
                                 onFocus={() => setisFocused1(true)}
@@ -471,8 +466,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                     }
                     {index === 3 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>How was the return experience?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Since you do pickup, please tell us</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 30 }}>How was the return {'\n'} experience?</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 40 }}>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <TouchableOpacity key={star} onPress={() => setReturnRating(star)}>
@@ -488,7 +482,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                             <View style={GlobalStyleSheet.line}></View>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us what stood out</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Return secure', 'Seamless return', 'Easy to return'].map((feedback, index) => (
+                                {['Easy to Find Drop-off', 'Clear Return Instructions', 'Convenient Return Location'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -522,7 +516,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                     {index === 4 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Did the borrowed product match the description?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Tell us the borrowing condition matched as described or not.</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Tell us the borrowing terms & condition matches as described or not.</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, }}>
                                 {['Not Matched', 'Partially Matched', 'Matched'].map((condition, index) => (
                                     <TouchableOpacity
@@ -542,7 +536,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                 ))}
                                 <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us more</Text>
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                    {['Matching rate', 'Mismatch rate', 'Mismatch address'].map((feedback, index) => (
+                                    {['Exactly as Described', 'Mostly Accurate Description', 'Minor Differences', 'Description Was Vague', 'Not What I Expected'].map((feedback, index) => (
                                         <TouchableOpacity
                                             key={index}
                                             style={{
@@ -592,7 +586,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                             </View>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us more</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Helpful instructions', 'Friendly', 'Local recommendations'].map((feedback, index) => (
+                                {['Very Responsive', 'Helpful and Informative', 'Friendly and Polite', 'Delayed Responses', 'Lacked Important Info', 'Rushed or Impersonal'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -641,7 +635,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                             </View>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us about the product condition</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Excellent condition', 'Slight wear and tear', 'okay'].map((feedback, index) => (
+                                {['Excellent Condition', 'Worked Perfectly', 'Just Like the Photos', 'Minor Wear & Tear', 'Slightly Dirty', 'Had Some Functional Problems', 'Much Worse Than Expected'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -693,7 +687,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                     {index === 8 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Write a public review</Text>
-                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>We'll show this feedback to other borrower in {borrowing.firstName}'s' listings. Say a few word about your borrowing.</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>We'll show this feedback to other borrower in {borrowing.firstName}'s listings. Say a few word about your borrowing.</Text>
                             <Input
                                 onFocus={() => setisFocused6(true)}
                                 onBlur={() => setisFocused6(false)}
@@ -709,7 +703,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     height: 450,
                                 }}
                                 inputicon
-                                placeholder='e.g. Please knock instead of using the doorbell'
+                                placeholder={`e.g. Great experience! ${borrowing.firstName} was very helpful and the product was in excellent condition.`}
                                 multiline={true}  // Enable multi-line input
                                 numberOfLines={10} // Suggest the input area size
                                 value={publicReview ? publicReview : ''}
@@ -735,7 +729,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     height: 450,
                                 }}
                                 inputicon
-                                placeholder='e.g. Please knock instead of using the doorbell'
+                                placeholder={`e.g. I think the product could be improved by...`}
                                 multiline={true}  // Enable multi-line input
                                 numberOfLines={10} // Suggest the input area size
                                 value={privateNotesforLender ? privateNotesforLender : ''}
