@@ -136,8 +136,8 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
                         </TouchableOpacity> */}
                     </View>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>Profile</Text>
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>{user?.accountType.charAt(0).toUpperCase() + user?.accountType.slice(1)} Profile</Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-end' }}>
                         {/* right header element */}
