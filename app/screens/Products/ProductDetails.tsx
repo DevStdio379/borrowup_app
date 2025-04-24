@@ -492,12 +492,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const screens = 5;
 
   const nextScreen = async () => {
-    if (index === 0 && (!startDate || !endDate)) {
-      Alert.alert('Please set start date and end date');
-      return;
-    }
     if (index === 1 && (!startDate || !endDate)) {
-      Alert.alert('Please select a delivery method');
+      Alert.alert('Please select start and end dates');
       return;
     }
     if (index === 2 && !deliveryMethod) {
@@ -509,16 +505,17 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       return;
     }
     if (index === 4) {
-      if (paymentMethod === 'card') {
-        // Handle Stripe payment here
-      } else if (paymentMethod === 'cash') {
-        handleCheckout();
-        Alert.alert('order created');
-        return;
-      } else {
-        Alert.alert('Please select a payment method');
-        return;
-      }
+      // if (paymentMethod === 'card') {
+      //   // Handle Stripe payment here
+      // } else if (paymentMethod === 'cash') {
+      //   handleCheckout();
+      //   Alert.alert('order created');
+      //   return;
+      // } else {
+      //   Alert.alert('Please select a payment method');
+      //   return;
+      // }
+      handleCheckout();
     }
     setIndex((prev) => (prev + 1) % screens);
   }
@@ -755,7 +752,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                               )}
                             </View>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Description</Text>
-                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>{product.description} jesdf fsdkljf sjdkhfkl sjdhfkjdh sdfhjkdshfksh sdkjfhdskhfjsdh fdkjshfkjsdhfkjsdhfdkjshf khfksdjhfksdhfk sdjhfkjdshfk jkhdfjkshf uhdksfjhsdkfhsdkjhf k</Text>
+                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>{product.description}</Text>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingBottom: 5 }}>Location</Text>
                             <View style={{ height: 200, borderRadius: 20, overflow: 'hidden', borderColor: COLORS.blackLight, borderWidth: 1 }}>
                               <MapView
@@ -797,7 +794,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                                 </View>
                               ))}
                             </View>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Usage Guidelines</Text>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black, paddingVertical: 10 }}>Usage Guidelines</Text>
                             <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>{product.borrowingNotes}</Text>
                           </View>
                         )}
