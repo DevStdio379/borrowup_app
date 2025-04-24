@@ -792,7 +792,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                     <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, }]}>
                         <TouchableOpacity
                             style={{
-                                backgroundColor: COLORS.primary,
+                                backgroundColor: COLORS.card,
                                 padding: 15,
                                 borderRadius: 10,
                                 alignItems: 'center',
@@ -807,11 +807,11 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                 navigation.goBack();
                             }}
                         >
-                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Save Draft</Text>
+                            <Text style={{ fontSize: 16 }}>Save Draft</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={{
-                                backgroundColor: COLORS.danger,
+                                backgroundColor: COLORS.card,
                                 padding: 15,
                                 borderRadius: 10,
                                 alignItems: 'center',
@@ -825,11 +825,11 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                 navigation.goBack();
                             }}
                         >
-                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Discard</Text>
+                            <Text style={{ fontSize: 16, }}>Discard</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={{
-                                backgroundColor: COLORS.blackLight,
+                                backgroundColor: COLORS.card,
                                 padding: 15,
                                 borderRadius: 10,
                                 alignItems: 'center',
@@ -840,7 +840,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                 bottomSheetRef.current?.close();
                             }}
                         >
-                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Cancel</Text>
+                            <Text style={{ fontSize: 16,  }}>Cancel</Text>
                         </TouchableOpacity>
                     </View>
                 </BottomSheetScrollView>

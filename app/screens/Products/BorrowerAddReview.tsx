@@ -824,7 +824,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                     <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15, }]}>
                         <TouchableOpacity
                             style={{
-                                backgroundColor: COLORS.primary,
+                                backgroundColor: COLORS.card,
                                 padding: 15,
                                 borderRadius: 10,
                                 alignItems: 'center',
@@ -836,14 +836,14 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                 handleReview(0);
                                 Alert.alert('Draft Saved', 'Your listing has been saved as a draft.');
                                 bottomSheetRef.current?.close();
-                                navigation.navigate('MyBorrowings');
+                                navigation.goBack();
                             }}
                         >
-                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Save Draft</Text>
+                            <Text style={{ fontSize: 16 }}>Save Draft</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={{
-                                backgroundColor: COLORS.danger,
+                                backgroundColor: COLORS.card,
                                 padding: 15,
                                 borderRadius: 10,
                                 alignItems: 'center',
@@ -857,11 +857,11 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                 navigation.goBack();
                             }}
                         >
-                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Discard</Text>
+                            <Text style={{ fontSize: 16 }}>Discard</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={{
-                                backgroundColor: COLORS.blackLight,
+                                backgroundColor: COLORS.card,
                                 padding: 15,
                                 borderRadius: 10,
                                 alignItems: 'center',
@@ -872,7 +872,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                 bottomSheetRef.current?.close();
                             }}
                         >
-                            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Cancel</Text>
+                            <Text style={{ fontSize: 16 }}>Cancel</Text>
                         </TouchableOpacity>
                     </View>
                 </BottomSheetScrollView>
