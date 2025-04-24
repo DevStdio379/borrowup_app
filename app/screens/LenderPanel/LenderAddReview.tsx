@@ -170,7 +170,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
     const screens = 9;
 
     const nextScreen = async () => {
-        if (index === 1 && !overallRating) {
+        if (index === 1 && overallRating === 0) {
             Alert.alert('Please give an overall rating.');
             return;
         }
@@ -312,14 +312,12 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     style={{
                                         height: 45,
                                         width: 45,
-                                        borderColor: COLORS.blackLight,
-                                        borderWidth: 1,
-                                        borderRadius: 10,
+                                        borderColor: COLORS.blackLight2,
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    <Ionicons size={30} color={COLORS.blackLight} name='chevron-back-outline' />
+                                    <Ionicons size={30} color={COLORS.blackLight2} name='chevron-back-outline' />
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -335,14 +333,11 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     style={{
                                         height: 45,
                                         width: 45,
-                                        borderColor: COLORS.blackLight,
-                                        borderWidth: 1,
-                                        borderRadius: 10,
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    <Ionicons size={30} color={COLORS.blackLight} name='close' />
+                                    <Ionicons size={30} color={COLORS.blackLight2} name='close' />
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -407,8 +402,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                     }
                     {index === 2 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>How was the collection experience?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Since you do pickup, please tell us</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 40 }}>How was the pickup experience?</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 40 }}>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <TouchableOpacity key={star} onPress={() => setCollectionRating(star)}>
@@ -424,7 +418,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                             <View style={GlobalStyleSheet.line}></View>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us what stood out</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Responsive Host', 'Clear Instruction', 'Easy to navigate'].map((feedback, index) => (
+                                {['Arrived On Time', 'Clear and Respectful', 'Friendly and Polite', 'Late Without Notice', 'No Communication Beforehand', 'Seemed Rushed'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -440,7 +434,6 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text>{collectionFeedback}</Text>
                             <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Collection Experience Review</Text>
                             <Input
                                 onFocus={() => setisFocused1(true)}
@@ -457,8 +450,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                     }
                     {index === 3 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>How was the return experience?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Since you do pickup, please tell us</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 40 }}>How was the return experience?</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 40 }}>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <TouchableOpacity key={star} onPress={() => setReturnRating(star)}>
@@ -474,7 +466,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                             <View style={GlobalStyleSheet.line}></View>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us what stood out</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Return secure', 'Seamless return', 'Easy to return'].map((feedback, index) => (
+                                {['Returned On Time', 'Notified About Delay', 'Quick and Smooth Handover', 'Easy to Coordinate Return', 'Late Without Communication'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -510,25 +502,26 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Did the borrower followed your defined instruction?</Text>
                             <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Tell us about borrower followed guidelines or not.</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, }}>
-                                {['Not Matched', 'Partially Matched', 'Matched'].map((condition, index) => (
+                                {['Did Not Follow', 'Mostly Followed'].map((condition, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
                                             backgroundColor: givenInstructionFollowed === condition ? COLORS.primary : COLORS.input,
-                                            borderColor: givenInstructionFollowed === condition ? COLORS.primary : COLORS.blackLight,
-                                            padding: 15,
-                                            alignItems: 'center',
-                                            marginBottom: 10,
-                                            borderWidth: 1,
+                                            borderRadius: 50,
+                                            paddingVertical: 10,
+                                            paddingHorizontal: 20,
+                                            margin: 5,
                                         }}
                                         onPress={() => setGivenInstructionFollowed(condition)}
                                     >
-                                        <Text style={{ fontSize: 14, color: COLORS.title }}>{condition}</Text>
+                                        <Text style={{ fontSize: 14, color: givenInstructionFollowed === condition ? COLORS.white : COLORS.title }}>
+                                            {condition}
+                                        </Text>
                                     </TouchableOpacity>
                                 ))}
                                 <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us more</Text>
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                    {['Matching rate', 'Mismatch rate', 'Mismatch address'].map((feedback, index) => (
+                                    {['Used as Intended', 'Read Instructions Properly', 'Did not Read Instructions Properly', 'Mishandled or Abused Item', 'Ignored Usage Guidelines'].map((feedback, index) => (
                                         <TouchableOpacity
                                             key={index}
                                             style={{
@@ -578,7 +571,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                             </View>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us more</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Helpful instructions', 'Friendly', 'Local recommendations'].map((feedback, index) => (
+                                {['Very Responsive', 'Asked Relevant Questions', 'Respectful Tone Throughout', 'Took Time to Respond', 'Misunderstood Key Info', 'Disrespectful or Rude'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -627,7 +620,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                             </View>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us about the product condition</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Excellent condition', 'Slight wear and tear', 'okay'].map((feedback, index) => (
+                                {['Excellent condition', 'Light Wear', 'Very Clean', 'Works as Before', 'Minor Functional Issues', 'Returned Dirty', 'Some Parts Worn Out', 'Item Not Usable Anymore'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -677,7 +670,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     height: 450,
                                 }}
                                 inputicon
-                                placeholder='e.g. Please knock instead of using the doorbell'
+                                placeholder={`e.g. Great experience! ${lending.firstName} was very helpful and friendly.`}
                                 multiline={true}  // Enable multi-line input
                                 numberOfLines={10} // Suggest the input area size
                                 value={publicReview ? publicReview : ''}
@@ -703,7 +696,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     height: 450,
                                 }}
                                 inputicon
-                                placeholder='e.g. Please knock instead of using the doorbell'
+                                placeholder={`e.g. Hey ${lending.firstName}, I think you can improve your borrowing instruction a bit.`}
                                 multiline={true}  // Enable multi-line input
                                 numberOfLines={10} // Suggest the input area size
                                 value={privateNotesforLender ? privateNotesforLender : ''}

@@ -517,16 +517,19 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Did the borrowed product match the description?</Text>
                             <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Tell us the borrowing terms & condition matches as described or not.</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, }}>
-                                {['Not Matched', 'Partially Matched', 'Matched'].map((condition, index) => (
+                                {['Not Match', 'Partial Match', 'Match'].map((condition, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
                                             backgroundColor: listingMatch === condition ? COLORS.primary : COLORS.input,
                                             borderColor: listingMatch === condition ? COLORS.primary : COLORS.blackLight,
-                                            padding: 15,
+                                            paddingVertical: 10,
+                                            paddingHorizontal: 20,
                                             alignItems: 'center',
                                             marginBottom: 10,
                                             borderWidth: 1,
+                                            borderRadius: 20, // Bubble-like design
+                                            marginRight: 10,
                                         }}
                                         onPress={() => setListingMatch(condition)}
                                     >
