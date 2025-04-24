@@ -482,7 +482,6 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text>{returnFeedback}</Text>
                             <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Return Experience Review</Text>
                             <Input
                                 onFocus={() => setisFocused2(true)}
@@ -587,7 +586,6 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text>{communicationFeedback}</Text>
                             <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
                             <Input
                                 onFocus={() => setisFocused4(true)}
@@ -636,7 +634,6 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text>{productConditionFeedback}</Text>
                             <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
                             <Input
                                 onFocus={() => setisFocused5(true)}
@@ -654,7 +651,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                     {index === 7 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Write a public review</Text>
-                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>We'll show this feedback to other borrower in {lending.firstName}'s' listings. Say a few word about your lending.</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>We'll show this feedback to other borrower in {lending.firstName}'s profile.</Text>
                             <Input
                                 onFocus={() => setisFocused6(true)}
                                 onBlur={() => setisFocused6(false)}
@@ -680,7 +677,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                     {index === 8 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Write a private note</Text>
-                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>This feedback just for {lending.firstName} - share what they can improve about their place or how they host.</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>This feedback just for {lending.firstName} - share what they can improve when borrowing.</Text>
                             <Input
                                 onFocus={() => setisFocused7(true)}
                                 onBlur={() => setisFocused7(false)}

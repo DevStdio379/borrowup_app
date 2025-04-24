@@ -517,7 +517,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Did the borrowed product match the description?</Text>
                             <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>Tell us the borrowing terms & condition matches as described or not.</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, }}>
-                                {['Not Match', 'Partial Match', 'Match'].map((condition, index) => (
+                                {['Not Match', 'Mostly Accurate'].map((condition, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -571,8 +571,8 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                     }
                     {index === 5 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>How's the communication with {borrowing.firstName}?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>From collection to return, how well did {borrowing.firstName} communicate with you?</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>How's the communication with {owner?.firstName}?</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>From collection to return, how well did {owner?.firstName} communicate with you?</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 40 }}>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <TouchableOpacity key={star} onPress={() => setCommunicationRating(star)}>
@@ -668,7 +668,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                     {index === 7 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50 }}>Price worthy the borrowing?</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>How was the value of {borrowing.firstName}'s place for the price?</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>How was the value of {owner?.firstName}'s place for the price?</Text>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingBottom: 20 }}>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <TouchableOpacity key={star} onPress={() => setPriceWorthyRating(star)}>
@@ -686,7 +686,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                     {index === 8 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Write a public review</Text>
-                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>We'll show this feedback to other borrower in {borrowing.firstName}'s listings. Say a few word about your borrowing.</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>We'll show this feedback to other borrower in {owner?.firstName}'s listings. Say a few word about your borrowing.</Text>
                             <Input
                                 onFocus={() => setisFocused6(true)}
                                 onBlur={() => setisFocused6(false)}
@@ -702,7 +702,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                     height: 450,
                                 }}
                                 inputicon
-                                placeholder={`e.g. Great experience! ${borrowing.firstName} was very helpful and the product was in excellent condition.`}
+                                placeholder={`e.g. Great experience! ${owner?.firstName} was very helpful and the product was in excellent condition.`}
                                 multiline={true}  // Enable multi-line input
                                 numberOfLines={10} // Suggest the input area size
                                 value={publicReview ? publicReview : ''}
@@ -712,7 +712,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                     {index === 9 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Write a private note</Text>
-                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>This feedback just for {borrowing.firstName} - share what they can improve about their place or how they host.</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 30 }}>This feedback just for {owner?.firstName} - share what they can improve about their place or how they host.</Text>
                             <Input
                                 onFocus={() => setisFocused7(true)}
                                 onBlur={() => setisFocused7(false)}
