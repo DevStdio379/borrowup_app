@@ -576,7 +576,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             <View style={{ flex: 1, alignItems: 'center' }}>
               <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
                 {[
-                  `${product?.title}`,
+                  `${product?.category}`,
                   'Select Dates',
                   'Delivery Method',
                   'Payment Method',
@@ -730,8 +730,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                               </TouchableOpacity> */}
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, }}>
-                              <Ionicons name="location-outline" size={20} color={COLORS.black} style={{ opacity: 0.5 }} />
-                              <Text>{product.address}</Text>
+                              <Ionicons name="location-sharp" size={20} color={COLORS.black} style={{ opacity: 0.5 }} />
+                              <Text>{product.addressName.replace(/^\d+\s*/, '')}, {product.address.replace(/^\d+\s*/, '')}</Text>
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, paddingBottom: 20 }}>
                               {product.ratingCount && product.ratingCount > 0 ? (
