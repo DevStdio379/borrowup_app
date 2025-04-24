@@ -780,7 +780,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                             borderTopRightRadius: 22,
                         }}
                     >
-                        <Text style={{ textAlign: 'center', fontSize: 14, paddingVertical: 10 }}>Save this listing as draft?</Text>
+                        <Text style={{ textAlign: 'center', fontSize: 14, paddingVertical: 10 }}>Save this review as draft?</Text>
                         <View style={[GlobalStyleSheet.line, { marginTop: 10 }]}></View>
                     </View>
                 )}
