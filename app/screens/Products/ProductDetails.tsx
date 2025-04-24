@@ -790,12 +790,12 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                           <View style={{ paddingRight: 40 }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>What's Included</Text>
                             <View style={{ paddingLeft: 10 }}>
-                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Body</Text>
-                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Extra lens</Text>
-                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Charger</Text>
-                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Memory card</Text>
-                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Cables</Text>
-                              <Text style={{ fontSize: 14, color: COLORS.black }}>• Carry case</Text>
+                              {product.includedItems.map((item, index) => (
+                                <View key={index} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5 }}>
+                                  <Ionicons name="ellipse" size={10} color={COLORS.black} />
+                                  <Text style={{ fontSize: 15, color: COLORS.black, paddingLeft: 10 }}>{item}</Text>
+                                </View>
+                              ))}
                             </View>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Usage Guidelines</Text>
                             <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>{product.borrowingNotes}</Text>
