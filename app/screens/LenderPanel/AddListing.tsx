@@ -1128,7 +1128,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                     'Add Pickup & Return Instructions',
                                     'Select Pickup Address',
                                     'Add Deposit Details',
-                                    'Finalise Listing',
+                                    'Confirm Deposit',
                                 ][index] || ''}</Text>
                             </TouchableOpacity>
                         </View>
