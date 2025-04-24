@@ -8,15 +8,32 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/RootStackParamList';
 import Header from '../../layout/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useUser, defaultUser } from '../../context/UserContext';
+import { useUser, defaultUser, User } from '../../context/UserContext';
 import CardInfoStyle from '../../components/Card/CardInfoStyle';
 import PillStyle from '../../components/Pills/PillStyle';
 import { fetchLendingsByUser } from '../../services/BorrowingServices';
 import { set } from 'date-fns';
+import { getOrCreateChat } from '../../services/ChatServices';
 
 type LenderDashboardScreenProps = StackScreenProps<RootStackParamList, 'LenderDashboard'>;
 
 const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
+
+    const tips =
+        [
+            {
+                imageUri: 'https://firebasestorage.googleapis.com/v0/b/tags-1489a.appspot.com/o/static%2Fyard-sale.jpg?alt=media&token=90c4772e-450f-4431-85a7-c0d1e48f286c',
+                title: 'Help your listing stand out',
+                description: 'Learn how to maximize your earnings.',
+            },
+            {
+                imageUri: 'https://firebasestorage.googleapis.com/v0/b/tags-1489a.appspot.com/o/static%2Ffence%20sharing.jpg?alt=media&token=6409463f-31f9-466f-a895-2e5506438f5f',
+                title: 'How to Lend Safely',
+                description: 'Tips for safe lending practices.',
+            },
+        ]
+
+
 
     const theme = useTheme();
     const { user, updateUserData, setUser } = useUser();
@@ -54,6 +71,13 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
             </View>
         );
     }
+
+    const handleChat = async (user: User, otherUser: User) => {
+        const chatId = await getOrCreateChat(user, otherUser);
+        if (chatId) {
+            navigation.navigate("Chat", { chatId: chatId });
+        }
+    };
 
 
     return (
@@ -99,7 +123,7 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                             Total Earnings
                         </Text>
                         <Text style={{ fontSize: 14, color: COLORS.title, textAlign: 'center' }}>
-                            $500.00
+                            $XXX.XX
                         </Text>
                     </View>
                     <View style={[styles.arrivaldata, { flex: 1, margin: 5, padding: 20, alignItems: 'center' }]}>
@@ -108,7 +132,7 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                             Pending Balance
                         </Text>
                         <Text style={{ fontSize: 14, color: COLORS.title, textAlign: 'center' }}>
-                            $150.00
+                            $XXX.XX
                         </Text>
                     </View>
                     <View style={[styles.arrivaldata, { flex: 1, margin: 5, padding: 20, alignItems: 'center' }]}>
@@ -117,7 +141,7 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                             Deposit Held
                         </Text>
                         <Text style={{ fontSize: 14, color: COLORS.title, textAlign: 'center' }}>
-                            $200.00
+                            $XXX.XX
                         </Text>
                     </View>
                 </View>
@@ -134,7 +158,7 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                     </View>
                     <ScrollView contentContainerStyle={{ justifyContent: 'center' }} showsHorizontalScrollIndicator={false}>
                         {lendings.slice(0, 2).map((lending, index) => (
-                            <View key={index} style={[styles.LenderDashboardcard, { flex: 1, padding: 5 }]}>
+                            <View key={index} style={[styles.LenderDashboardcard, { flex: 1, padding: 5, borderWidth: 1, borderColor: '#EFEFEF', borderRadius: 10 }]}>
                                 <View style={styles.cardimg}>
                                     <Image
                                         source={{ uri: lending.product.imageUrls[0] || 'https://via.placeholder.com/150' }}
@@ -148,8 +172,25 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                                     <Text style={{ fontSize: 14, color: COLORS.title }}>
                                         {lending.firstName + ' ' + lending.lastName || 'Unknown Borrower'}
                                     </Text>
-                                    <Text style={{ fontSize: 14 }}>{new Date(lending.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(lending.startDate).toLocaleDateString('en-GB', { weekday: 'short' })} - {new Date(lending.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(lending.endDate).toLocaleDateString('en-GB', { weekday: 'short' })}</Text>
+                                    <Text style={{ fontSize: 14 }}>
+                                        {new Date(lending.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(lending.startDate).toLocaleDateString('en-GB', { weekday: 'short' })} - {new Date(lending.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}, {new Date(lending.endDate).toLocaleDateString('en-GB', { weekday: 'short' })}
+                                    </Text>
                                 </View>
+                                <TouchableOpacity
+                                    onPress={() => { if (user?.uid && lending.product.ownerID) handleChat(user, lending.product.ownerID) }}
+                                    style={{
+                                        marginLeft: 'auto',
+                                        borderWidth: 1,
+                                        borderColor: COLORS.blackLight,
+                                        padding: 10,
+                                        borderRadius: 10,
+                                    }}
+                                >
+                                    {/* <Text style={{ fontSize: 14, color: COLORS.primary }}>
+                                        {lending.userId} && {lending.product.ownerID}
+                                    </Text> */}
+                                    <Ionicons name="chatbubble-ellipses-outline" size={20} />
+                                </TouchableOpacity>
                             </View>
                         ))}
                     </ScrollView>
@@ -159,54 +200,28 @@ const LenderDashboard = ({ navigation }: LenderDashboardScreenProps) => {
                         Owner Resources and Tips
                     </Text>
                     <ScrollView showsHorizontalScrollIndicator={false}>
-                        <View style={[styles.LenderDashboardcard, { width: 200, padding: 10 }]}>
-                            <View style={styles.cardimg}>
+                        {tips.map((resource, index) => (
+                            <View
+                                key={index}
+                                style={[
+                                    styles.LenderDashboardcard,
+                                    { alignItems: 'center', borderWidth: 1, borderColor: '#EFEFEF', borderRadius: 10 },
+                                ]}
+                            >
                                 <Image
-                                    source={{ uri: 'https://via.placeholder.com/150' }}
-                                    style={{ width: 50, height: 50, borderRadius: 10 }}
+                                    source={{ uri: resource.imageUri }}
+                                    style={{ width: 100, height: 100, margin: 5, borderRadius: 15, }}
                                 />
+                                <View>
+                                    <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title }}>
+                                        {resource.title}
+                                    </Text>
+                                    <Text style={{ fontSize: 14, color: COLORS.title, }}>
+                                        {resource.description}
+                                    </Text>
+                                </View>
                             </View>
-                            <View>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                                    Resource 1
-                                </Text>
-                                <Text style={{ fontSize: 12, color: COLORS.title }}>
-                                    Learn how to maximize your earnings.
-                                </Text>
-                            </View>
-                        </View>
-                        <View style={[styles.LenderDashboardcard, { width: 200, padding: 10 }]}>
-                            <View style={styles.cardimg}>
-                                <Image
-                                    source={{ uri: 'https://via.placeholder.com/150' }}
-                                    style={{ width: 50, height: 50, borderRadius: 10 }}
-                                />
-                            </View>
-                            <View>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                                    Resource 2
-                                </Text>
-                                <Text style={{ fontSize: 12, color: COLORS.title }}>
-                                    Tips for safe lending practices.
-                                </Text>
-                            </View>
-                        </View>
-                        <View style={[styles.LenderDashboardcard, { width: 200, padding: 10 }]}>
-                            <View style={styles.cardimg}>
-                                <Image
-                                    source={{ uri: 'https://via.placeholder.com/150' }}
-                                    style={{ width: 50, height: 50, borderRadius: 10 }}
-                                />
-                            </View>
-                            <View>
-                                <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                                    Resource 3
-                                </Text>
-                                <Text style={{ fontSize: 12, color: COLORS.title }}>
-                                    How to attract more borrowers.
-                                </Text>
-                            </View>
-                        </View>
+                        ))}
                     </ScrollView>
                 </View>
             </ScrollView>
