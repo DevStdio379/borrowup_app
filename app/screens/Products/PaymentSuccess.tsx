@@ -10,7 +10,7 @@ type PaymentSuccessScreenProps = StackScreenProps<RootStackParamList, 'PaymentSu
 
 const PaymentSuccessScreen = ({ navigation, route }: PaymentSuccessScreenProps) => {
 
-    const [index, setIndex] = useState(0);
+    const [index, setIndex] = useState(1);
     const { borrowingId, collectionCode, latitude, longitude, addressName, address, postcode } = route.params;
 
     return (
@@ -49,7 +49,7 @@ const PaymentSuccessScreen = ({ navigation, route }: PaymentSuccessScreenProps) 
 
                     {/* Button */}
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('BottomNavigation', { screen: 'MyBorrowings' })}
+                        onPress={() => navigation.navigate('BottomNavigation', { screen: 'MyBorrowingsStack' })}
                         style={{ width: SIZES.width * 0.8, backgroundColor: COLORS.primary, borderRadius: 12, padding: 15 }}>
                         <Text style={{ color: COLORS.white, textAlign: 'center', fontWeight: 'bold', fontSize: 16 }}>Go to My Borrowing</Text>
                     </TouchableOpacity>
