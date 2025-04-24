@@ -1166,7 +1166,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     {/* <Text style={styles.originalPrice}>£40.20</Text> */}
                   </Text>
                   <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title }}>{product.title}</Text>
-                  <Text style={{ fontSize: 14, color: COLORS.blackLight }}>{product.description}</Text>
+                  {/* <Text style={{ fontSize: 14, color: COLORS.blackLight }}>{product.description}</Text> */}
                 </View>
               </View>
               <View style={GlobalStyleSheet.line} />
