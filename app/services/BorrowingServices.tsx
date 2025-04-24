@@ -29,8 +29,18 @@ export interface Borrowing {
 
 export const createBorrowing = async (borrowingData: Borrowing) => {
   try {
+    // Ensure no undefined fields in the product object
+    const sanitizedBorrowingData = {
+      ...borrowingData,
+      product: {
+        ...borrowingData.product,
+        averageRating: borrowingData.product.averageRating ?? null,
+        ratingCount: borrowingData.product.ratingCount ?? null, // Replace undefined with null
+      },
+    };
+
     const borrowingRef = collection(db, 'borrowings');
-    const docRef = await addDoc(borrowingRef, borrowingData);
+    const docRef = await addDoc(borrowingRef, sanitizedBorrowingData);
     console.log('Borrowing created with ID: ', docRef.id);
     return docRef.id;
   } catch (error) {
