@@ -10,6 +10,7 @@ export interface Product {
   imageUrls: string[];  // Change to an array to accept multiple images
   title: string;
   description: string;
+  includedItems: string[];  // Change to an array to accept multiple items
   category: string;
   lendingRate: number;
   collectionTime: string;
@@ -47,6 +48,7 @@ const mapDocToProduct = (doc: any): Product => {
     imageUrls: productData.imageUrls,
     title: productData.title,
     description: productData.description,
+    includedItems: productData.includedItems,
     category: productData.category,
     lendingRate: productData.lendingRate,
     collectionTime: productData.collectionTime,
