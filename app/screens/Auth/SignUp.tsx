@@ -69,10 +69,7 @@ const SignUp = ({ navigation }: SignUpScreenProps) => {
                 [
                     {
                         text: "OK",
-                        onPress: () => navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'AccountVerification' }]
-                        }),
+                        onPress: () => navigation.navigate('AccountVerification'),
                     },
                 ]
             );

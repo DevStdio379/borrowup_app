@@ -23,10 +23,14 @@ const AccountVerification = ({ navigation }: AccountVerificationScreenProps) => 
       if (user?.emailVerified) {
         updateUserData(user.uid, { 'isVerified': true });
         Alert.alert("Success", "Your email is verified.");
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'BottomNavigation', params: { screen: 'ProfileStack' } }],
-        });
+        if (navigation.canGoBack() && navigation.getState().routes[navigation.getState().index - 1]?.name === 'SignUp') {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'BottomNavigation', params: { screen: 'HomeStack' } }],
+          });
+        } else {
+          navigation.goBack();
+        }
       } else {
         Alert.alert("Still Not Verified", "Please check your email and try again.");
       }
@@ -77,12 +81,19 @@ const AccountVerification = ({ navigation }: AccountVerificationScreenProps) => 
           </View>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
             <TouchableOpacity
-              onPress={() => navigation.reset({
-              index: 0,
-              routes: [{ name: 'BottomNavigation' }],
-              })}
+              onPress={() => {
+                console.log(navigation.getState().routes.map(route => route.name));
+                if (navigation.canGoBack() && navigation.getState().routes[navigation.getState().index - 1]?.name === 'SignUp') {
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'BottomNavigation', params: { screen: 'HomeStack' } }],
+                  });
+                } else {
+                  navigation.goBack();
+                }
+              }}
               style={{
-              height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
+                height: 45, width: 45, alignItems: 'center', justifyContent: 'center',
               }}
             >
               <Ionicons size={30} color={COLORS.black} name='close-outline' />
