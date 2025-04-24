@@ -150,21 +150,21 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
     };
 
     const steps = [
-        { label: "Rental\nCreated", date: `${formatDate(lending?.startDate)},\n${lending?.product.collectionTime}`, completed: (status ?? 0) >= 0 },
+        { label: "Borrowing\nCreated", date: `${formatDate(lending?.startDate)}`, completed: (status ?? 0) >= 0 },
         { label: "Pickup\n", date: "Enter pickup\ncode", completed: (status ?? 0) > 2 },
-        { label: "Active\nRental", date: "\n", completed: (status ?? 0) > 2 },
+        { label: "Active\nBorrowing", date: "\n", completed: (status ?? 0) > 2 },
         { label: "Return\n", date: "Show return\ncode", completed: (status ?? 0) > 3 },
-        { label: "Rental\nCompleted", date: `${formatDate(lending?.endDate)},\n ${lending?.product.returnTime}`, completed: (status ?? 0) > 5 },
+        { label: "Borrowing\nCompleted", date: `${formatDate(lending?.endDate)}`, completed: (status ?? 0) > 5 },
     ];
 
     const actions = [
-        { buttonTitle: 'Extend Rental', onPressAction: () => Alert.alert('Extend Rental Pressed') },
+        { buttonTitle: 'Extend Borrowing', onPressAction: () => Alert.alert('Extend Borrowing Pressed') },
         { buttonTitle: 'Report Issue', onPressAction: () => Alert.alert('Report Issue Pressed') },
         { buttonTitle: 'Contact Support', onPressAction: () => Alert.alert('Contact Support Pressed') },
     ];
 
 
-    const greetings = 'Hi there, thank you for your rent. We hope that you can take the advantage of this item during your rental period Beforehand, here’s the information that you might need during your rental terms.';
+    const greetings = 'Hi there, thank you for your rent. We hope that you can take the advantage of this item during your borrowing period Beforehand, here’s the information that you might need during your borrowing terms.';
 
     return (
         <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
@@ -236,7 +236,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                         <View style={{ backgroundColor: "#f3f3f3", padding: 16, borderRadius: 12, alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, marginVertical: 20, marginHorizontal: 10 }}>
                             {status === 0 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontWeight: 'bold' }}>Please confirm this lending</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>Please confirm this borrowing</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                                         <TouchableOpacity
                                             style={{
@@ -263,6 +263,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                             onPress={async () => {
                                                 if (lending.id) {
                                                     await updateBorrowing(lending.id, { status: status! + 1, collectionCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
+                                                    onRefresh();
                                                 }
                                                 setStatus(status! + 1);
                                             }}
@@ -273,7 +274,8 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                 </View>
                             ) : status === 1 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>Your Collection Code:</Text>
+                                    <Text style={{ fontSize: 16, fontWeight: "500"}}>Enter Pickup Code</Text>
+                                    <Text style={{ fontSize: 13, marginBottom: 10, color: COLORS.blackLight2 }}>Kindly ask the borrower for the pickup code</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                                         {collectionCode.map((digit, index) => (
                                             <TextInput
@@ -289,8 +291,6 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                             />
                                         ))}
                                     </View>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{lending.status}</Text>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{lending.collectionCode}</Text>
                                     <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10, color: COLORS.danger }}>{validationMessage}</Text>
                                 </View>
                             ) : status === 2 ? (
@@ -317,10 +317,10 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                 </View>
                             ) : status === 3 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
+                                    <Text>Active Borrowing</Text>
                                     <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>
                                         {lending?.endDate ? `${Math.ceil((new Date(lending.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left` : "N/A"}
                                     </Text>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{lending.status}</Text>
                                     <TouchableOpacity
                                         style={{
                                             backgroundColor: COLORS.primary,
@@ -618,11 +618,11 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                                         </View>
                                                     </View>
                                                     <View style={GlobalStyleSheet.line} />
-                                                    {/* Rental Period and Delivery Method */}
+                                                    {/* Borrowing Period and Delivery Method */}
                                                     <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
                                                         <View style={{ paddingVertical: 10 }}>
-                                                            <Text style={{ fontSize: 16, fontWeight: "bold", color: COLORS.title }}>Rental Period</Text>
-                                                            <Text style={{ fontSize: 14, color: "#666", marginBottom: 20 }}>Day Rental</Text>
+                                                            <Text style={{ fontSize: 16, fontWeight: "bold", color: COLORS.title }}>Borrowing Period</Text>
+                                                            <Text style={{ fontSize: 14, color: "#666", marginBottom: 20 }}>Day Borrowing</Text>
                                                             <Text style={{ fontSize: 14, fontWeight: "bold" }}>From:</Text>
                                                             <Text style={{ fontSize: 14, color: COLORS.title }}>{new Date(lending.startDate).toLocaleDateString('en-GB')}</Text>
                                                             <Text style={{ fontSize: 14, color: COLORS.title }}>09:00 AM</Text>
@@ -639,8 +639,8 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                                         </View>
                                                     </View>
                                                     <View style={GlobalStyleSheet.line} />
-                                                    {/* Rental Rate Breakdown */}
-                                                    <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title, marginTop: 10 }}>Rental Rate Breakdown</Text>
+                                                    {/* Borrowing Rate Breakdown */}
+                                                    <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title, marginTop: 10 }}>Borrowing Rate Breakdown</Text>
                                                     <Text style={{ fontSize: 14, color: COLORS.blackLight, marginBottom: 10 }}>Cash on Pickup</Text>
                                                     <View style={{ marginBottom: 20 }}>
                                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>

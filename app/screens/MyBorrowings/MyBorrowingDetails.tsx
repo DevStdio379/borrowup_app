@@ -145,22 +145,29 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
         fetchSelectedBorrowingData().then(() => setRefreshing(false));
     }, []);
 
+    const formatDate = (dateString: string | undefined) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', weekday: 'short' };
+        return date.toLocaleDateString('en-GB', options);
+    };
+
     const steps = [
-        { label: "Rental\nCreated", date: "7/10/24, Mon\n09:00 AM", completed: (status ?? 0) >= 0 },
+        { label: "Borrowing\nCreated", date: `${formatDate(borrowing?.startDate)}`, completed: (status ?? 0) >= 0 },
         { label: "Pickup\n", date: "Show pickup\ncode", completed: (status ?? 0) > 2 },
-        { label: "Active\nRental", date: "\n", completed: (status ?? 0) > 2 },
+        { label: "Active\nBorrowing", date: "\n", completed: (status ?? 0) > 2 },
         { label: "Return\n", date: "Enter return\ncode", completed: (status ?? 0) > 3 },
-        { label: "Rental\nCompleted", date: "12/10/24, Sat\n09:00 AM", completed: (status ?? 0) > 5 },
+        { label: "Borrowing\nCompleted", date: `${formatDate(borrowing?.endDate)}`, completed: (status ?? 0) > 5 },
     ];
 
     const actions = [
-        { buttonTitle: 'Extend Rental', onPressAction: () => Alert.alert('Extend Rental Pressed') },
+        { buttonTitle: 'Extend Borrowing', onPressAction: () => Alert.alert('Extend Borrowing Pressed') },
         { buttonTitle: 'Report Issue', onPressAction: () => Alert.alert('Report Issue Pressed') },
         { buttonTitle: 'Contact Support', onPressAction: () => Alert.alert('Contact Support Pressed') },
     ];
 
 
-    const greetings = 'Hi there, thank you for your rent. We hope that you can take the advantage of this item during your rental period Beforehand, here’s the information that you might need during your rental terms.';
+    const greetings = 'Hi there, thank you for your rent. We hope that you can take the advantage of this item during your borrowing period Beforehand, here’s the information that you might need during your borrowing terms.';
 
     return (
         <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
@@ -232,7 +239,7 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                         <View style={{ backgroundColor: "#f3f3f3", padding: 16, borderRadius: 12, alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, marginVertical: 20, marginHorizontal: 10 }}>
                             {status === 0 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>Awaiting for lender's confirmation</Text>
+                                    <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>Awaiting for owner's confirmation</Text>
                                     <TouchableOpacity
                                         style={{
                                             backgroundColor: COLORS.primary,
@@ -248,18 +255,18 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                             // setStatus(status! + 1);
                                         }}
                                     >
-                                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Message lender</Text>
+                                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Message owner</Text>
                                     </TouchableOpacity>
-                                    <Text style={{ fontSize: 10, color: COLORS.black, textAlign: 'center' }}>The lender needs to confirm this borrowing.</Text>
+                                    <Text style={{ fontSize: 10, color: COLORS.black, textAlign: 'center' }}>The owner needs to confirm this borrowing.</Text>
                                 </View>
                             ) : status === 1 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Your collection code is</Text>
+                                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Your pickup code is</Text>
                                     <Text style={{ fontSize: 24, fontWeight: "bold", color: "indigo" }}>{borrowing.collectionCode}</Text>
                                 </View>
                             ) : status === 2 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontWeight: 'bold' }}>Please confirm this pickup?</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>Please confirm this pickup</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                                         <TouchableOpacity
                                             style={{
@@ -294,11 +301,10 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                 </View>
                             ) : status === 3 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text>Active Rental</Text>
+                                    <Text>Active Borrowing</Text>
                                     <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>
                                         {borrowing?.endDate ? `${Math.ceil((new Date(borrowing.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left` : "N/A"}
                                     </Text>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.status}</Text>
                                     <TouchableOpacity
                                         style={{
                                             backgroundColor: COLORS.primary,
@@ -311,15 +317,16 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                         onPress={async () => {
                                             await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1, returnCode: Math.floor(1000000 + Math.random() * 9000000).toString() });
                                             setStatus(status! + 1);
+                                            onRefresh();
                                         }}
                                     >
                                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Return Borrowing</Text>
                                     </TouchableOpacity>
-                                    <Text style={{ fontSize: 10, color: COLORS.black, textAlign: 'center' }}>The code need to be showed to the borrower upon return</Text>
                                 </View>
                             ) : status === 4 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>Your return code:</Text>
+                                    <Text style={{ fontSize: 16, fontWeight: "500" }}>Enter Return Code</Text>
+                                    <Text style={{ fontSize: 13, marginBottom: 10, color: COLORS.blackLight2 }}>Kindly ask the owner for the return code</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                                         {returnCode.map((digit, index) => (
                                             <TextInput
@@ -335,13 +342,11 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                             />
                                         ))}
                                     </View>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.status.toString()}</Text>
-                                    <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10 }}>{borrowing.returnCode.toString()}</Text>
                                     <Text style={{ fontSize: 12, marginBottom: 4, marginTop: 10, color: COLORS.danger }}>{validationMessage}</Text>
                                 </View>
                             ) : status === 5 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>Awaiting for lender's return confirmation</Text>
+                                    <Text style={{ fontSize: 16, fontWeight: "500", marginBottom: 4 }}>Awaiting for owner's return confirmation</Text>
                                     <TouchableOpacity
                                         style={{
                                             backgroundColor: COLORS.primary,
@@ -356,9 +361,9 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                             setStatus(status! + 1);
                                         }}
                                     >
-                                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Message lender</Text>
+                                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Message owner</Text>
                                     </TouchableOpacity>
-                                    <Text style={{ fontSize: 10, color: COLORS.black, textAlign: 'center' }}>The lender needs to confirm this return.</Text>
+                                    <Text style={{ fontSize: 10, color: COLORS.black, textAlign: 'center' }}>The owner needs to confirm this return.</Text>
                                 </View>
                             ) : (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
@@ -586,11 +591,11 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                                         </View>
                                                     </View>
                                                     <View style={GlobalStyleSheet.line} />
-                                                    {/* Rental Period and Delivery Method */}
+                                                    {/* Borrowing Period and Delivery Method */}
                                                     <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
                                                         <View style={{ paddingVertical: 10 }}>
-                                                            <Text style={{ fontSize: 16, fontWeight: "bold", color: COLORS.title }}>Rental Period</Text>
-                                                            <Text style={{ fontSize: 14, color: "#666", marginBottom: 20 }}>Day Rental</Text>
+                                                            <Text style={{ fontSize: 16, fontWeight: "bold", color: COLORS.title }}>Borrowing Period</Text>
+                                                            <Text style={{ fontSize: 14, color: "#666", marginBottom: 20 }}>Day Borrowing</Text>
                                                             <Text style={{ fontSize: 14, fontWeight: "bold" }}>From:</Text>
                                                             <Text style={{ fontSize: 14, color: COLORS.title }}>{new Date(borrowing.startDate).toLocaleDateString('en-GB')}</Text>
                                                             <Text style={{ fontSize: 14, color: COLORS.title }}>09:00 AM</Text>
@@ -607,8 +612,8 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                                         </View>
                                                     </View>
                                                     <View style={GlobalStyleSheet.line} />
-                                                    {/* Rental Rate Breakdown */}
-                                                    <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title, marginTop: 10 }}>Rental Rate Breakdown</Text>
+                                                    {/* Borrowing Rate Breakdown */}
+                                                    <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title, marginTop: 10 }}>Borrowing Rate Breakdown</Text>
                                                     <Text style={{ fontSize: 14, color: COLORS.blackLight, marginBottom: 10 }}>Cash on Pickup</Text>
                                                     <View style={{ marginBottom: 20 }}>
                                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
