@@ -69,6 +69,8 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [loading, setLoading] = useState(true);
+    const [includedItems, setIncludedItems] = useState<string[]>([]);
+    const [newItem, setNewItem] = useState<string>('');
 
     const snapPoints = useMemo(() => ['1%', '35%'], []);
 
@@ -270,6 +272,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                         imageUrls: images ? images : [''],
                         title: title || '',
                         description: description || '',
+                        includedItems: includedItems ? includedItems : [''],
                         category: category[0] || '',
                         lendingRate: lendingRate || 0,
                         collectionTime: collectionTime || '',
@@ -298,6 +301,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                         imageUrls: images ? images : [''],
                         title: title || '',
                         description: description || '',
+                        includedItems: includedItems ? includedItems : [''],
                         category: category[0] || '',
                         lendingRate: lendingRate || 0,
                         collectionTime: collectionTime || '',
@@ -360,14 +364,14 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                     </TouchableOpacity>
                                 )}
                             </View>
-                            <View style={{ flex: 1, alignItems: 'center' }}>
-                                <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
+                            <View style={{ alignItems: 'center' }}>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
                                     {[
                                         'Add New Listing',
                                         'Select Photos',
                                         'Add Item Details',
                                         'Select Category',
-                                        'Set Rental Rate',
+                                        'Set Borrowing Rate',
                                         'Add Borrowing Conditions',
                                         'Add Pickup & Return Instructions',
                                         'Select Pickup Address',
@@ -621,6 +625,73 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                 multiline={true}  // Enable multi-line input
                                 numberOfLines={4} // Suggest the input area size
                             />
+                            <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Included Items:</Text>
+                            <View>
+                                <FlatList
+                                    scrollEnabled={false}
+                                    data={includedItems}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item, index }) => (
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                                            <Text style={{ flex: 1, fontSize: 14, color: COLORS.black }}>{item}</Text>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    const updatedItems = includedItems.filter((_, i) => i !== index);
+                                                    setIncludedItems(updatedItems);
+                                                }}
+                                                style={{
+                                                    padding: 5,
+                                                    backgroundColor: COLORS.blackLight2,
+                                                    borderRadius: 5,
+                                                }}
+                                            >
+                                                <Ionicons name="trash-outline" size={20} color={COLORS.white} />
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}
+                                    ListEmptyComponent={
+                                        <Text style={{ fontSize: 14, color: COLORS.blackLight }}>No items added yet.</Text>
+                                    }
+                                />
+                                <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                                    <Input
+                                        onFocus={() => setisFocused12(true)}
+                                        onBlur={() => setisFocused12(false)}
+                                        isFocused={isFocused12}
+                                        value={newItem}
+                                        onChangeText={setNewItem}
+                                        backround={COLORS.card}
+                                        style={{
+                                            flex: 1,
+                                            fontSize: 12,
+                                            width: SIZES.width * 0.8,
+                                            borderRadius: 10,
+                                            backgroundColor: COLORS.input,
+                                            borderColor: COLORS.inputBorder,
+                                            borderWidth: 1,
+                                        }}
+                                        placeholder="Add an item"
+                                    />
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            if (newItem.trim()) {
+                                                setIncludedItems([...includedItems, newItem.trim()]);
+                                                setNewItem('');
+                                            }
+                                        }}
+                                        style={{
+                                            marginLeft: 10,
+                                            padding: 10,
+                                            backgroundColor: COLORS.primary,
+                                            borderRadius: 10,
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <Ionicons name="add" size={20} color={COLORS.white} />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
                         </View>
                     }
                     {index === 3 &&
@@ -649,9 +720,8 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                     }
                     {index === 4 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Set your rental rate</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 10, paddingBottom: 50 }}>You define your available days to rent within a week (7 days)</Text>
-                            <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 20 }}>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Set your borrowing rate</Text>
+                            <View style={{ flexDirection: 'row', width: '100%', paddingVertical: 20 }}>
                                 <Input
                                     onFocus={() => setisFocused3(true)}
                                     onBlur={() => setisFocused3(false)}
@@ -679,7 +749,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                         backround={COLORS.card}
                                         style={{ width: 90, borderRadius: 10, backgroundColor: COLORS.input, fontSize: 12 }}
                                         inputicon
-                                        placeholder='09:00AM'
+                                        placeholder='09:00'
                                         value={collectionTime}
                                         keyboardType={'numeric'}
                                     />
@@ -695,7 +765,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                         backround={COLORS.card}
                                         style={{ width: 90, borderRadius: 10, backgroundColor: COLORS.input, fontSize: 12 }}
                                         inputicon
-                                        placeholder='09:00AM'
+                                        placeholder='09:00'
                                         value={returnTime}
                                         keyboardType={'numeric'}
                                     />
@@ -703,26 +773,63 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                 </View>
                                 <Text style={{ fontSize: 12, color: COLORS.title, marginTop: 15, marginBottom: 5, paddingLeft: 5, paddingRight: 5 }}>.</Text>
                             </View>
-                            <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.black, paddingTop: 40, paddingBottom: 10, }}>Set your available slots to borrow</Text>
-                            <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 5, paddingBottom: 20 }}>Select the available slots throughout the week.</Text>
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingBottom: 20, gap: 10 }}>
-                                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
-                                    <TouchableOpacity
-                                        key={index}
-                                        style={{
-                                            borderRadius: 10,
-                                            backgroundColor: availableDays ? (availableDays.includes(day) ? COLORS.primary : COLORS.input) : COLORS.input,
-                                            padding: 10,
-                                            alignItems: 'center',
-                                            width: '30%',
-                                            marginBottom: 10
-                                        }}
-                                        onPress={() => toggleDaySelection(day)}
-                                    >
-                                        <Text style={{ fontSize: 14, color: COLORS.title }}>{day}</Text>
-                                    </TouchableOpacity>
-                                ))}
+                            <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.black, paddingTop: 20, paddingBottom: 10 }}>Are you going to be available throughout the week?</Text>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20, gap: 10 }}>
+                                <TouchableOpacity
+                                    style={{
+                                        padding: 15,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: '45%',
+                                        borderRadius: 10,
+                                        borderWidth: 1,
+                                        borderColor: availableDays.length === 7 ? COLORS.primary : COLORS.black,
+                                        backgroundColor: availableDays.length === 7 ? COLORS.primaryLight : COLORS.background,
+                                    }}
+                                    onPress={() => setAvailableDays(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])}
+                                >
+                                    <Text style={{ color: COLORS.black, fontSize: 16, fontWeight: 'bold' }}>Yes</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{
+                                        padding: 15,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: '45%',
+                                        borderRadius: 10,
+                                        borderWidth: 1,
+                                        borderColor: availableDays.length < 7 ? COLORS.primary : COLORS.black,
+                                        backgroundColor: availableDays.length < 7 ? COLORS.primaryLight : COLORS.background,
+                                    }}
+                                    onPress={() => setAvailableDays([])}
+                                >
+                                    <Text style={{ color: COLORS.black, fontSize: 16, fontWeight: 'bold' }}>No</Text>
+                                </TouchableOpacity>
                             </View>
+
+                            {availableDays.length < 7 && (
+                                <View>
+                                    <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 5, paddingBottom: 20 }}>Select your available slots throughout the week.</Text>
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingBottom: 20, gap: 10 }}>
+                                        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
+                                            <TouchableOpacity
+                                                key={index}
+                                                style={{
+                                                    borderRadius: 10,
+                                                    backgroundColor: availableDays.includes(day) ? COLORS.primary : COLORS.input,
+                                                    padding: 10,
+                                                    alignItems: 'center',
+                                                    width: '30%',
+                                                    marginBottom: 10
+                                                }}
+                                                onPress={() => toggleDaySelection(day)}
+                                            >
+                                                <Text style={{ fontSize: 14, color: COLORS.title }}>{day}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                </View>
+                            )}
                         </View>
                     }
                     {index === 5 &&
@@ -805,6 +912,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                 {
                                     addresses.map((item) => (
                                         <TouchableOpacity
+                                            key={item.id}
                                             activeOpacity={0.8}
                                             style={{
                                                 marginVertical: 5,
@@ -1015,12 +1123,12 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                                     'Start',
                                     'Add Item Details',
                                     'Select Category',
-                                    'Set Rental Rate',
+                                    'Set Borrowing Rate',
                                     'Add Borrowing Conditions',
                                     'Add Pickup & Return Instructions',
                                     'Select Pickup Address',
                                     'Add Deposit Details',
-                                    'Publish Listing',
+                                    'Finalise Listing',
                                 ][index] || ''}</Text>
                             </TouchableOpacity>
                         </View>
