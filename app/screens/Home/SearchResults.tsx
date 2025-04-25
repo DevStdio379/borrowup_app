@@ -71,7 +71,7 @@ export const SearchResults = ({ navigation, route }: SearchResultsScreenProps) =
                                     price={item.lendingRate.toString()}
                                     ownerID={item.ownerID}
                                     description={item.description}
-                                    location={item.location}
+                                    location={item.address}
                                     title={item.title}
                                     onPress={() => navigation.navigate('ProductDetails', { product: item })}
                                     // onPress5={() => addItemToWishList(item)}
