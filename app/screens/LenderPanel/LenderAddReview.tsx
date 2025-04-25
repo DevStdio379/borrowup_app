@@ -416,7 +416,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                 ))}
                             </View>
                             <View style={GlobalStyleSheet.line}></View>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us what stood out</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us more</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
                                 {['Arrived On Time', 'Clear and Respectful', 'Friendly and Polite', 'Late Without Notice', 'No Communication Beforehand', 'Seemed Rushed'].map((feedback, index) => (
                                     <TouchableOpacity
@@ -464,7 +464,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                 ))}
                             </View>
                             <View style={GlobalStyleSheet.line}></View>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us what stood out</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us more</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
                                 {['Returned On Time', 'Notified About Delay', 'Quick and Smooth Handover', 'Easy to Coordinate Return', 'Late Without Communication'].map((feedback, index) => (
                                     <TouchableOpacity

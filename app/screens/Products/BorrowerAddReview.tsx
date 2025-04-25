@@ -432,9 +432,9 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                 ))}
                             </View>
                             <View style={GlobalStyleSheet.line}></View>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us what stood out</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us more</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Clear Directions Provided', 'Safe & Convenient Location', 'Easy to Find Location'].map((feedback, index) => (
+                                {['Arrived On Time', 'Clear Directions Provided', 'Safe & Convenient Location', 'Easy to Find Location', 'Late Without Notice', 'Rushed the Pickup', 'Did not Communicate Clearly'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -480,9 +480,9 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                 ))}
                             </View>
                             <View style={GlobalStyleSheet.line}></View>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us what stood out</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us more</Text>
                             <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                {['Easy to Find Drop-off', 'Clear Return Instructions', 'Convenient Return Location'].map((feedback, index) => (
+                                {['Easy to Find Drop-off', 'Quick and Smooth Handover', 'Clear Return Instructions', 'Convenient Return Location', 'Rushed the Return', 'Late Without Notice'].map((feedback, index) => (
                                     <TouchableOpacity
                                         key={index}
                                         style={{
@@ -538,7 +538,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                 ))}
                                 <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 50, paddingBottom: 20 }}>Tell us more</Text>
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 20, gap: 10 }}>
-                                    {['Exactly as Described', 'Mostly Accurate Description', 'Minor Differences', 'Description Was Vague', 'Not What I Expected'].map((feedback, index) => (
+                                    {['Photos matched the item', 'Clear and detailed description', 'Minor Differences', 'Description Was Vague', 'Listing lacked key details', 'Misleading photos or info'].map((feedback, index) => (
                                         <TouchableOpacity
                                             key={index}
                                             style={{
