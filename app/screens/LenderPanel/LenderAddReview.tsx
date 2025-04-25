@@ -537,7 +537,6 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     ))}
                                 </View>
                             </View>
-                            <Text>{givenInstructionFollowedFeedback}</Text>
                             <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
                             <Input
                                 onFocus={() => setisFocused3(true)}
