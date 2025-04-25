@@ -120,7 +120,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             const fetchedDates = await getBookedDates(product.id || 'undefined');
             // setBookedDates(fetchedDates);
             setSelectedDates(fetchedDates);
-            const nextAvailable = findNextAvailableDate('2025-04-16', fetchedDates);
+            const today = new Date().toISOString().split('T')[0];
+            const nextAvailable = findNextAvailableDate(today, fetchedDates);
             console.log('Next available date:', nextAvailable);
             setStartDate(nextAvailable);
             setEndDate(nextAvailable);
@@ -354,7 +355,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     const fetchBookedDates = async () => {
       if (product) {
         const fetchedDates = await getBookedDates(product.id || 'undefined');
-        const nextAvailable = findNextAvailableDate('2025-04-16', fetchedDates);
+        const today = new Date().toISOString().split('T')[0];
+        const nextAvailable = findNextAvailableDate(today, fetchedDates);
         console.log('Next available date:', nextAvailable);
         setStartDate(nextAvailable);
         setEndDate(nextAvailable);
@@ -673,9 +675,6 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                       showsVerticalScrollIndicator={false}
                       style={{ width: SIZES.width, paddingTop: 10 }}
                       key={index}
-                      refreshControl={
-                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                      }
                     >
                       <View style={{}}>
                         {index === 0 && (
