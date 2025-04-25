@@ -76,7 +76,7 @@ export const SearchResults = ({ navigation, route }: SearchResultsScreenProps) =
                                     onPress={() => navigation.navigate('ProductDetails', { product: item })}
                                     // onPress5={() => addItemToWishList(item)}
                                     product={true}
-                                    deposit={item.deposit}
+                                    deposit={item.depositAmount}
                                     ratingCount={item.ratingCount ?? 0}
                                     averageRating={item.averageRating ?? 0}                            />
                             </View>
