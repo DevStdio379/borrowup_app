@@ -769,7 +769,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                                 width: '100%'
                             }}
                             onPress={() => {
-                                Alert.alert('Listing Completed');
+
                                 handleReview(1);
                                 navigation.reset({
                                     index: 0,
