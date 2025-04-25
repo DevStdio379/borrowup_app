@@ -60,8 +60,9 @@ const Search = ({ navigation }: SearchProps) => {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => navigation.goBack()}>
-                    <View style={{ width: SIZES.width * 0.7, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: COLORS.inputBackground, borderWidth: 1, borderRadius: 20, paddingLeft: 10 }}>
+                    <View style={{ width: SIZES.width * 0.8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: COLORS.inputBackground, borderWidth: 1, borderRadius: 20, paddingLeft: 10 }}>
                         <TextInput
+                            placeholderTextColor={COLORS.blackLight}
                             placeholder="Search for products..."
                             value={query}
                             onChangeText={setQuery}
@@ -77,11 +78,12 @@ const Search = ({ navigation }: SearchProps) => {
                         </View>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={{ backgroundColor: COLORS.inputBackground, padding: 10, borderColor: COLORS.inputBackground, borderWidth: 1, borderRadius: 10, }}
                     onPress={() => navigation.goBack()}>
                     <Ionicons name="filter" size={20} color={COLORS.black} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                <View></View>
             </View>
 
 
@@ -90,6 +92,7 @@ const Search = ({ navigation }: SearchProps) => {
             {/* Suggestions List */}
             <FlatList
                 data={suggestions}
+                style={{ marginHorizontal: 15 }}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <TouchableOpacity
