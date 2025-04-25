@@ -1245,7 +1245,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', gap: 5 }}>
-                <Text style={{ fontSize: 14, color: COLORS.blackLight2 }}>£{Number(total ?? 0) + Number(product.depositAmount)} total includes fees </Text>
+                <Text style={{ fontSize: 14, color: COLORS.blackLight2 }}>£{Number(total ?? 0) + Number(product.depositAmount)} total includes deposit</Text>
                 {/* <Text>{startDate && endDate ? `Available from ${format(new Date(startDate), 'dd MMM.')}` : ''}</Text> */}
               </View>
             </View>
