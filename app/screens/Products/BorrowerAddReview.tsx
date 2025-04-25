@@ -277,7 +277,7 @@ const BorrowerAddReview = ({ navigation, route }: BorrowerAddReviewScreenProps) 
                         borrowerUpdatedAt: new Date(),
                         borrowerStatus: status,
                     });
-                    Alert.alert(`Review updated successfully. Status: ${status}`);
+                    Alert.alert(`Review updated successfully.`);
                     const latestRating = await getReviewAverageRatingByProductId(borrowing.product.id || 'undefined');
                     await updateProduct(borrowing.product.id || 'undefined', {averageRating: latestRating.averageRating, ratingCount: latestRating.ratingCount});
                 }

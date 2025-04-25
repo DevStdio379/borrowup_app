@@ -265,7 +265,7 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                         lenderUpdatedAt: new Date(),
                         lenderStatus: status,
                     });
-                    Alert.alert(`Review updated successfully. Status: ${status}`);
+                    Alert.alert(`Review updated successfully`);
                 }
             } else {
                 Alert.alert('User ID is missing.');
