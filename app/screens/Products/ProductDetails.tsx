@@ -570,8 +570,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                 </TouchableOpacity>
               )}
             </View>
-            <View style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={{ width: 200, fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center' }}>
                 {[
                   `${product?.category}`,
                   'Select Dates',
