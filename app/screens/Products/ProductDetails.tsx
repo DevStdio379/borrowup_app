@@ -62,7 +62,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     {
       image: "cash",
       title: "Cash on Pickup",
-      text: 'Renter directly pays the owner upon pickup meetup',
+      text: 'Borrower directly pays the owner upon pickup meetup',
     },
     {
       label: 'Recommended',
@@ -779,7 +779,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                               </MapView>
                               <View style={GlobalStyleSheet.line} />
                             </View>
-                            <Text style={{ fontSize: 14, color: COLORS.black, paddingBottom: 20, textAlign: 'center' }}>The exact location will be disclosed upon rental completion</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingBottom: 20, textAlign: 'center' }}>The exact location will be disclosed upon borrowing completion</Text>
                           </View>
                         )}
                         {index === 1 && (
@@ -824,7 +824,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                               {accordionOpen.insurance && (
                                 <View style={{ paddingLeft: 10 }}>
                                   <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>
-                                    The borrower is responsible for any damages or loss during the rental period. Insurance coverage is not included. Please ensure proper care of the item.
+                                    The borrower is responsible for any damages or loss during the borrowing period. Insurance coverage is not included. Please ensure proper care of the item.
                                   </Text>
                                 </View>
                               )}
@@ -992,7 +992,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     Pickup
                   </Text>
                   <Text style={{ fontSize: 13, color: COLORS.black }}>
-                    Address will be disclosed upon rental completion.
+                    Address will be disclosed upon borrowing completion.
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -1133,7 +1133,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                             Why Stripe?
                           </Text>
                           <Text style={{ fontSize: 14, color: COLORS.black, marginTop: 5 }}>
-                            Stripe ensures secure and encrypted transactions, providing peace of mind for both renters and owners.
+                            Stripe ensures secure and encrypted transactions, providing peace of mind for both borrowers and owners.
                             Your payment details are never shared with the owner.
                           </Text>
                           <TouchableOpacity onPress={() => { }}>
@@ -1163,15 +1163,15 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     {/* <Text style={styles.originalPrice}>£40.20</Text> */}
                   </Text>
                   <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title }}>{product.title}</Text>
-                  {/* <Text style={{ fontSize: 14, color: COLORS.blackLight }}>{product.description}</Text> */}
+                  <Text style={{ fontSize: 14, color: COLORS.blackLight }}>{product.category}</Text>
                 </View>
               </View>
               <View style={GlobalStyleSheet.line} />
-              {/* Rental Period and Delivery Method */}
+              {/* Borrowing Period and Delivery Method */}
               <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
                 <View style={{ paddingVertical: 10 }}>
-                  <Text style={{ fontSize: 16, fontWeight: "bold", color: COLORS.title }}>Rental Period</Text>
-                  <Text style={{ fontSize: 14, color: "#666", marginBottom: 20 }}>Day Rental</Text>
+                  <Text style={{ fontSize: 16, fontWeight: "bold", color: COLORS.title }}>Borrowing Period</Text>
+                  <Text style={{ fontSize: 14, color: "#666", marginBottom: 20 }}>Day Borrowing</Text>
                   <Text style={{ fontSize: 14, fontWeight: "bold" }}>From:</Text>
                   <Text style={{ fontSize: 14, color: COLORS.title }}>{new Date(startDate).toLocaleDateString('en-GB')}</Text>
                   <Text style={{ fontSize: 14, color: COLORS.title }}>09:00 AM</Text>
@@ -1188,15 +1188,15 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                 </View>
               </View>
               <Text style={{ fontSize: 12, color: "#666", textAlign: "center", marginBottom: 5 }}>
-                The pickup location will be disclosed upon rental completion
+                The pickup location will be disclosed upon borrowing completion
               </Text>
               <View style={GlobalStyleSheet.line} />
-              {/* Rental Rate Breakdown */}
-              <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title, marginTop: 10 }}>Rental Rate Breakdown</Text>
+              {/* Borrowing Rate Breakdown */}
+              <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 5, color: COLORS.title, marginTop: 10 }}>Borrowing Rate Breakdown</Text>
               <Text style={{ fontSize: 14, color: COLORS.blackLight, marginBottom: 10 }}>Cash on Pickup</Text>
               <View style={{ marginBottom: 20 }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                  <Text style={{ fontSize: 14, color: "#333" }}>Rental rate</Text>
+                  <Text style={{ fontSize: 14, color: "#333" }}>Borrowing rate</Text>
                   <Text style={{ fontSize: 14, color: "#333" }}>£{product.lendingRate} x {numberOfDays} day</Text>
                   <Text style={{ fontSize: 14, fontWeight: "bold" }}>£{total - Number(product.depositAmount)}</Text>
                 </View>
