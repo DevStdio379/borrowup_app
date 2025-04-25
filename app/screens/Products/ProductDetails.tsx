@@ -894,6 +894,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                           <View style={{ paddingRight: 40 }}>
                               {reviews.map((review, index) => (
                                 <View
+                                  key={index}
                                   style={{
                                     borderRadius: 10,
                                     width: '100%',
