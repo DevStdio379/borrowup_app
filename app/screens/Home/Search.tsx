@@ -63,7 +63,7 @@ const Search = ({ navigation }: SearchProps) => {
                     <View style={{ width: SIZES.width * 0.8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: COLORS.inputBackground, borderWidth: 1, borderRadius: 20, paddingLeft: 10 }}>
                         <TextInput
                             placeholderTextColor={COLORS.blackLight}
-                            placeholder="Search for products..."
+                            placeholder="Search for borrowable items..."
                             value={query}
                             onChangeText={setQuery}
                             onSubmitEditing={() => handleSearch()} // Search on enter

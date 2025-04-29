@@ -72,7 +72,7 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
         <ScrollView style={{ backgroundColor: COLORS.background }} showsVerticalScrollIndicator={false}>
             <View style={[GlobalStyleSheet.container, { flexGrow: 1, paddingBottom: 0, paddingHorizontal: 30, paddingTop: 0 }]}>
                 <View style={{ paddingTop: 80, marginBottom: 30 }}>
-                    <Text style={{ color: colors.title, fontWeight: 'bold', fontSize: 30, marginBottom: 5 }}>Welcome back! Glad to see you, Again!</Text>
+                    <Text style={{ color: colors.title, fontWeight: 'bold', fontSize: 30, marginBottom: 5 }}>Welcome back! Glad to see you, again!</Text>
                 </View>
                 <Text style={{ fontSize: 14, color: '#8A8A8A' }}>Email</Text>
                 <View style={{ marginBottom: 20, marginTop: 0 }}>

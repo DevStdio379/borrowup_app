@@ -10,17 +10,17 @@ import { GlobalStyleSheet } from '../../constants/StyleSheet';
 
 const DATA = [
     {
-        title: "A community rental service",
-        subtitle: "Rent almost anything from your neighbourhood"
+        title: "Your Neighbourhood Rental Hub",
+        subtitle: "Need it. Rent it. Save more."
     },
     {
-        title: "Anything?",
-        subtitle: "From household essentials, sports, party or tech.\nYou name it."
+        title: "Anything You Need",
+        subtitle: "From household essentials to sports gear, party supplies, or tech.\nYou name it, BorrowUp has it."
     },
     {
-        title: "Give your belonging a community value - Tag Them",
-        subtitle: "You own something that not in the “Tag Listing”? Rent them and earn while make your neighbourhood fun by sharing"
-    },
+        title: "Turn Your Items Into Community Value",
+        subtitle: "Have something not yet listed? Share it on BorrowUp, earn extra, and make your neighbourhood stronger through sharing."
+    }
 ]
 
 type OnBoardingScreenProps = StackScreenProps<RootStackParamList, 'OnBoarding'>;
@@ -34,7 +34,7 @@ const OnBoarding = ({ navigation }: OnBoardingScreenProps) => {
 
     const IndexImage = [IMAGES.onbording1, IMAGES.onbording2, IMAGES.onbording3]
 
-    const scrollRef = useRef<any>();
+    const scrollRef = useRef<any>(null);
 
     const scrollX = useRef(new Animated.Value(0)).current;
 
@@ -73,83 +73,109 @@ const OnBoarding = ({ navigation }: OnBoardingScreenProps) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.card }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={{ flex: 1 }}>
-                    <View style={[GlobalStyleSheet.container, { marginTop: 160, padding: 0, flex: 1 }]}>
+                    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
                         <Animated.View
                             style={{
+                                flex: 1,
                                 transform: [{ scale: imageScale }], // Apply scale transform
+                                opacity: 0.8, // Add shadowy opacity
                             }}
                         >
                             <Image
                                 style={{
                                     width: '100%',
-                                    height: undefined,
-                                    aspectRatio: 1 / .6,
-                                    //position:'absolute',
-                                    left: 0,
-                                    right: 0,
-                                    top: 0,
-                                    resizeMode: 'contain',
-                                    //backgroundColor:COLORS.primary
-                                    //bottom:0,
+                                    height: '100%',
+                                    position: 'absolute',
+                                    resizeMode: 'cover',
                                 }}
                                 source={IndexImage[sliderIndex - 1]}
                             />
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    width: '100%',
+                                    height: '100%',
+                                    backgroundColor: 'rgba(0, 0, 0, 0)',
+                                }}
+                            >
+                                <Animated.View
+                                    style={{
+                                        flex: 1,
+                                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                                        opacity: 0.8,
+                                        transform: [{ scale: imageScale }],
+                                    }}
+                                />
+                            </View>
                         </Animated.View>
                     </View>
-                    <View style={[GlobalStyleSheet.container, { padding: 0, marginBottom: 55 }]}>
-                        <ScrollView
-                            ref={scrollRef}
-                            horizontal
-                            pagingEnabled
-                            scrollEventThrottle={16}
-                            decelerationRate="fast"
-                            showsHorizontalScrollIndicator={false}
-                            onScroll={onScroll}
-                        >
-                            {DATA.map((data: any, index) => (
-                                <View style={{ width: SIZES.width, ...(Platform.OS === "ios" && { paddingBottom: 35 }) }} key={index}>
-                                    <View style={{ paddingHorizontal: 30 }}>
-                                        <Text style={[{
-                                            fontSize: 24,
-                                            textAlign: 'center',
-                                            color: COLORS.title
-                                        }, { color: colors.title }, Platform.OS === 'web' && { textAlign: 'center' }]}>{data.title}</Text>
-                                        <Text style={[{
-                                            fontSize: 14,
-                                            textAlign: 'center',
-                                            color: COLORS.text,
-                                            paddingHorizontal: 10,
-                                            marginTop: 5
-                                        }, { color: colors.text }, Platform.OS === 'web' && { textAlign: 'center' }]}>{data.subtitle}</Text>
+                    <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                        <View style={[GlobalStyleSheet.container, { padding: 0, marginBottom: 200 }]}>
+                            <ScrollView
+                                ref={scrollRef}
+                                horizontal
+                                pagingEnabled
+                                scrollEventThrottle={16}
+                                decelerationRate="fast"
+                                showsHorizontalScrollIndicator={false}
+                                onScroll={onScroll}
+                            >
+                                {DATA.map((data: any, index) => (
+                                    <View style={{ width: SIZES.width, ...(Platform.OS === "ios" && { paddingBottom: 35 }) }} key={index}>
+                                        {index === 0 && (
+                                            <Image
+                                                source={IMAGES.appIcon}
+                                                style={{
+                                                    width: '100%',
+                                                    height: 150,
+                                                    resizeMode: 'contain',
+                                                    marginBottom: 20,
+                                                }}
+                                            />
+                                        )}
+                                        <View style={{ paddingHorizontal: 30 }}>
+                                            <Text style={[{
+                                                fontSize: 24,
+                                                textAlign: 'center',
+                                                color: COLORS.white
+                                            }, { color: COLORS.white }, Platform.OS === 'web' && { textAlign: 'center' }]}>{data.title}</Text>
+                                            <Text style={[{
+                                                fontSize: 16,
+                                                textAlign: 'center',
+                                                color: COLORS.text,
+                                                paddingHorizontal: 10,
+                                                marginTop: 5
+                                            }, { color: COLORS.white }, Platform.OS === 'web' && { textAlign: 'center' }]}>{data.subtitle}</Text>
+                                        </View>
                                     </View>
-                                </View>
-                            ))
-                            }
-                        </ScrollView>
-                        <View style={[{
-                            alignSelf: 'center',
-                            flexDirection: 'row',
-                            top: 25,
-                        }, Platform.OS === "ios" && {
-                            bottom: 0
-                        }]} pointerEvents="none">
-                            {DATA.map((x: any, i: any) => (
-                                <Indicator i={i} key={i} scrollValue={scrollX} />
-                            ))}
+                                ))
+                                }
+                            </ScrollView>
+                            <View style={[{
+                                alignSelf: 'center',
+                                flexDirection: 'row',
+                                top: 25,
+                            }, Platform.OS === "ios" && {
+                                bottom: 0
+                            }]} pointerEvents="none">
+                                {DATA.map((x: any, i: any) => (
+                                    <Indicator i={i} key={i} scrollValue={scrollX} />
+                                ))}
+                            </View>
+                        </View>
+                        <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingBottom: 30 }]}>
+                            <TouchableOpacity onPress={() => navigation.navigate('SignUp')} style={{
+                                backgroundColor: COLORS.primary,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderRadius: 20,
+                                paddingHorizontal: 20,
+                                paddingVertical: 20,
+                            }}>
+                                <Text style={{ fontWeight: 'bold', fontSize: 17, color: COLORS.white }}>Get Started</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                </View>
-                <View style={[GlobalStyleSheet.container, { padding: 0, paddingHorizontal: 30, paddingBottom: 30 }]}>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignUp')} style={{
-                        backgroundColor: COLORS.primary,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        borderRadius: 20,
-                        paddingHorizontal: 20,
-                        paddingVertical: 20,
-                    }}>
-                        <Text style={{ fontWeight: 'bold', color: COLORS.white }}>Get Started</Text>
-                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </SafeAreaView>

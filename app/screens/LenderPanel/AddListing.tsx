@@ -720,22 +720,61 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
                     }
                     {index === 4 &&
                         <View style={[GlobalStyleSheet.container, { paddingHorizontal: 15 }]}>
-                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>Set your borrowing rate</Text>
-                            <View style={{ flexDirection: 'row', width: '100%', paddingVertical: 20 }}>
-                                <Input
-                                    onFocus={() => setisFocused3(true)}
-                                    onBlur={() => setisFocused3(false)}
-                                    isFocused={isFocused3}
-                                    onChangeText={setLendingRate}
-                                    backround={COLORS.card}
-                                    style={{ width: 100, height: 55, borderRadius: 10, backgroundColor: COLORS.input, fontSize: 12 }}
-                                    inputicon
-                                    placeholder='£5.00'
-                                    value={lendingRate ? lendingRate.toString() : ''}
-                                    keyboardType='numeric'
-                                />
-                                <Text style={{ fontSize: 12, color: COLORS.title, marginTop: 15, marginBottom: 5, paddingLeft: 5 }}> Rate per day.</Text>
+                            <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.black, paddingTop: 30 }}>How much do you want to ask for this rental?</Text>
+                            <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 10, paddingBottom: 20 }}>You can set a price or make it free by selecting 'No'.</Text>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 20, gap: 10 }}>
+                                <TouchableOpacity
+                                    style={{
+                                        padding: 15,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: '45%',
+                                        borderRadius: 10,
+                                        borderWidth: 1,
+                                        borderColor: lendingRate > 0 ? COLORS.primary : COLORS.black,
+                                        backgroundColor: lendingRate > 0 ? COLORS.primaryLight : COLORS.background,
+                                    }}
+                                    onPress={() => setLendingRate(5)} // Default to £5.00 if "Yes" is selected
+                                >
+                                    <Text style={{ color: COLORS.black, fontSize: 16, fontWeight: 'bold' }}>Yes</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{
+                                        padding: 15,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        width: '45%',
+                                        borderRadius: 10,
+                                        borderWidth: 1,
+                                        borderColor: lendingRate === 0 ? COLORS.primary : COLORS.black,
+                                        backgroundColor: lendingRate === 0 ? COLORS.primaryLight : COLORS.background,
+                                    }}
+                                    onPress={() => setLendingRate(0)} // Set to free if "No" is selected
+                                >
+                                    <Text style={{ color: COLORS.black, fontSize: 16, fontWeight: 'bold' }}>No</Text>
+                                </TouchableOpacity>
                             </View>
+                            {lendingRate > 0 && (
+                                <View>
+                                    <Text style={{ fontSize: 16, color: COLORS.title, marginTop: 15, marginBottom: 5 }}>Set your borrowing rate</Text>
+                                    <View style={{ flexDirection: 'row', width: '100%', paddingVertical: 20 }}>
+                                        <Input
+                                            onFocus={() => setisFocused3(true)}
+                                            onBlur={() => setisFocused3(false)}
+                                            isFocused={isFocused3}
+                                            onChangeText={setLendingRate}
+                                            backround={COLORS.card}
+                                            style={{ width: 100, height: 55, borderRadius: 10, backgroundColor: COLORS.input, fontSize: 12 }}
+                                            inputicon
+                                            placeholder='£5.00'
+                                            value={lendingRate ? lendingRate.toString() : ''}
+                                            keyboardType='numeric'
+                                        />
+                                        <Text style={{ fontSize: 12, color: COLORS.title, marginTop: 15, marginBottom: 5, paddingLeft: 5 }}> Rate per day.</Text>
+                                    </View>
+                                </View>
+                            )}
+                            <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.black, paddingTop: 20, paddingBottom: 10 }}>Set your preferred borrowing time.</Text>
                             <View style={{ flexDirection: 'row', width: SIZES.width * 0.9, paddingBottom: 20, flexWrap: 'wrap' }}>
                                 <Text style={{ fontSize: 12, color: COLORS.title, marginTop: 15, marginBottom: 5, paddingRight: 5 }}>
                                     Start borrowing at
@@ -809,7 +848,7 @@ const AddListing = ({ navigation, route }: AddListingScreenProps) => {
 
                             {availableDays.length < 7 && (
                                 <View>
-                                    <Text style={{ fontSize: 16, color: COLORS.black, paddingTop: 5, paddingBottom: 20 }}>Select your available slots throughout the week.</Text>
+                                    <Text style={{ fontSize: 14, color: COLORS.black, paddingTop: 5, paddingBottom: 20 }}>Select your available slots throughout the week.</Text>
                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', paddingBottom: 20, gap: 10 }}>
                                         {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
                                             <TouchableOpacity

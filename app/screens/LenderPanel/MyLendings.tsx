@@ -155,7 +155,7 @@ const MyLendings = ({ navigation, route }: MyLendingsScreenProps) => {
                                   </View>
                                 )}
                                 <View style={{ width: '70%', padding: 10 }}>
-                                  <Text numberOfLines={1} style={{ fontSize: 16, color: COLORS.black, fontWeight: 'bold' }}>{data.product.title}</Text>
+                                  <Text numberOfLines={1} style={{ width: SIZES.width * 0.4, fontSize: 16, color: COLORS.black, fontWeight: 'bold' }}>{data.product.title}</Text>
                                   <Text style={{ fontSize: 14, color: COLORS.black, opacity: .5 }}>borrowed by {data.firstName} {data.lastName}</Text>
                                   <Text style={{ fontSize: 14, color: COLORS.black, opacity: 0.7 }}>for £{data.total.toFixed(2)}</Text>
                                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>

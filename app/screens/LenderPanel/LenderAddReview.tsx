@@ -434,7 +434,10 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Collection Experience Review</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>
+                                Other Collection Experience Review
+                                <Text style={{ fontSize: 12, color: COLORS.blackLight2 }}> (optional)</Text>
+                                </Text>
                             <Input
                                 onFocus={() => setisFocused1(true)}
                                 onBlur={() => setisFocused1(false)}
@@ -482,7 +485,10 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Return Experience Review</Text>
+                            <Text style={{ fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>
+                                Other Return Experience Review
+                                <Text style={{ fontSize: 12, color: COLORS.blackLight2 }}> (optional)</Text>
+                                </Text>
                             <Input
                                 onFocus={() => setisFocused2(true)}
                                 onBlur={() => setisFocused2(false)}
@@ -537,7 +543,10 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     ))}
                                 </View>
                             </View>
-                            <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
+                            <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>
+                                Other Review
+                                <Text style={{ fontSize: 12, color: COLORS.blackLight2 }}> (optional)</Text>
+                                </Text>
                             <Input
                                 onFocus={() => setisFocused3(true)}
                                 onBlur={() => setisFocused3(false)}
@@ -585,7 +594,10 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
+                            <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>
+                                Other Review
+                                <Text style={{ fontSize: 12, color: COLORS.blackLight2 }}> (optional)</Text>
+                                </Text>
                             <Input
                                 onFocus={() => setisFocused4(true)}
                                 onBlur={() => setisFocused4(false)}
@@ -633,7 +645,10 @@ const LenderAddReview = ({ navigation, route }: LenderAddReviewScreenProps) => {
                                     </TouchableOpacity>
                                 ))}
                             </View>
-                            <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>Other Review</Text>
+                            <Text style={{ width: '100%', fontSize: 16, color: COLORS.title, fontWeight: 'bold', marginTop: 15, marginBottom: 5 }}>
+                                Other Review
+                                <Text style={{ fontSize: 12, color: COLORS.blackLight2 }}> (optional)</Text>
+                                </Text>
                             <Input
                                 onFocus={() => setisFocused5(true)}
                                 onBlur={() => setisFocused5(false)}
