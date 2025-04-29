@@ -72,6 +72,30 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     },
   ]
 
+  const getDistanceInKm = (
+    startLat: number,
+    startLon: number,
+    endLat: number,
+    endLon: number
+  ): number => {
+    const toRadians = (degree: number): number => degree * (Math.PI / 180);
+  
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = toRadians(endLat - startLat);
+    const dLon = toRadians(endLon - startLon);
+  
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(startLat)) * Math.cos(toRadians(endLat)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+  
+    return distance;
+  };
+  
+
   const getDateRange = (start: string, end: string) => {
     const range: string[] = [];
     let currentDate = new Date(start);
@@ -411,7 +435,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     if (startDate && endDate && product) {
       const days = getDateRange(startDate, endDate).length;
       setNumberOfDays(days);
-      const totalAmount = Number(days * product.lendingRate) + Number(product.depositAmount);
+      const totalAmount = Number(days * product.lendingRate);
       setTotal(totalAmount);
     }
   }, [startDate, endDate, product]);
@@ -727,7 +751,15 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, }}>
                               <Ionicons name="location-sharp" size={20} color={COLORS.black} style={{ opacity: 0.5 }} />
-                              <Text>{product.addressName.replace(/^\d+\s*/, '')}, {product.address.replace(/^\d+\s*/, '')}</Text>
+                                {product.addressName && product.address ? (
+                                <Text>
+                                  {product.addressName.replace(/^\d+\s*/, '')}, {product.address.replace(/^\d+\s*/, '')} | {getDistanceInKm(user?.currentAddress?.latitude ?? 0, user?.currentAddress?.longitude ?? 0, product.latitude, product.longitude).toFixed(2)} KM away
+                                </Text>
+                                ) : (
+                                <Text>
+                                  {product.latitude}, {product.longitude}
+                                </Text>
+                                )}
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, paddingBottom: 20 }}>
                               {product.ratingCount && product.ratingCount > 0 ? (
@@ -800,7 +832,11 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                         {index === 2 && (
                           <View style={{ paddingRight: 40 }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Deposit Policy</Text>
-                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>I will be taking a £{product.depositAmount} for deposit. Will be returned back to borrower depends on the return condition.</Text>
+                            <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>
+                              {product.depositAmount !== 0 
+                              ? `A deposit of £${product.depositAmount} will be required. This amount will be refunded upon return of the item in its original condition.` 
+                              : `This item is not taking any deposit. Please handle the item with care. Any damages may result in appropriate actions being taken.`}
+                            </Text>
                             <View style={GlobalStyleSheet.line} />
                             <View style={{ paddingHorizontal: 10 }}>
                               <TouchableOpacity
@@ -1198,7 +1234,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                   <Text style={{ fontSize: 14, color: "#333" }}>Borrowing rate</Text>
                   <Text style={{ fontSize: 14, color: "#333" }}>£{product.lendingRate} x {numberOfDays} day</Text>
-                  <Text style={{ fontSize: 14, fontWeight: "bold" }}>£{total - Number(product.depositAmount)}</Text>
+                  <Text style={{ fontSize: 14, fontWeight: "bold" }}>£{total}</Text>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                   <Text style={{ fontSize: 14, color: "#333" }}>Service Charge</Text>
@@ -1218,7 +1254,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                 <View style={[{ backgroundColor: COLORS.black, height: 1, margin: 10, width: '90%', alignSelf: 'center' },]} />
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                   <Text style={{ fontSize: 14, fontWeight: "bold" }}>Total</Text>
-                  <Text style={{ fontSize: 14, color: "#333", fontWeight: "bold" }}>£{total}</Text>
+                  <Text style={{ fontSize: 14, color: "#333", fontWeight: "bold" }}>£{Number(total) + Number(product.depositAmount)}</Text>
                 </View>
               </View>
             </View>
