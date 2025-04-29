@@ -104,7 +104,7 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{ marginVertical: 10, fontSize: 14 }}>User is not active. Please sign in.</Text>
                 <TouchableOpacity
-                    style={{ padding: 10, paddingHorizontal: 30, backgroundColor: COLORS.primary, borderRadius: 20 }}
+                    style={{ padding: 10, paddingHorizontal: 30, backgroundColor: COLORS.primary, borderRadius: 10 }}
                     onPress={() => navigation.navigate('SignIn')}
                 >
                     <Text style={{ color: COLORS.white, fontSize: 16 }}>Sign In</Text>
