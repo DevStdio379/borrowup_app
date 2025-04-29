@@ -151,33 +151,6 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
                                 {/* <Text>Farizah</Text> */}
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', paddingTop: 10 }}>
-                            <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
-                                onPress={() => {
-                                    setEmail('lucas.bennett23@gmail.com');
-                                    setPassword('12345678');
-                                }}>
-                                <Ionicons name='logo-apple' size={24} color={COLORS.title} />
-                                <Text>Lucas</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
-                                onPress={() => {
-                                    setEmail('mia.harper88@gmail.com');
-                                    setPassword('12345678');
-                                }}>
-                                <Ionicons name='logo-google' size={24} color={COLORS.title} />
-                                <Text>Mia</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
-                                onPress={() => {
-                                    setEmail('ethan.reynolds77@gmail.com');
-                                    setPassword('12345678');
-                                }}>
-                                <Ionicons name='logo-facebook' size={24} color={COLORS.title} />
-                                <Text>Ethan</Text>
-                            </TouchableOpacity>
-                        </View>
                     </View>
                     <View style={{ marginBottom: 15, marginTop: 20, flexDirection: 'row', justifyContent: 'center' }}>
                         <Text style={{ fontSize: 16, color: colors.title, textAlign: 'center', }}>Don't have an account?</Text>
