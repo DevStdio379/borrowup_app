@@ -172,7 +172,7 @@ const MyLendings = ({ navigation, route }: MyLendingsScreenProps) => {
                                   paddingVertical: 2,
                                   borderRadius: 5,
                                 }}>
-                                  <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Deposit: £{data.product.depositAmount}</Text>
+                                  {/* <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Deposit: £{data.product.depositAmount}</Text> */}
                                 </View>
                               )}
                             </TouchableOpacity>
