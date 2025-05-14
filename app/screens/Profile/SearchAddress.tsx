@@ -10,7 +10,7 @@ import Geolocation from 'react-native-geolocation-service';
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/RootStackParamList";
 
-const GOOGLE_PLACES_API_KEY = "AIzaSyB1wqLWl6aAosy_4qXuex_euKpu6aMoxbE"; // Replace with your Google API Key
+const GOOGLE_PLACES_API_KEY = "AIzaSyB1wqLWl6aAosy_4qXuex_euKpu6aMoxbE";
 
 type SearchAddressScreenProps = StackScreenProps<RootStackParamList, 'SearchAddress'>;
 const SearchAddress = ({ navigation, route }: SearchAddressScreenProps) => {
