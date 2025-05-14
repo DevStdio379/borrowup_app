@@ -88,7 +88,8 @@ export const Home = ({ navigation }: HomeScreenProps) => {
     const scrollViewHome = useRef<any>(null);
 
 
-    const buttons = ['All', 'Electronic Gadgets', 'DIY & Hand Tools', 'Sport Equipments', 'Gadgets', 'Party & Celebrations', 'Cooking', 'Outdoors', 'Others'];
+    const buttons = ['All', 'Electronic Gadgets', 'Household Maintenance', 
+        'Sport Equipments', 'Gadgets', 'Party & Celebrations', 'Cooking', 'Outdoors', 'Others'];
 
     const scrollX = useRef(new Animated.Value(0)).current;
     const onCLick = (i: any) => scrollViewHome.current.scrollTo({ x: i * SIZES.width });
