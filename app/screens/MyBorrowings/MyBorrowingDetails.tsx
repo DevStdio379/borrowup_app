@@ -1,6 +1,6 @@
 import { useTheme } from '@react-navigation/native';
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { View, Text, Image, TouchableOpacity, StyleSheet, Platform, Alert, Animated, Easing, FlatList, Dimensions, ScrollView, RefreshControl, ActivityIndicator, TextInput } from 'react-native'
+import { View, Text, Image, TouchableOpacity, StyleSheet, Platform, Alert, Animated, Easing, FlatList, Dimensions, ScrollView, RefreshControl, ActivityIndicator, TextInput, Linking } from 'react-native'
 import { IMAGES } from '../../constants/Images';
 import { COLORS, SIZES } from '../../constants/theme';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -647,6 +647,48 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                         )}
                                         {index === 1 && (
                                             <View style={{ paddingRight: 40 }}>
+                                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Meetup Location</Text>
+                                                <View style={{ marginTop: 10, borderRadius: 50, backgroundColor: '#8ABE12', }}>
+                                                    <View style={{ height: 200, borderRadius: 20, overflow: 'hidden', borderColor: COLORS.blackLight, borderWidth: 1 }}>
+                                                        <MapView
+                                                            ref={mapRef}
+                                                            style={{ ...StyleSheet.absoluteFillObject, }}
+                                                            initialRegion={{
+                                                                latitude: borrowing.product.latitude,
+                                                                longitude: borrowing.product.longitude,
+                                                                latitudeDelta: 0.0005,
+                                                                longitudeDelta: 0.0005,
+                                                            }}
+                                                            scrollEnabled={false}
+                                                            zoomEnabled={false}
+                                                            rotateEnabled={false}
+                                                            pitchEnabled={false}
+                                                            toolbarEnabled={false}
+                                                        >
+                                                            <Marker
+                                                                coordinate={{
+                                                                    latitude: borrowing.product.latitude,
+                                                                    longitude: borrowing.product.longitude,
+                                                                }}
+                                                                title="house"
+                                                            />
+
+                                                        </MapView>
+                                                    </View>
+                                                </View>
+                                                <Text style={{ fontSize: 14, color: COLORS.title, marginBottom: 0 }}><Text style={{ fontSize: 14, color: COLORS.title, fontWeight: 'bold' }}>{borrowing.product.addressName}, </Text>{borrowing.product.address}</Text>
+                                                <TouchableOpacity
+                                                    onPress={() => {
+                                                        const url = `https://www.google.com/maps?q=${borrowing.product.latitude},${borrowing.product.longitude}`;
+                                                        Linking.openURL(url);
+                                                    }}
+                                                >
+                                                    <Text
+                                                        style={{ fontSize: 14, color: COLORS.primary, textDecorationLine: 'underline', marginBottom: 10 }}
+                                                    >
+                                                        Open in Google Maps
+                                                    </Text>
+                                                </TouchableOpacity>
                                                 <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Borrowing Notes</Text>
                                                 <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20, paddingTop: 20 }}>{borrowing.product.borrowingNotes}</Text>
                                                 <View style={GlobalStyleSheet.line} />
