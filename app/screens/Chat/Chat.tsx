@@ -31,6 +31,7 @@ export const Chat = ({ route }: ChatScreenProps) => {
           user: {
             _id: data.userId,
             name: data.userName || 'User',
+            avatar: data.userAvatar || undefined,
           },
         };
       });
@@ -56,12 +57,13 @@ export const Chat = ({ route }: ChatScreenProps) => {
     
     await updateDoc(chatDocRef, {
       lastMessage: newMessages[0].text,
+      updatedAt: serverTimestamp(),
     });
 
   }, [chatId]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: COLORS.primaryLight }}>
+    <View style={{ flex: 1, backgroundColor: COLORS.backgroundColor }}>
 
       <GiftedChat
         messages={messages}

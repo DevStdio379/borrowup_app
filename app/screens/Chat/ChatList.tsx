@@ -9,12 +9,13 @@ import { auth, db } from '../../services/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { Avatar } from 'react-native-gifted-chat';
 import { COLORS } from '../../constants/theme';
+import { fetchSelectedProduct, Product } from '../../services/ProductServices';
 
 type ChatListScreenProps = StackScreenProps<RootStackParamList, 'ChatList'>
 
 export const ChatList = ({ navigation }: ChatListScreenProps) => {
     const { user } = useUser();
-    const [chats, setChats] = useState<{ id: string; participants: string[]; otherParticipantDetails?: User; lastMessage?: string }[]>([]);
+    const [chats, setChats] = useState<{ id: string; participants: string[]; otherParticipantDetails?: User; lastMessage?: string; product?: Product; updatedAt?: any; }[]>([]);
     const [refreshing, setRefreshing] = useState(false);
 
     const fetchUsersByIds = async (userIds: string[]): Promise<User[]> => {
@@ -36,21 +37,28 @@ export const ChatList = ({ navigation }: ChatListScreenProps) => {
             return {
                 id: doc.id,
                 participants: data.participants || [],
+                productId: data.productId || null,
+                updatedAt: data.updatedAt || null,
                 ...data,
             };
         });
 
         if (!user) return;
         const users = await fetchUsersByIds(chatList.map((chat) => chat.participants.find((uid: string) => uid !== user.uid)));
-        console.log('CHECK_USER: ', users.map((user) => user.userName));
-        const chatListWithOtherUserDetails = chatList.map((chat) => {
+        const chatListWithOtherUserDetails = await Promise.all(chatList.map(async (chat) => {
             const otherParticipantId = chat.participants.find((uid: string) => uid !== user.uid);
             const otherParticipantDetails = users.find((user) => user.uid === otherParticipantId);
+            let product: Product | undefined = undefined;
+            if (chat.productId) {
+                const fetchedProduct = await fetchSelectedProduct(chat.productId);
+                product = fetchedProduct === null ? undefined : fetchedProduct;
+            }
             return {
                 ...chat,
                 otherParticipantDetails,
+                product
             };
-        });
+        }));
         setChats(chatListWithOtherUserDetails);
     };
 
@@ -107,10 +115,11 @@ export const ChatList = ({ navigation }: ChatListScreenProps) => {
                         onPress={() => navigation.navigate("Chat", { chatId: item.id })}
                         style={{ flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#ccc' }}
                     >
-                        <Image source={{ uri: item.otherParticipantDetails?.profileImageUrl }} style={{ height: 60, width: 60, borderRadius: 45 }} />
+                        <Image source={{ uri: item.product?.imageUrls[0] }} style={{ height: 60, width: 60, borderRadius: 45 }} />
                         <View style={{ marginLeft: 16 }}>
                             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{item.otherParticipantDetails?.firstName} {item.otherParticipantDetails?.lastName}</Text>
                             <Text style={{ color: '#888' }}>{item.lastMessage || 'Last message preview...'}</Text>
+                            <Text>{item.updatedAt?.toDate().toLocaleString() || 'Unknown date'}</Text>
                         </View>
                     </TouchableOpacity>
                 )}

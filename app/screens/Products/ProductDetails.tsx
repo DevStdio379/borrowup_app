@@ -79,22 +79,22 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     endLon: number
   ): number => {
     const toRadians = (degree: number): number => degree * (Math.PI / 180);
-  
+
     const R = 6371; // Earth's radius in kilometers
     const dLat = toRadians(endLat - startLat);
     const dLon = toRadians(endLon - startLon);
-  
+
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRadians(startLat)) * Math.cos(toRadians(endLat)) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
-  
+
     return distance;
   };
-  
+
 
   const getDateRange = (start: string, end: string) => {
     const range: string[] = [];
@@ -203,7 +203,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   }, []);
 
   const handleChat = async (user: User, otherUser: User) => {
-    const chatId = await getOrCreateChat(user, otherUser);
+    const chatId = await getOrCreateChat(user, otherUser, product?.id);
     if (chatId) {
       navigation.navigate("Chat", { chatId: chatId });
     }
@@ -610,7 +610,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
             <View style={{ flex: 1, alignItems: 'flex-end' }}>
               {index === 0 ? (
                 <TouchableOpacity
-                  onPress={() => {}}
+                  onPress={() => { }}
                   style={{
                     height: 40,
                     width: 40,
@@ -751,35 +751,35 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, }}>
                               <Ionicons name="location-sharp" size={20} color={COLORS.black} style={{ opacity: 0.5 }} />
-                                {product.addressName && product.address ? (
+                              {product.addressName && product.address ? (
                                 <Text>
                                   {product.addressName.replace(/^\d+\s*/, '')}, {product.address.replace(/^\d+\s*/, '')} | {getDistanceInKm(user?.currentAddress?.latitude ?? 0, user?.currentAddress?.longitude ?? 0, product.latitude, product.longitude).toFixed(2)} KM away
                                 </Text>
-                                ) : (
+                              ) : (
                                 <Text>
                                   {product.latitude}, {product.longitude}
                                 </Text>
-                                )}
+                              )}
                             </View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 5, paddingBottom: 20 }}>
                               {product.ratingCount && product.ratingCount > 0 ? (
-                              <>
-                                {Array.from({ length: 5 }, (_, i) => (
-                                <Ionicons
-                                  key={i}
-                                  name="star"
-                                  size={16}
-                                  color={i < (product.averageRating ?? 0) ? COLORS.warning : COLORS.card}
-                                />
-                                ))}
-                                <Text style={{}}> {product.averageRating?.toFixed(1)} </Text>
-                                <Text style={{}}>({product.ratingCount})</Text>
-                                <TouchableOpacity onPress={() => onCLick(3)}>
-                                <Text style={{ textDecorationLine: 'underline', color: COLORS.primary, paddingLeft: 4 }}>see all reviews</Text>
-                                </TouchableOpacity>
-                              </>
+                                <>
+                                  {Array.from({ length: 5 }, (_, i) => (
+                                    <Ionicons
+                                      key={i}
+                                      name="star"
+                                      size={16}
+                                      color={i < (product.averageRating ?? 0) ? COLORS.warning : COLORS.card}
+                                    />
+                                  ))}
+                                  <Text style={{}}> {product.averageRating?.toFixed(1)} </Text>
+                                  <Text style={{}}>({product.ratingCount})</Text>
+                                  <TouchableOpacity onPress={() => onCLick(3)}>
+                                    <Text style={{ textDecorationLine: 'underline', color: COLORS.primary, paddingLeft: 4 }}>see all reviews</Text>
+                                  </TouchableOpacity>
+                                </>
                               ) : (
-                              <Text style={{ color: COLORS.blackLight }}>No reviews yet</Text>
+                                <Text style={{ color: COLORS.blackLight }}>No reviews yet</Text>
                               )}
                             </View>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Description</Text>
@@ -812,6 +812,22 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                               <View style={GlobalStyleSheet.line} />
                             </View>
                             <Text style={{ fontSize: 14, color: COLORS.black, paddingBottom: 20, textAlign: 'center' }}>The exact location will be disclosed upon borrowing completion</Text>
+                            <TouchableOpacity
+                              style={{
+                                paddingVertical: 10,
+                                paddingHorizontal: 20,
+                                width: '100%',
+                                borderRadius: 8,
+                                alignSelf: 'center',
+                                borderWidth: 1,
+                                borderColor: COLORS.blackLight2,
+                              }}
+                              onPress={() => { if (user && owner) handleChat(user, owner) }}
+                            >
+                              <Text style={{ color: COLORS.black, textAlign: 'center', fontSize: 16, fontWeight: 'bold' }}>
+                                Message Owner
+                              </Text>
+                            </TouchableOpacity>
                           </View>
                         )}
                         {index === 1 && (
@@ -833,9 +849,9 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                           <View style={{ paddingRight: 40 }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.black }}>Deposit Policy</Text>
                             <Text style={{ fontSize: 15, color: COLORS.black, paddingBottom: 20 }}>
-                              {product.depositAmount !== 0 
-                              ? `A deposit of £${product.depositAmount} will be required. This amount will be refunded upon return of the item in its original condition.` 
-                              : `This item is not taking any deposit. Please handle the item with care. Any damages may result in appropriate actions being taken.`}
+                              {product.depositAmount !== 0
+                                ? `A deposit of £${product.depositAmount} will be required. This amount will be refunded upon return of the item in its original condition.`
+                                : `This item is not taking any deposit. Please handle the item with care. Any damages may result in appropriate actions being taken.`}
                             </Text>
                             <View style={GlobalStyleSheet.line} />
                             <View style={{ paddingHorizontal: 10 }}>
@@ -927,55 +943,54 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                         )}
                         {index === 3 && (
                           <View style={{ paddingRight: 40 }}>
-                              {reviews.map((review, index) => (
-                                <View
-                                  key={index}
-                                  style={{
-                                    borderRadius: 10,
-                                    width: '100%',
-                                    marginTop: 15,
-                                  }}
-                                >
-                                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Image
-                                      source={{ uri: review.borrowerProfilePicture }}
-                                      style={{ width: 40, height: 40, borderRadius: 40, marginRight: 10 }}
-                                    />
-                                    <View>
-                                      <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
-                                        {`${review.borrowerFirstName} ${review.borrowerLastName}`}
-                                      </Text>
-                                      <Text style={{ fontSize: 14, color: COLORS.blackLight }}>
-                                        {new Date(review.borrowerUpdatedAt).toLocaleDateString()}
-                                      </Text>
-                                    </View>
-                                  </View>
-                                  <Text style={{ fontSize: 14, color: COLORS.black, marginVertical: 10 }}>
-                                    {review.borrowerPublicReview}
-                                  </Text>
-                                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    {Array.from({ length: 5 }, (_, i) => (
-                                      <Ionicons
-                                        key={i}
-                                        name="star"
-                                        size={16}
-                                        color={i < review.borrowerOverallRating ? COLORS.primary : COLORS.blackLight}
-                                      />
-                                    ))}
-                                    <Text style={{ fontSize: 14, color: COLORS.black, marginLeft: 5 }}>
-                                      {review.borrowerOverallRating}
+                            {reviews.map((review, index) => (
+                              <View
+                                key={index}
+                                style={{
+                                  borderRadius: 10,
+                                  width: '100%',
+                                  marginTop: 15,
+                                }}
+                              >
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                  <Image
+                                    source={{ uri: review.borrowerProfilePicture }}
+                                    style={{ width: 40, height: 40, borderRadius: 40, marginRight: 10 }}
+                                  />
+                                  <View>
+                                    <Text style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.title }}>
+                                      {`${review.borrowerFirstName} ${review.borrowerLastName}`}
+                                    </Text>
+                                    <Text style={{ fontSize: 14, color: COLORS.blackLight }}>
+                                      {new Date(review.borrowerUpdatedAt).toLocaleDateString()}
                                     </Text>
                                   </View>
-                                  <View style={{ height: 1, backgroundColor: COLORS.blackLight, marginVertical: 10 }} />
                                 </View>
-                              ))}
+                                <Text style={{ fontSize: 14, color: COLORS.black, marginVertical: 10 }}>
+                                  {review.borrowerPublicReview}
+                                </Text>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                  {Array.from({ length: 5 }, (_, i) => (
+                                    <Ionicons
+                                      key={i}
+                                      name="star"
+                                      size={16}
+                                      color={i < review.borrowerOverallRating ? COLORS.primary : COLORS.blackLight}
+                                    />
+                                  ))}
+                                  <Text style={{ fontSize: 14, color: COLORS.black, marginLeft: 5 }}>
+                                    {review.borrowerOverallRating}
+                                  </Text>
+                                </View>
+                                <View style={{ height: 1, backgroundColor: COLORS.blackLight, marginVertical: 10 }} />
+                              </View>
+                            ))}
                           </View>
                         )}
                       </View>
                     </ScrollView>
                   ))}
                 </ScrollView>
-
               </View>
             </View>
           )}
