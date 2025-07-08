@@ -265,12 +265,16 @@ const Profile = ({ navigation }: ProfileScreenProps) => {
                             <Ionicons name='chevron-forward-outline' size={30} color={COLORS.blackLight} />
                         </View>
                     </TouchableOpacity>
-                    <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
-                        <View style={[styles.cardimg]} >
-                            <Ionicons name='settings' size={30} color={colors.title} />
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => navigation.navigate('Temp')}>
+                        <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
+                            <View style={[styles.cardimg]} >
+                                <Ionicons name='settings' size={30} color={colors.title} />
+                            </View>
+                            <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Settings</Text>
                         </View>
-                        <Text style={{ fontSize: 16, color: colors.title, fontWeight: 'bold' }}>Settings</Text>
-                    </View>
+                    </TouchableOpacity>
                     <View style={[GlobalStyleSheet.line, { margin: 10 },]} />
                     <View style={[GlobalStyleSheet.flexcenter, { width: '100%', gap: 20, justifyContent: 'flex-start', marginBottom: 15, alignItems: 'center' }]} >
                         <View style={[styles.cardimg]} >

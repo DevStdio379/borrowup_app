@@ -1,5 +1,6 @@
 import 'react-native-gesture-handler';
 import Route from './app/navigation/Route';
+import { StripeProvider } from '@stripe/stripe-react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
@@ -35,15 +36,21 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <SafeAreaView style={{ flex: 1 }}>
-          <Provider store={store}>
-            <UserProvider>
-              <Route />
-            </UserProvider>
-          </Provider>
-        </SafeAreaView>
-      </SafeAreaProvider>
+      <StripeProvider
+        publishableKey="pk_test_51Q87cAGEbMZg2VhUeP5msjeJkRg0Rp0qOG9rmvYZh2jaNOZXQUzT6svOg1H6ZixSJUa3mrnA9xnjnt2CpuoymZfl004PdjQOgW"
+        merchantIdentifier="merchant.identifier" // required for Apple Pay
+        urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
+      >
+        <SafeAreaProvider>
+          <SafeAreaView style={{ flex: 1 }}>
+            <Provider store={store}>
+              <UserProvider>
+                <Route />
+              </UserProvider>
+            </Provider>
+          </SafeAreaView>
+        </SafeAreaProvider>
+      </StripeProvider>
     </GestureHandlerRootView>
   );
 }
