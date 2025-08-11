@@ -16,6 +16,8 @@ import { getReviewsByProductId } from '../../services/ReviewServices';
 import { getOrCreateChat } from '../../services/ChatServices';
 import Swiper from 'react-native-swiper';
 import TabButtonStyleHome from '../../components/Tabs/TabButtonStyleHome';
+import axios from 'axios';
+import { useStripe } from '@stripe/stripe-react-native';
 
 type ProductDetailsScreenProps = StackScreenProps<RootStackParamList, 'ProductDetails'>;
 const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
@@ -50,6 +52,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [numberOfDays, setNumberOfDays] = useState<number>();
   const [total, setTotal] = useState<number>();
+  const [grandTotal, setGrandTotal] = useState<number>();
 
   // tabview
   const scrollViewHome = useRef<any>(null);
@@ -62,11 +65,13 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     {
       image: "cash",
       title: "Cash on Pickup",
+      tag: "cash",
       text: 'Borrower directly pays the owner upon pickup meetup',
     },
     {
       label: 'Recommended',
       image: "card-outline",
+      tag: "card",
       title: "Credit / Debit Card",
       text: "Stripe handles all payments securely. Sign-in",
     },
@@ -437,6 +442,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       setNumberOfDays(days);
       const totalAmount = Number(days * product.lendingRate);
       setTotal(totalAmount);
+      setGrandTotal(totalAmount + Number(product.depositAmount));
     }
   }, [startDate, endDate, product]);
 
@@ -522,7 +528,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       Alert.alert('Please select start and end dates');
       return;
     }
-    if (index === 2 && !deliveryMethod) {
+    if (index === 2 && deliveryMethod === null) {
       Alert.alert('Please select a delivery method');
       return;
     }
@@ -531,6 +537,17 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       return;
     }
     if (index === 4) {
+      Alert.alert('Payment processing...')
+      const paymentResult = await handleHoldPayment();
+      if (paymentResult.success) {
+        Alert.alert('Payment successful', 'Your payment has been processed successfully.');
+        handleCheckout();
+        return;
+      }
+      else {
+        Alert.alert('Payment failed', paymentResult.error || 'An error occurred while processing your payment.');
+        return;
+      }
       // if (paymentMethod === 'card') {
       //   // Handle Stripe payment here
       // } else if (paymentMethod === 'cash') {
@@ -541,7 +558,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       //   Alert.alert('Please select a payment method');
       //   return;
       // }
-      handleCheckout();
+      // handleCheckout();
     }
     setIndex((prev) => (prev + 1) % screens);
   }
@@ -564,6 +581,72 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       }
     }
     return availableDates;
+  };
+
+  // Functions to handle payment and refunds
+
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
+  const [rentalId] = useState('rental_test2'); // Normally generated dynamically
+  const [connectedAccountId] = useState('acct_1RiaVN4gRYsyHwtX'); // Replace with real lender ID
+  const [currency] = useState('GBP');
+  const [paymentIntentId, setPaymentIntentId] = useState('');
+  const [refundAmount, setRefundAmount] = useState('');
+
+
+  const handleHoldPayment = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        'https://us-central1-tags-1489a.cloudfunctions.net/api/hold-payment',
+        {
+          amount: (grandTotal ?? 0) * 100,
+          currency,
+          rentalId,
+        }
+      );
+
+      const {
+        paymentIntent,
+        ephemeralKey,
+        customer,
+      } = response.data;
+
+      const initResponse = await initPaymentSheet({
+        customerId: customer,
+        customerEphemeralKeySecret: ephemeralKey,
+        paymentIntentClientSecret: paymentIntent,
+        merchantDisplayName: 'BorrowUp',
+      });
+
+      if (initResponse.error) {
+        Alert.alert('Error', initResponse.error.message);
+        setLoading(false);
+        return { success: false, error: initResponse.error.message };
+      }
+
+      const result = await presentPaymentSheet();
+
+      if (result.error) {
+        return { success: false, error: result.error.message };
+      }
+
+      return {
+        success: true,
+        data: {
+          paymentIntentId: paymentIntent,
+          customerId: customer,
+          rentalId,
+        },
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Hold payment failed.',
+      };
+    } finally {
+      setLoading(false);
+    }
   };
 
 
@@ -1123,14 +1206,14 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                     activeOpacity={0.8}
                     style={{
                       padding: 15,
-                      borderColor: paymentMethod === method.title ? COLORS.primary : COLORS.blackLight,
+                      borderColor: paymentMethod === method.tag ? COLORS.primary : COLORS.blackLight,
                       borderRadius: 10,
                       borderWidth: 1,
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
-                    onPress={() => setPaymentMethod(paymentMethod === method.title ? null : method.title)}
+                    onPress={() => setPaymentMethod(paymentMethod === method.tag ? null : method.tag)}
                   >
                     <Ionicons name={method.image} size={30} color={COLORS.black} style={{ margin: 5 }} />
                     <View style={{ flex: 1, paddingLeft: 10 }}>
@@ -1157,9 +1240,9 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                       </View>
                     )}
                   </TouchableOpacity>
-                  {paymentMethod === method.title && (
+                  {paymentMethod === method.tag && (
                     <View style={{ padding: 10, marginTop: 10, backgroundColor: COLORS.primaryLight, borderRadius: 10 }}>
-                      {method.title === "Cash on Pickup" && (
+                      {method.tag === "cash" && (
                         <>
                           <Text style={{ fontSize: 14, color: COLORS.warning, fontWeight: "bold" }}>
                             Note:
@@ -1178,7 +1261,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                           </TouchableOpacity>
                         </>
                       )}
-                      {method.title === "Credit / Debit Card" && (
+                      {method.tag === "card" && (
                         <>
                           <Text style={{ fontSize: 14, color: COLORS.success, fontWeight: "bold" }}>
                             Why Stripe?
@@ -1269,7 +1352,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
                 <View style={[{ backgroundColor: COLORS.black, height: 1, margin: 10, width: '90%', alignSelf: 'center' },]} />
                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                   <Text style={{ fontSize: 14, fontWeight: "bold" }}>Total</Text>
-                  <Text style={{ fontSize: 14, color: "#333", fontWeight: "bold" }}>£{Number(total) + Number(product.depositAmount)}</Text>
+                  <Text style={{ fontSize: 14, color: "#333", fontWeight: "bold" }}>£ {grandTotal}</Text>
                 </View>
               </View>
             </View>
@@ -1332,11 +1415,18 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
               }}
               onPress={nextScreen}
             >
-              <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>{index === 4 ? 'Pay & Borrow' : [
-                `Pick Dates`,
-                'Delivery Method',
-                'Payment Method',
-                'Checkout'][index] || ''}</Text>
+              <Text style={{ color: COLORS.white, fontSize: 16, fontWeight: 'bold' }}>
+                {index === 4
+                  ? paymentMethod === 'card'
+                    ? `Pay £${grandTotal}`
+                    : `Borrow Now`
+                  : [
+                    `Pick Dates`,
+                    'Delivery Method',
+                    'Payment Method',
+                    'Checkout',
+                  ][index] || ''}
+              </Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
