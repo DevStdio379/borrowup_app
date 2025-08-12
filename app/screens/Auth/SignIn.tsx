@@ -144,7 +144,7 @@ const SignIn = ({ navigation }: SignInScreenProps) => {
                             </TouchableOpacity>
                             <TouchableOpacity style={{ borderRadius: 10, padding: 10, borderColor: COLORS.blackLight, borderWidth: 2, alignItems: 'center', width: SIZES.width * 0.2, height: SIZES.height * 0.07, justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 8, marginHorizontal: 10, backgroundColor: '#F6F6F6' }}
                                 onPress={() => {
-                                    setEmail('farizah@gmail.com');
+                                    setEmail('lucas.bennett23@gmail.com');
                                     setPassword('12345678');
                                 }}>
                                 <Ionicons name='logo-facebook' size={24} color={COLORS.title} />
