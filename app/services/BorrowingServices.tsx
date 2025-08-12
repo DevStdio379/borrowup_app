@@ -1,5 +1,5 @@
 import { db } from './firebaseConfig';
-import { collection, addDoc, query, where, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, getDoc, updateDoc, CollectionReference, DocumentReference, setDoc } from 'firebase/firestore';
 import { Product } from './ProductServices';
 import { Address } from './AddressServices';
 
@@ -27,7 +27,7 @@ export interface Borrowing {
   updatedAt: any;
 }
 
-export const createBorrowing = async (borrowingData: Borrowing) => {
+export const createBorrowing = async (borrowingRef: DocumentReference, borrowingData: Borrowing) => {
   try {
     // Ensure no undefined fields in the product object
     const sanitizedBorrowingData = {
@@ -39,10 +39,9 @@ export const createBorrowing = async (borrowingData: Borrowing) => {
       },
     };
 
-    const borrowingRef = collection(db, 'borrowings');
-    const docRef = await addDoc(borrowingRef, sanitizedBorrowingData);
-    console.log('Borrowing created with ID: ', docRef.id);
-    return docRef.id;
+    await setDoc(borrowingRef, sanitizedBorrowingData);
+    console.log('Borrowing created with ID: ', borrowingRef.id);
+    return borrowingRef.id;
   } catch (error) {
     console.error('Error placing borrowing: ', error);
   }
