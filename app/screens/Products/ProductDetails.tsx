@@ -18,6 +18,8 @@ import Swiper from 'react-native-swiper';
 import TabButtonStyleHome from '../../components/Tabs/TabButtonStyleHome';
 import axios from 'axios';
 import { useStripe } from '@stripe/stripe-react-native';
+import { db } from '../../services/firebaseConfig';
+import { collection, CollectionReference, doc } from 'firebase/firestore';
 
 type ProductDetailsScreenProps = StackScreenProps<RootStackParamList, 'ProductDetails'>;
 const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
@@ -459,11 +461,11 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     fetchSelectedProductData().then(() => setRefreshing(false));
   }, []);
 
-  const handleCheckout = async () => {
-    if (total === undefined) {
-      Alert.alert('Error', 'Total amount is not calculated.');
-      return;
-    }
+  const handleCheckout = async (borrowingRef: any) => {
+      if (total === undefined) {
+        Alert.alert('Error', 'Total amount is not calculated.');
+        return;
+      }
 
     if (!deliveryMethod || !paymentMethod) {
       Alert.alert('Error', 'Please select delivery and payment methods.');
@@ -496,7 +498,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       product: product,
 
       // end products copy
-      total: total,
+      total: grandTotal || 0,
       deliveryMethod: deliveryMethod,
       paymentMethod: paymentMethod,
       //generate random collection and return codes
@@ -506,7 +508,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       createAt: new Date(),
     };
 
-    const borrowingId = await createBorrowing(borrowingData);
+    const borrowingId = await createBorrowing(borrowingRef, borrowingData);
     if (borrowingId) {
       Alert.alert('Success', `Borrowings created successfully with ID: ${borrowingId}`);
       navigation.navigate('PaymentSuccess', {
@@ -541,7 +543,9 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       const paymentResult = await handleHoldPayment();
       if (paymentResult.success) {
         Alert.alert('Payment successful', 'Your payment has been processed successfully.');
-        handleCheckout();
+        if (paymentResult.data?.borrowingRef) {
+          handleCheckout(paymentResult.data.borrowingRef);
+        }
         return;
       }
       else {
@@ -587,7 +591,6 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
-  const [rentalId] = useState('rental_test2'); // Normally generated dynamically
   const [connectedAccountId] = useState('acct_1RiaVN4gRYsyHwtX'); // Replace with real lender ID
   const [currency] = useState('GBP');
   const [paymentIntentId, setPaymentIntentId] = useState('');
@@ -595,6 +598,8 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
 
   const handleHoldPayment = async () => {
+    const borrowingRef = doc(collection(db, 'borrowings')); // generates ID now
+
     try {
       setLoading(true);
       const response = await axios.post(
@@ -602,7 +607,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
         {
           amount: (grandTotal ?? 0) * 100,
           currency,
-          rentalId,
+          borrowingId: borrowingRef.id,
         }
       );
 
@@ -616,7 +621,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
         customerId: customer,
         customerEphemeralKeySecret: ephemeralKey,
         paymentIntentClientSecret: paymentIntent,
-        merchantDisplayName: 'BorrowUp',
+        merchantDisplayName: `BorrowUp - ${borrowingRef.id}`,
       });
 
       if (initResponse.error) {
@@ -636,7 +641,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
         data: {
           paymentIntentId: paymentIntent,
           customerId: customer,
-          rentalId,
+          borrowingRef: borrowingRef,
         },
       };
     } catch (error: any) {
