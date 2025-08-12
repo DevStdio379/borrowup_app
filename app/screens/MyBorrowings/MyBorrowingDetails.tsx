@@ -12,6 +12,7 @@ import { fetchSelectedBorrowing, Borrowing, updateBorrowing } from '../../servic
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createReview, getReviewByBorrowingId, Review } from '../../services/ReviewServices';
+import axios from 'axios';
 
 type MyBorrowingDetailsScreenProps = StackScreenProps<RootStackParamList, 'MyBorrowingDetails'>;
 
@@ -169,6 +170,35 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
 
     const greetings = 'Hi there, thank you for your rent. We hope that you can take the advantage of this item during your borrowing period Beforehand, here’s the information that you might need during your borrowing terms.';
 
+    // Handle release-payment methods
+    const [currency] = useState('GBP');
+    const [connectedAccountId] = useState('acct_1RiaVN4gRYsyHwtX'); // Replace with real lender ID
+
+    const handleReleasePayment = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.post(
+                'https://us-central1-tags-1489a.cloudfunctions.net/api/release-to-lender',
+                {
+                    amount: (borrowing.total - borrowing.product.depositAmount) * 100,
+                    currency,
+                    connectedAccountId,
+                    borrowingId: borrowing.id,
+                }
+            );
+
+            Alert.alert('Success', 'Funds released to Lender!');
+            return { success: true, data: response.data }; // ✅ return success and data
+        } catch (error: any) {
+            console.error('[Release Transfer Error]', error.response?.data || error.message);
+            Alert.alert('Error', error.response?.data?.error || 'Transfer failed.');
+            return { success: false, error: error.response?.data?.error || error.message }; // ✅ return failure
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     return (
         <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
             <View style={{ height: 60, borderBottomColor: COLORS.card, borderBottomWidth: 1 }}>
@@ -291,11 +321,18 @@ const MyBorrowingDetails = ({ navigation, route }: MyBorrowingDetailsScreenProps
                                                 alignItems: 'center',
                                             }}
                                             onPress={async () => {
-                                                await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1 });
-                                                setStatus(status! + 1);
+                                                const result = await handleReleasePayment();
+
+                                                if (result.success) {
+                                                    console.log('Transfer ID:', result.data.transferId);
+                                                    await updateBorrowing(borrowing.id || 'undefined', { status: status! + 1 });
+                                                    setStatus(status! + 1);
+                                                } else {
+                                                    console.log('Release failed:', result.error);
+                                                }
                                             }}
                                         >
-                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>Yes</Text>
+                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>Yes {borrowing.total - borrowing.product.depositAmount}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
