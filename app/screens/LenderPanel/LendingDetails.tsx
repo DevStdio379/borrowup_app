@@ -10,6 +10,7 @@ import { fetchSelectedBorrowing, Borrowing, updateBorrowing } from '../../servic
 import { fetchSelectedUser, User, useUser } from '../../context/UserContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { createReview, getReviewByBorrowingId, Review } from '../../services/ReviewServices';
+import axios from 'axios';
 
 type LendingDetailsScreenProps = StackScreenProps<RootStackParamList, 'LendingDetails'>;
 
@@ -154,7 +155,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
         { label: "Pickup\n", date: "Enter pickup\ncode", completed: (status ?? 0) > 2 },
         { label: "Active\nBorrowing", date: "\n", completed: (status ?? 0) > 2 },
         { label: "Return\n", date: "Show return\ncode", completed: (status ?? 0) > 3 },
-        { label: "Borrowing\nCompleted", date: `${formatDate(lending?.endDate)}`, completed: (status ?? 0) > 5 },
+        { label: "Borrowing\nCompleted", date: `${formatDate(lending?.endDate)}`, completed: (status ?? 0) > 6 },
     ];
 
     const actions = [
@@ -163,8 +164,42 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
         { buttonTitle: 'Contact Support', onPressAction: () => Alert.alert('Contact Support Pressed') },
     ];
 
-
     const greetings = 'Hi there, thank you for your rent. We hope that you can take the advantage of this item during your borrowing period Beforehand, here’s the information that you might need during your borrowing terms.';
+
+    // Stripe functions
+
+    const handleRefund = async () => {
+        const paymentIntentId = lending.paymentIntentId || '';
+        const refundAmount = lending.product.depositAmount?.toString() || '';
+        if (!paymentIntentId || !refundAmount) {
+            Alert.alert('Error', 'Please fill in all fields.');
+            return;
+        }
+
+        try {
+            const amountInPence = Math.round(parseFloat(refundAmount) * 100);
+
+            const response = await axios.post(
+                'https://us-central1-tags-1489a.cloudfunctions.net/api/refund-deposit',
+                {
+                    paymentIntentId,
+                    amountToRefundInPence: amountInPence,
+                }
+            );
+
+            if (response.data.success) {
+                // Alert.alert('Success', `Refund of £${refundAmount} processed.`);
+                return { success: true, data: response.data }; // ✅ success
+            } else {
+                // Alert.alert('Failed', 'Could not process the refund.');
+                return { success: false, error: 'Refund failed' }; // ❌ failure
+            }
+        } catch (error: any) {
+            console.error('Refund error:', error);
+            // Alert.alert('Error', error.response?.data?.error || 'Something went wrong.');
+            return { success: false, error: error.message || 'Something went wrong.' }; // ❌ failure
+        }
+    };
 
     return (
         <View style={{ backgroundColor: COLORS.background, flex: 1 }}>
@@ -184,7 +219,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                             <Ionicons size={30} color={COLORS.black} name='chevron-back-outline' />
                         </TouchableOpacity>
                     </View>
-                    <View style={{alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold', color: COLORS.title, textAlign: 'center', marginVertical: 10 }}>Lending Details</Text>
                     </View>
                     <View style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -274,7 +309,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                 </View>
                             ) : status === 1 ? (
                                 <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
-                                    <Text style={{ fontSize: 16, fontWeight: "500"}}>Enter Pickup Code</Text>
+                                    <Text style={{ fontSize: 16, fontWeight: "500" }}>Enter Pickup Code</Text>
                                     <Text style={{ fontSize: 13, marginBottom: 10, color: COLORS.blackLight2 }}>Kindly ask the borrower for the pickup code</Text>
                                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                                         {collectionCode.map((digit, index) => (
@@ -376,6 +411,50 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                                                     await updateBorrowing(lending.id, { status: status! + 1 });
                                                 }
                                                 setStatus(status! + 1);
+                                            }}
+                                        >
+                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>Yes</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            ) : status === 6 ? (
+                                <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
+                                    <Text style={{ fontWeight: 'bold' }}>Is your item in good condition?</Text>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
+                                        <TouchableOpacity
+                                            style={{
+                                                backgroundColor: COLORS.primary,
+                                                padding: 10,
+                                                borderRadius: 10,
+                                                marginVertical: 10,
+                                                width: '40%',
+                                                alignItems: 'center',
+                                            }}
+                                            onPress={() => { }}
+                                        >
+                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>No</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={{
+                                                backgroundColor: COLORS.primary,
+                                                padding: 10,
+                                                borderRadius: 10,
+                                                marginVertical: 10,
+                                                width: '40%',
+                                                alignItems: 'center',
+                                            }}
+                                            onPress={async () => {
+                                                const result = await handleRefund();
+
+                                                if (result && result.success) {
+                                                    console.log('Refund processed:', result.data);
+                                                    if (lending.id) {
+                                                        await updateBorrowing(lending.id, { status: status! + 1 });
+                                                    }
+                                                    setStatus(status! + 1);
+                                                } else if (result) {
+                                                    console.error('Refund failed:', result.error);
+                                                }
                                             }}
                                         >
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>Yes</Text>
@@ -555,7 +634,7 @@ const LendingDetails = ({ navigation, route }: LendingDetailsScreenProps) => {
                         </View>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             {buttons.map((btn: any, i: number) => (
-                                <View  key={i} style={{ flexDirection: 'row', width: SIZES.width * 0.5, paddingHorizontal: 10, justifyContent: 'space-between', alignItems: 'center' }}>
+                                <View key={i} style={{ flexDirection: 'row', width: SIZES.width * 0.5, paddingHorizontal: 10, justifyContent: 'space-between', alignItems: 'center' }}>
                                     <TouchableOpacity
                                         key={btn}
                                         style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}

@@ -19,7 +19,9 @@ export interface Borrowing {
 
   total: number;
   deliveryMethod: string;
+  numberOfDays: number;
   paymentMethod: string;
+  paymentIntentId?: string;
   // collection and return code
   collectionCode: string;
   returnCode: string;
@@ -67,7 +69,9 @@ const mapBorrowingData = (doc: any): Borrowing => {
     // end address copy
     total: data.total,
     deliveryMethod: data.deliveryMethod,
+    numberOfDays: data.numberOfDays,
     paymentMethod: data.paymentMethod,
+    paymentIntentId: data.paymentIntentId || '',  // Ensure paymentIntentId is always a string
     // collection and return code
     collectionCode: data.collectionCode,
     returnCode: data.returnCode,

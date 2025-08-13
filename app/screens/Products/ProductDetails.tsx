@@ -461,7 +461,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
     fetchSelectedProductData().then(() => setRefreshing(false));
   }, []);
 
-  const handleCheckout = async (borrowingRef: any) => {
+  const handleCheckout = async (borrowingRef: any, paymentIntentId: string) => {
       if (total === undefined) {
         Alert.alert('Error', 'Total amount is not calculated.');
         return;
@@ -500,7 +500,9 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       // end products copy
       total: grandTotal || 0,
       deliveryMethod: deliveryMethod,
+      numberOfDays: numberOfDays || 0,
       paymentMethod: paymentMethod,
+      paymentIntentId: paymentIntentId,
       //generate random collection and return codes
       collectionCode: '',
       returnCode: '',
@@ -544,7 +546,9 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       if (paymentResult.success) {
         Alert.alert('Payment successful', 'Your payment has been processed successfully.');
         if (paymentResult.data?.borrowingRef) {
-          handleCheckout(paymentResult.data.borrowingRef);
+          setPaymentIntentId(paymentResult.data.paymentIntentId);
+          Alert.alert('Success', `Payment Intent ID: ${paymentIntentId}`);
+          handleCheckout(paymentResult.data.borrowingRef, paymentResult.data.paymentIntentId);
         }
         return;
       }
@@ -552,17 +556,6 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
         Alert.alert('Payment failed', paymentResult.error || 'An error occurred while processing your payment.');
         return;
       }
-      // if (paymentMethod === 'card') {
-      //   // Handle Stripe payment here
-      // } else if (paymentMethod === 'cash') {
-      //   handleCheckout();
-      //   Alert.alert('order created');
-      //   return;
-      // } else {
-      //   Alert.alert('Please select a payment method');
-      //   return;
-      // }
-      // handleCheckout();
     }
     setIndex((prev) => (prev + 1) % screens);
   }
@@ -595,6 +588,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
   const [currency] = useState('GBP');
   const [paymentIntentId, setPaymentIntentId] = useState('');
   const [refundAmount, setRefundAmount] = useState('');
+  const [paymentIntent, setPaymentIntent] = useState('');
 
 
   const handleHoldPayment = async () => {
@@ -613,6 +607,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
 
       const {
         paymentIntent,
+        paymentIntentId,
         ephemeralKey,
         customer,
       } = response.data;
@@ -639,7 +634,7 @@ const ProductDetails = ({ navigation, route }: ProductDetailsScreenProps) => {
       return {
         success: true,
         data: {
-          paymentIntentId: paymentIntent,
+          paymentIntentId: paymentIntentId,
           customerId: customer,
           borrowingRef: borrowingRef,
         },
